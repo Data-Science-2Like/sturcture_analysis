@@ -8,19 +8,34 @@ logger = logging.getLogger(__name__)
 # Load File into Soup
 soup = TexSoup(open("Tex Files\\acl2021.tex"))
 logger.info("Load Tex File into Soup")
-logger.debug(soup.section)
+#logger.debug(soup.section)
 #logger.debug(soup)
 
-# Find Elements in LaTex File
+# Find Elements in LaTex File --------------------
+
+# Load complete Document into "alls"
+alls = soup.all
+# logger.debug(alls)
+# for x in range(20):
+#     print(alls[x])
+
 logging.info("Find elements in Tex file")
 section_list = list(soup.find_all('section'))
-logger.debug(section_list)
+# logger.debug(section_list)
+# for x in section_list: 
+#     print(x)
 
 subsection_list = list(soup.find_all('subsection'))
-logger.debug(subsection_list)
-
+# logger.debug(subsection_list)
+ 
 abstract = soup.find('abstract')
-logger.debug(abstract)
+# logger.debug(abstract)
 
 citations_list = list(soup.find_all('cite'))
-logger.debug(citations_list)
+# logger.debug(citations_list)
+# for x in citations_list:
+#     print(x)
+
+
+
+

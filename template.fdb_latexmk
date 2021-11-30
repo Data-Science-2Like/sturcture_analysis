@@ -1,0 +1,17 @@
+# Fdb version 3
+["pdflatex"] 1638202136 "c:/Users/Daniel/OneDrive/Dokumente/GitHub/latex_crawler/template.tex" "template.pdf" "template" 1638202136
+  "c:/Users/Daniel/OneDrive/Dokumente/GitHub/latex_crawler/template.tex" 1638202133 141 2362d28b20264f7528d4fcc301a1625a ""
+  "c:/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1636626632 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "c:/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmr10.tfm" 1636625733 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
+  "c:/texlive/2021/texmf-dist/tex/latex/base/article.cls" 1636627341 20144 0fe9067680219956678b52f12bdce8ee ""
+  "c:/texlive/2021/texmf-dist/tex/latex/base/size11.clo" 1636627341 8464 efc3cbec9b4f1a5665635866ad7e7dba ""
+  "c:/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def" 1636627309 29971 6c47712bf4bc87d15b2ca318615f75a3 ""
+  "c:/texlive/2021/texmf-dist/web2c/texmf.cnf" 1636627282 40042 fe981136cbb5f3715ab1b0e46e3d3892 ""
+  "c:/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1636630834 2805237 3a616b2a79b20b326d0ba63368bc6199 ""
+  "c:/texlive/2021/texmf.cnf" 1636630253 713 e69b156964470283e0530f5060668171 ""
+  "template.aux" 1638202136 8 a94a2480d3289e625eea47cd1b285758 "pdflatex"
+  "template.tex" 1638202133 141 2362d28b20264f7528d4fcc301a1625a ""
+  (generated)
+  "template.pdf"
+  "template.log"
+  "template.aux"
