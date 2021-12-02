@@ -6,16 +6,19 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Load File into Soup
-soup = TexSoup(open("Tex Files\\acl2021.tex"))
+# TODO wie parst man über alle Namen der Dokumente drüber??
+soup = TexSoup(open("Tex Files\\NeuroCite.tex"))
 logger.info("Load Tex File into Soup")
-#logger.debug(soup.section)
-#logger.debug(soup)
+logger.debug(soup.section)
+logger.debug(soup)
+
+
 
 # Find Elements in LaTex File --------------------
 
 # Load complete Document into "alls"
 alls = soup.all
-# logger.debug(alls)
+logger.debug(alls)
 # for x in range(20):
 #     print(alls[x])
 
