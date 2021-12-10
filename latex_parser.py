@@ -40,6 +40,7 @@ for filename in os.listdir(directory):
 logger.info("Load LaTex File into Soup")
 # Create Dictionary to store soup objects
 soup_dict = {}
+# Iterate through all TexFiles and place them in dict
 for i,item in enumerate(texfiles):
     soup = TexSoup(open(item))
     logger.debug(soup)
@@ -54,15 +55,57 @@ logger.info(f"Dicctionary Size: {len(soup_dict)}")
 
 
 logger.info("Find elements in Tex file")
+# Iterate through every soup object and extract Section Headings
 for soup in soup_dict.values():
     section_list = list(soup.find_all('section'))
     logger.info(section_list)
+    # Iterate through all Section Headings and compare to template list
     for i, x in enumerate(section_list):
         clean_string = re.sub('[^A-Za-z0-9 ]+', '', x.string)
-        if clean_string == template_list[i]:
-            print(True)
+        #print(set(clean_string).intersection(set(template_list)))
+        
+        # if clean_string.lower() == template_list[i].lower():
+        #     print(True, "|" ,template_list[i], " -:- ", clean_string)
+        # else:
+        #     print(False, "|" , template_list[i], " -:- ", clean_string)
+        print(f"Section heading: {clean_string}")
+        if clean_string.lower() == "introduction":
+            print(f"Match found: {clean_string}")
+        
+        elif clean_string.lower() == "related work":
+            print(f"Match found: {clean_string}")
+ 
+        # Methodology added
+        elif clean_string.lower() == "methods" or clean_string.lower() == "methodology":
+            print(f"Match found: {clean_string}")
+ 
+        elif clean_string.lower() == "models":
+            print(f"Match found: {clean_string}")
+ 
+        elif clean_string.lower() == "experimental apparatus" or clean_string.lower() == "experiments":
+            print(f"Match found: {clean_string}")
+ 
+        elif clean_string.lower() == "results":
+            print(f"Match found: {clean_string}")
+ 
+        elif clean_string.lower() == "discussison":
+            print(f"Match found: {clean_string}")
+ 
+        elif clean_string.lower() == "conclusion" or clean_string.lower() == "conclusion and future work":
+            print(f"Match found: {clean_string}")
+        
+        # Acknowledgement added
+        elif clean_string.lower() == "acknowledgement":
+            print(f"Match found: {clean_string}")
+
         else:
-            print(False)
+            print(f"No match found: {clean_string}")
+        
+        print("\n")
+
+    print("=====================================================")
+
+
 
 
 
