@@ -99,6 +99,10 @@ for soup in soup_dict.values():
 
         #print(set(clean_string).intersection(set(template_list)))
         
+        # TODO Ausgabe erweiteren - Reihenfolge ausgeben 
+        # TODO Input Template auslagern
+        # TODO Statistik über Paper erstellen welche Sections vorkommen
+
         # if clean_string.lower() == template_list[i].lower():
         #     print(True, "|" ,template_list[i], " -:- ", clean_string)
         # else:
