@@ -37,30 +37,14 @@ for filename in os.listdir(directory):
         texfiles.append(f)
 
 # Load File into Soup
+#
 # TODO file input muss robuster werden
+#
 logger.info("Load LaTex File into Soup")
 # Create Dictionary to store soup objects
 soup_dict = {}
-# Iterate through all TexFiles and place them in dict
-for i,item in enumerate(texfiles):
-    try:
-        soup = TexSoup(open(item))
-        # logger.debug(soup)
-        # TODO Use title as variable name?? is this usefull??
-        # titel = soup.find('title')
-        # key = titel.string
-        soup_dict[i] = soup
-    except TypeError:
-        logger.debug("TypeError:")
-        logger.debug(f"Doc #{i}: {item} could not be loaded.")
-    except:
-        logger.debug(f"Doc #{i}: {item} could not be loaded.")
-    
-#logger.debug(soup_dict)
-logger.info("Soup objects successfully loaded into dicctionary.")
-logger.info(f"Dicctionary Size: {len(soup_dict)}")
 
-
+# TODO create dynamically?
 section_dict = {
     0 : [],
     1 : [],
@@ -82,79 +66,132 @@ section_dict = {
     17 : [],
     18 : [],
     19 : [],
-    20 : []
+    20 : [],
+    21 : [],
+    22 : [],
+    23 : [],
+    24 : [],
+    25 : []  
 }
 
-logger.info("Find elements in Tex file")
-# Iterate through every soup object and extract Section Headings
-for soup in soup_dict.values():
-    section_list = list(soup.find_all('section'))
-    logger.info(section_list)
+# Iterate through all TexFiles and place them in dict
+def parse_for_section_headings():
+    for i,item in enumerate(texfiles):
+        try:
+            #logger.debug(f"Load {item} into soup.")
+            soup = TexSoup(open(item))
+
+            section_list = list(soup.find_all('section'))
+            #logger.info(section_list)
+
+            # Iterate through all Section Headings and compare to template list
+            for i, x in enumerate(section_list):
+                clean_string = re.sub('[^A-Za-z0-9 ]+', '', x.string)
+                section_dict[i].append(clean_string)
+                section_dict[i].sort()
+
+        except TypeError:
+            logger.debug("TypeError:")
+            logger.debug(f"Doc #{i}: {item} could not be loaded.")
+        except:
+            logger.debug(f"Doc #{i}: {item} could not be loaded.")
+
+def compare_with_template():
+    for i,item in enumerate(texfiles):
+        try:
+            #logger.debug(f"Load {item} into soup.")
+            soup = TexSoup(open(item))
+
+            section_list = list(soup.find_all('section'))
+            #logger.info(section_list)
+
+            # TODO Ausgabe erweiteren - Reihenfolge ausgeben 
+            # TODO Input Template auslagern
+            # TODO Statistik über Paper erstellen welche Sections vorkommen
+
+            # Iterate through all Section Headings and compare to template list
+            for j, x in enumerate(section_list):
+                clean_string = re.sub('[^A-Za-z0-9 ]+', '', x.string)
+                
+                # if clean_string.lower() == template_list[i].lower():
+                #     logger.info(True, "|" ,template_list[i], " -:- ", clean_string)
+                # else:
+                #     logger.info(False, "|" , template_list[i], " -:- ", clean_string)
 
 
-    # Iterate through all Section Headings and compare to template list
-    for i, x in enumerate(section_list):
-        clean_string = re.sub('[^A-Za-z0-9 ]+', '', x.string)
-        section_dict[i].append(clean_string)
+                logger.info(f"Document # {i}")
+                if clean_string.lower() == "introduction":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+                
+                elif clean_string.lower() == "related work":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+        
+                # Methodology added
+                elif clean_string.lower() == "methods" or clean_string.lower() == "methodology":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+        
+                elif clean_string.lower() == "models":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+        
+                elif clean_string.lower() == "experimental apparatus" or clean_string.lower() == "experiments":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+        
+                elif clean_string.lower() == "results":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+        
+                elif clean_string.lower() == "discussison":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+        
+                elif clean_string.lower() == "conclusion" or clean_string.lower() == "conclusion and future work":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+                
+                # Acknowledgement added
+                elif clean_string.lower() == "acknowledgement":
+                    logger.info(f"Match found: {clean_string} at Position: {j}")
+
+                else:
+                    logger.info(f"No match found: {clean_string}")
+            logger.debug("===================================================================")
+
+        except TypeError:
+            logger.debug("TypeError:")
+            logger.debug(f"Doc #{i}: {item} could not be loaded.")
+        except Exception as e:
+            logger.debug(f"Doc #{i}: {item} could not be loaded: {e}.")
+
+
+# #logger.debug(soup_dict)
+# logger.info("Soup objects successfully loaded into dicctionary.")
+# logger.info(f"Dicctionary Size: {len(soup_dict)}")
+
+# logger.info("Find elements in Tex file")
+# # Iterate through every soup object and extract Section Headings
+# for soup in soup_dict.values():
+#     section_list = list(soup.find_all('section'))
+#     logger.info(section_list)
+
+
+#     # Iterate through all Section Headings and compare to template list
+#     for i, x in enumerate(section_list):
+#         clean_string = re.sub('[^A-Za-z0-9 ]+', '', x.string)
+#         section_dict[i].append(clean_string)
 
         #print(set(clean_string).intersection(set(template_list)))
-        
-        # TODO Ausgabe erweiteren - Reihenfolge ausgeben 
-        # TODO Input Template auslagern
-        # TODO Statistik über Paper erstellen welche Sections vorkommen
-
-        # if clean_string.lower() == template_list[i].lower():
-        #     print(True, "|" ,template_list[i], " -:- ", clean_string)
-        # else:
-        #     print(False, "|" , template_list[i], " -:- ", clean_string)
-
-
-        # print(f"Section heading: {clean_string}")
-        # if clean_string.lower() == "introduction":
-        #     print(f"Match found: {clean_string}")
-        
-        # elif clean_string.lower() == "related work":
-        #     print(f"Match found: {clean_string}")
- 
-        # # Methodology added
-        # elif clean_string.lower() == "methods" or clean_string.lower() == "methodology":
-        #     print(f"Match found: {clean_string}")
- 
-        # elif clean_string.lower() == "models":
-        #     print(f"Match found: {clean_string}")
- 
-        # elif clean_string.lower() == "experimental apparatus" or clean_string.lower() == "experiments":
-        #     print(f"Match found: {clean_string}")
- 
-        # elif clean_string.lower() == "results":
-        #     print(f"Match found: {clean_string}")
- 
-        # elif clean_string.lower() == "discussison":
-        #     print(f"Match found: {clean_string}")
- 
-        # elif clean_string.lower() == "conclusion" or clean_string.lower() == "conclusion and future work":
-        #     print(f"Match found: {clean_string}")
-        
-        # # Acknowledgement added
-        # elif clean_string.lower() == "acknowledgement":
-        #     print(f"Match found: {clean_string}")
-
-        # else:
-        #     print(f"No match found: {clean_string}")
-        
-        # print("\n")
 
     # print("=====================================================")
     # print(section_dict)
 
 
+########################################
+# parse_for_section_headings()
+
 # Write Sections to JSON File
-json_data = json.dumps(section_dict, indent = 4)
-with open("section_headings.json", "w") as outfile:
-    outfile.write(json_data)
+# json_data = json.dumps(section_dict, indent = 4)
+# with open("section_headings.json", "w") as outfile:
+#     outfile.write(json_data)
 
 
-
+compare_with_template()
 
 
 
