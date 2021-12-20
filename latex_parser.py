@@ -84,6 +84,8 @@ def parse_for_section_headings():
             section_list = list(soup.find_all('section'))
             #logger.info(section_list)
 
+            # TODO 10 Sections die am öftesten vorkommen
+            # TODO Ausgabe anders formatieren
             # Iterate through all Section Headings and compare to template list
             for i, x in enumerate(section_list):
                 clean_string = re.sub('[^A-Za-z0-9 ]+', '', x.string)

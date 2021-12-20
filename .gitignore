@@ -134,3 +134,4 @@ dmypy.json
 /Temp
 /Latex
 /Latex2
+*.json
