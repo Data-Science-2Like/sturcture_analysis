@@ -1,0 +1,1051 @@
+\documentclass{article}
+\usepackage{iclr2020_conference}
+
+\usepackage{url}
+\usepackage{times}
+
+\usepackage{times}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage[utf8]{inputenc}
+\usepackage[small]{caption}
+\usepackage{verbatim,amsthm,amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{sansmath}
+\usepackage{bbm}
+\usepackage{enumitem}
+\usepackage{romannum}
+\AtBeginDocument{\pagenumbering{arabic}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{fact}[theorem]{Fact}
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{.}{.5em}{\thmnote{#3}}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+\usepackage{subfig}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{bm}
+\usepackage[vlined,boxed,ruled]{algorithm2e}
+
+\DeclareSymbolFont{extraup}{U}{zavm}{m}{n}
+\DeclareMathSymbol{\varheart}{\mathalpha}{extraup}{86}
+\DeclareMathSymbol{\vardiamond}{\mathalpha}{extraup}{87}
+\DeclareMathOperator*{\argmax}{arg max}
+\DeclareMathOperator*{\argmin}{arg min}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\ee}{\mathbf{e}}
+\newcommand{\II}{\mathbb{I}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\BB}{\mathbb{B}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\oo}{\mathcal{o}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\xS}{\mathbb{S}}
+\newcommand{\xA}{\mathbb{A}}
+\DeclareMathOperator\Var{\mathrm{Var}}
+\DeclareMathOperator\Cov{\mathrm{Cov}}
+\DeclareMathOperator\poly{\mathrm{poly}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\allowdisplaybreaks
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\bracket}[1]{\left(#1\right)}
+\newcommand{\sbracket}[1]{\left[#1\right]}
+\newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+
+\title{The Gambler's Problem and Beyond}
+
+\author{Baoxiang Wang \\
+Department of Computer Science and Engineering\\
+The Chinese University of Hong Kong\\
+\texttt{bxwang@cse.cuhk.edu.hk} \\
+\And
+Shuai Li \\
+John Hopcroft Center for Computer Science \\
+Shanghai Jiao Tong University \\
+\texttt{shuaili8@sjtu.edu.cn} \\
+\AND
+Jiajin Li \\
+Department of SEEM \\
+The Chinese University of Hong Kong \\
+\texttt{jjli@se.cuhk.edu.hk} \\
+\AND
+Siu On Chan \\
+Department of Computer Science and Engineering\\
+The Chinese University of Hong Kong\\
+\texttt{siuon@cse.cuhk.edu.hk}
+}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\iclrfinalcopy
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We analyze the Gambler's problem, a simple reinforcement learning problem where the gambler has the chance to double or lose the bets until the target is reached. This is an early example introduced in the reinforcement learning textbook by \cite{sutton2018reinforcement}, where they mention an interesting pattern of the optimal value function with high-frequency components and repeating non-smooth points. It is however without further investigation. We provide the exact formula for the optimal value function for both the discrete and the continuous cases. Though simple as it might seem, the value function is pathological: fractal, self-similar, derivative taking either zero or infinity, and not written as elementary functions. It is in fact one of the generalized Cantor functions, where it holds a complexity that has been uncharted thus far. Our analyses could provide insights into improving value function approximation, gradient-based algorithms, and Q-learning, in real applications and implementations.
+\end{abstract}
+
+\section{Introduction}
+
+We analytically investigate a deceptively simple problem, the Gambler's problem, introduced in the reinforcement learning textbook by \cite{sutton2018reinforcement} in Example 4.3. 
+The problem setting is natural and simple enough that little discussion was given in the book apart from a numerical solution by value iteration.
+A close inspection will however show that the problem, as a representative of the entire family of Markov decision processes (MDP), involves a level of complexity and curiosity uncharted in years of reinforcement learning research.
+
+The problem discusses a typical double-or-nothing casino game, where the gambler places multiple rounds of betting. 
+The gambler gains the bet amount upon winning a round or loses the bet upon losing the round, with probability $1- p\leq 0.5$ and  $p\geq 0.5$, respectively.
+The game terminates when the gambler's capital reaches either the target or $0$.
+
+In each round, the gambler must decide what portion of the capital to stake. 
+In the discrete setting the target and the bet amount must be integers, but both can be real numbers in the continuous setting. 
+The problem is formulated as an MDP (see Section \ref{sec:prelim} for a preliminary), where state $s$ is the current capital and action $a$ is the bet amount. 
+The reward is $+1$ when the state reaches the target state, and zero otherwise.
+Our goal is to solve the optimal value function of the MDP.
+
+We first give the solution to the discrete Gambler's problem. Denote $N\in \NN^+$ as the target capital, $n\in \NN^+$ as the current capital (which is the state in the discrete setting), $p> 0.5$ as the probability of losing a bet, and $\gamma$ as the discount factor. The special case of $N=100$, $\gamma=1$ corresponds to the original setting described in Sutton and Barto's book.
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=0.95\textwidth,height=0.425\textwidth]{fig/gamblers-problem-discrete.pdf}
+\caption{The optimal state-value function of the discrete Gambler's problem.}
+\label{fig:valuefunctiondiscrete}
+\end{figure}
+
+\begin{namedtheorem}[Proposition \ref{discretevaluefunction}]
+Let $0\leq\gamma\leq 1$ and $p>0.5$. The optimal value function $z(n)$ is $v(n/N)$ in the discrete setting of the Gambler's problem, where $v(\cdot)$ is the optimal value function under the continuous case defined in Theorem \ref{valuefunction}. 
+\end{namedtheorem}
+
+The above statement reduces the discrete problem to the continuous problem by a uniform discretization. The rest of the discussion will be on the more general continuous setting. 
+
+In the continuous setting, let the target capital be $1$ without loss of generality. The state space is then $[0,1]$, and the action space is $0<a\leq \min\{s,1-s\}$ at state $s$, meaning that the bet can be any fraction of the current capital as long as the capital after winning does not exceed $1$ (the target). We give the optimal state-value function below and some intuitive descriptions later in this section.
+
+\begin{namedtheorem}[Theorem \ref{valuefunction}]
+Let $0\leq\gamma\leq 1$ and $p>0.5$. Under the continuous setting of the Gambler's problem, the optimal state-value function is $v(1)=1$, and 
+\begin{equation}
+\label{eqn:vs}
+v(s)=\sum_{i=1}^\infty (1-p)\gamma^i b_i\prod_{j=1}^{i-1}((1-p)+(2p-1)b_j)
+\end{equation}
+for $0\leq s<1$, where $s={0.b_1b_2\dots b_\ell\dots}_{(2)}$ is the binary representation of the state $s$.
+\end{namedtheorem}
+Next, we solve the Bellman equation of the continuous Gambler's problem, that is, $f(0)=0$, $f(1)=1$, and
+\begin{equation}
+f(s) = \max_{0< a \leq \min\{s,1-s\}}(1-p)\gamma f(s+a)+p\gamma f(s-a),
+\end{equation}
+for a real function $f$.
+In the strictly discounted case $0\leq\gamma < 1$, the solution of the Bellman equation 
+is the optimal value function $f(s)=v(s)$ (Proposition \ref{uniquegammalessthanone}). 
+
+This uniqueness does not hold in general. If the reward is not discounted, the solution of the Bellman equation is either the optimal value function, or a constant function larger than $1$.
+\begin{namedtheorem}[Theorem \ref{allsolutionbellman}]
+Let $\gamma = 1$, $p>0.5$, and $f(\cdot)$ be a real function on $[0,1]$. $f(s)$ solves the Bellman equation if and only if either
+\begin{itemize}
+\vspace{-0.5mm}
+\item $f(s)$ is $v(s)$ defined in Theorem \ref{valuefunction}, or
+\vspace{-0.5mm}
+\item $f(0)=0$, $f(1)=1$, and $f(s)=C$ for all $0<s<1$, for some constant $C\geq 1$.
+\end{itemize}
+\end{namedtheorem}
+Under the most complicated case of $\gamma=1$, $p=0.5$, the problem involves midpoint concavity and Cauchy's functional equation \citep{sierpinski1920equation,sierpinski1920fonctions}. The measurable functions that solve the Bellman equation are $f(s)=C^\prime s+B^\prime$, $s\in (0,1)$, for $C^\prime+B^\prime \geq 1$. Additionally, there exists non-constructive, non Lebesgue measurable solutions under Axiom of Choice (Theorem \ref{thm:negativef}).
+
+Though the description of the Gambler's problem seems natural and simple, Theorem \ref{valuefunction} shows that its simpleness is deceptive. 
+The optimal value function is fractal, self-similar, and non-rectifiable (see Corollary \ref{thm:self-similar} and Lemma \ref{induction}). It is thus not smooth on any interval, which can be unexpected when a significant line of reinforcement learning studies is based on function approximation like discretization and neural networks. 
+The value function \eqref{eqn:vs} can neither be simplified into a formula of elementary functions, which introduces additional difficulties to analyses of algorithms.
+The function is monotonically increasing with $v(0)=0$ and $v(1)=1$, but its derivative is $0$ almost everywhere, which is counterintuitive. This is known as singularity, a famous pathological property of functions. 
+$v(s)$ is continuous almost everywhere but not absolutely continuous. Also when $\gamma$ is strictly smaller than $1$, it is discontinuous on a dense and compact set of infinitely many points. These properties indicate that assumptions like smoothness, continuity, and approximability are not satisfied in this problem. In general, it is reasonable to doubt if these assumptions can be imposed in reinforcement learning. 
+To better understand the pathology of $v(s)$, we analogize it to the Cantor function, which is well known in analysis as a counterexample of many seemingly true statements \citep{dovgoshey2006cantor}. In fact, $v(s)$ is a generalized Cantor function, where the above descriptions are true for both $v(s)$ and the Cantor function.  
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=0.95\textwidth,height=0.425\textwidth]{fig/gamblers-problem-continuous.pdf}
+\caption{The optimal state-value function of the continuous Gambler's problem.}
+\label{fig:valuefunction}
+\end{figure}
+
+\textbf{Intuitive descriptions of $\bm{v(s)}$.} All the statements above require the definition of $v(s)$. In fact, in this paper, $v(s)$ is important enough such that its definition will not change with the context. The function cannot be written as a combination of elementary functions. Nevertheless, we give an intuitive way to understand the function for the original, undiscounted problem. The function can be regarded as generated by the following iterative process. First we fix $v(0)=0$ and $v(1)=1$, and compute 
+\[v(\frac{1}{2})= p v(0)+(1-p) v(1)=(1-p) .\]
+Here, $v(\frac{1}{2})$ is the weighted average of the two ``neighbors'' $v(0)$ and $v(1)$ that have been already evaluated. Further, the same operation applies to $v(\frac{1}{4})$ and $v(\frac{3}{4})$, where $v(\frac{1}{4}) = p v(0)+(1-p) v(\frac{1}{2}) = (1-p)^2$ and $v(\frac{3}{4}) = p v(\frac{1}{2})+(1-p) v(1) = (1-p) + p(1-p)$, and so forth to $v(\frac{1}{8})$, $v(\frac{3}{8})$, etc. 
+This process evaluates $v(s)$ on the dense and compact set $\bigcup_{\ell \ge 1} G_{\ell}$ of the dyadic rationals, where $G_\ell=\{k2^{-\ell}\mid k\in \{1,\dots,2^\ell-1\}\}$. With the fact that $v(s)$ is monotonically strictly increasing, these dyadic rationals determine the function $v(s)$ uniquely.
+
+This iterative process can also be explained from the analytical formula of $v(s)$. Starting with the first bit, a bit of $0$ will not change the value, while a bit of $1$ will add $(1-p)\prod_{j=1}^{i-1}((1-p)+(2p-1)b_j)$ to the value. This term can also be written as $(1-p)((1-p)^{\#\bm{0} \ \text{bits}}\cdot p^{\#\bm{1} \ \text{bits}})$, where the number of bits is counted over all previous bits.
+The value $(1-p)^{\#\bm{0} \ \text{bits}}\cdot p^{\#\bm{1} \ \text{bits}}$ decides the gap between two neighbor existing points in the above process, when we insert a new point in the middle. This insertion corresponds to the iteration on $G_\ell$ over $\ell$.
+
+We provide high resolution plots of $z(n), N=100$ and $v(s)$ in Figure \ref{fig:valuefunctiondiscrete} and Figure \ref{fig:valuefunction}, respectively. The non-smoothness and the self-similar fractal patterns can be clearly observed from the figures. 
+Also, $v(s)$ is continuous when $\gamma=1$ while $v(s)$ is not continuous on infinitely many points when $\gamma<1$. In fact, when $\gamma<1$, the function is discontinuous on the dyadic rationals $\bigcup_{\ell \ge 1} G_{\ell}$ while continuous on its complement, as we will rigorously show later.
+
+\textbf{Self-similarity.} 
+The function $v(s)$ on $[\bar s,\bar s+2^{-\ell}]$ for any $\bar s={0.b_1b_2 \dots b_\ell}_{(2)}$, $\ell\ge 1$ is self-similar to the function itself on $[0,1]$. Let $s = 0.{b_1b_2\dots b_\ell \ldots}_{(2)}\in [\bar s,\bar s+2^{-\ell}]$, this can be observed by 
+\begin{align}
+\label{eqn:selfsim}
+v(s) & = \sum_{i=1}^\infty (1-p)\gamma^i b_i\prod_{j=1}^{i-1}((1-p)+(2p-1)b_j)\nonumber\\
+& = \sum_{i=1}^{\ell} (1-p)\gamma^i b_i\prod_{j=1}^{i-1}((1-p)+(2p-1)b_j) + \gamma^{\ell} (\prod_{j=1}^{\ell}((1-p)+(2p-1)b_j))\nonumber\\
+& \quad \times \sum_{i=1}^\infty (1-p)\gamma^i b_{\ell+i}\prod_{j=1}^{i-1}((1-p)+(2p-1)b_{\ell+j})\nonumber\\
+& = v(\bar s) + \gamma^{\ell}\prod_{j=1}^{\ell}((1-p)+(2p-1)b_j)\cdot v(2^\ell (s-\bar s)).
+\end{align}
+The self-similarity can be compared with the Cantor function \citep{dovgoshey2006cantor,mandelbrot1985self}, which uses the ternary of $s$ instead in the formula. 
+The Cantor function is self-similar to itself on $[\bar s, \bar s + 3^{-\ell}]$, when $\bar s= {0.{b_1}b_2\dots {b_\ell}}_{(3)}$ and ${b_\ell} \neq 1$. 
+Both $v(s)$ and the Cantor function can be uniquely described by their self-similarity, the monotonicity, and the boundary conditions.
+
+\textbf{Optimal policies.} It is immediate by Theorem \ref{valuefunction} and Lemma \ref{induction} that
+\[\pi(s)=\min\{s,1-s\}\]
+is one of the (Blackwell) optimal policies. Here, Blackwell optimality is defined as the uniform optimality under any $0\leq\gamma\leq 1$. This policy agrees with the intuition that under a game that is in favor of the casino ($p>0.5$), the gambler desires to bet the maximum to finish the game in as little cumulative bet as possible. In fact, the probability of reaching the target is the expected amount of capital by the end of the game, which is negative linear to the cumulative bet. 
+
+The optimality is not unique though, for example, $\pi(\frac{15}{32})=\frac{1}{32}$ is also optimal (for any $\gamma$). Under $\gamma=1$ the original, undiscounted setting, small amount of bets can also be optimal. Namely, when $s$ can be written in finitely many bits $s={b_1b_2\dots b_\ell}_{(2)}$ in binary (assume $b_\ell=1$), $\pi(s)=2^{-l}$ is also an optimal policy. This policy is by repeatedly rounding the capital to carryover the bits, keeping the game to be within at most $\ell$ rounds of bets.
+
+\subsection{Preliminaries}
+\label{sec:prelim}
+
+We use the canonical formulation of the discrete-time Markov decision process (MDP), denoted as the tuple $(\mathcal{S},\mathcal{A}, \mathcal{T}, r,\rho_0,\gamma)$. That includes $\mathcal{S}$ the state space, $\mathcal{A}$ the action space, $\mathcal{T}:\mathcal{S}\times\mathcal{A}\times\mathcal{S} \to \mathbb{R}^+$ the stochastic transition probability function, $r:\mathcal{S}\to\mathbb{R}$ the reward function, $\rho_0\in \mathcal{S}$ the initial state, and $\gamma \in [0,1]$ the unnormalized discount factor. 
+A deterministic policy $\pi:\mathcal{S}\to\mathcal{A}$ is a map from the state space to the action space. In this problem, $\mathcal{T}(s,a,s-a)$ and $\mathcal{T}(s,a,s+a)$ are $p$ and $1-p$ respectively for $s\in\mathcal{S}$, $a\in \mathcal{A}$, and $\mathcal{T}(\cdot)$ is otherwise $0$.
+
+Our goal is to solve the optimal value function of the Gambler's problem, which is the probability that the gambler reaches the target from an initial state. 
+The definition of the state-value function of an MDP with respect to state $s$ and policy $\pi$ is
+\[
+f^\pi(s) = \E{\sum_{t} \gamma^t r_t \Big| s_0=s, a_t=\pi(s_t), r_t= r(s_t), s_{t+1}\sim \mathcal{T}(s_t,a_t), t=0,1,\dots} .
+\]
+When $\pi^\ast(\cdot)$ is one of the optimal policies, $f^{\pi^\ast}(s)$ is the optimal state-value function. Despite that multiple optimal policies can exist, this optimal state-value function is unique \citep{sutton2018reinforcement,szepesvari2010algorithms}.
+
+\subsection{Implications} 
+
+Our results indicate hardness on reinforcement learning \citep{papadimitriou1987complexity,littman1995complexity,thelen1998dynamic} and revisions of existing reinforcement learning algorithms. It is worth noting that similar patterns of fractal and self-similarity have been observed empirically, for example in \citet{chockalingam2019role} for the Mountain Car problem. With these characterizations being observed in simple problems like Mountain Car and the Gambler's problem, our results are expected to be generalized to a variety of reinforcement learning settings.
+
+The first implication is naturally on value function approximation, which is a developed topic in reinforcement learning \citep{lee2008makes,lusena2001nonapproximability}. By the fractal property of the optimal value function, that representation of such function must be inexact \citep{tikhonov2014rate}. When discretization is used for value function representation, the approximation error is at least $\OO(1/N)$, where $N$ is the number of bins. 
+
+\begin{namedtheorem}[Proposition \ref{thm:approxdisc}]
+When $N\in \mathbb{N}^+$, $N\ge 4$ is a power of $2$, let $\bar v_1(s)$ be piecewise constant on any of the intervals $s\in (k/N, (k+1)/N)$, $k=0,\dots,N-1$, then
+\[
+\int_s \left| v(s)-\bar v_1(s) \right| ds \geq \frac{1}{N}\frac{(2-\gamma)(1-p)\gamma}{1-p\gamma} + o(\frac{1}{N}).
+\]
+\end{namedtheorem}
+Alternatively, when a subclass of $L$-Lipschitz continuous functions is used to represent $v(s)$, this error is then at least $(1/L)\cdot (1-p)^2\gamma^2(1-\gamma)^2/(4-4p\gamma)$ by the discontinuity of $v(s)$ (Proposition \ref{thm:approxlip}). It is worth remarking that despite this specific lower bound diminishes when $\gamma$ is $1$, the approximation error is nonzero for an arbitrarily large $L$ under $\gamma=1$, as the derivative of $v(s)$ can be infinite (Fact \ref{thm:derivative}). 
+
+Notably, neural networks are within this family of functions, where the Lipschitz constant $L$ is determined by the network architecture. By the proposition, it is not possible to obtain the optimal value function when a neural network is used, albeit the universal approximation theorem \citep{csaji2001approximation,dovgoshey2006cantor,levesley2007problem}.
+
+The second implication is by Theorem \ref{valuefunction} and Fact \ref{thm:derivative} that the derivative of $v(s)$ is
+\begin{equation*}
+\lim_{\Delta s \rightarrow 0^+}\frac{v(s+\Delta s)}{\Delta s} = 0, \ \ \lim_{\Delta s \rightarrow 0^-}\frac{v(s+\Delta s)}{\Delta s} =
+\begin{cases}
++\infty, & \text{if}\ s=0 \ \text{or} \ s\in\bigcup_{\ell\geq 1} G_\ell, \\
+0, & \text{otherwise}.
+\end{cases}
+\end{equation*}
+This imposes that the value function's derivative must not be exactly obtained, as it is $0$ almost everywhere, except on the dyadic rationals $G_\ell$, where it has a left derivative of infinity and a right derivative of $0$. Algorithms relying on $\partial v(s)/\partial s$ and $\partial Q(s,a)/\partial a$ \citep{lillicrap2015continuous,gu2017interpolated,heess2015learning,fairbank2012value,fairbank2008reinforcement,pan2019hill,lim2018actor}, where $Q(s,a)$ is the action-value function \citep{sutton2018reinforcement}, can suffer from the estimation error or even have unpredictable behavior. 
+
+In practice, the boolean implementation of float numbers can further increase this error, as all points $s$ implemented are in $G_\ell$ for some $\ell$. A precise evaluation requires all these derivatives to be infinity when a Lebesgue derivative is used (the average of left and right derivatives), which cannot be obtained in a computer system. 
+
+The third implication is on Q-learning \citep{mnih2015human,watkins1992q,baird1995residual}, by Theorem \ref{allsolutionbellman} and its supporting lemmas. It is proved that when $\gamma=1$, Q-learning has multiple converging points, as the Bellman equation has multiple solutions, namely $v(s)$ and
+\[f(0)=0, f(1)=1,\ \text{and}\ f(s)=C \ \text{for all}\ 0<s<1, \]
+for some constant $C\geq 1$.
+Therefore, even when the Q-learning algorithm converges, it may not converge to the optimal value function $v(s)$. In fact, as the solution can be either the ground truth of the optimal value function, or a large constant function, it is easier to approximate a constant function than the optimal value function, resulting in a relatively lower Bellman error when converging to the large constant. 
+
+This challenges Q-learning under $\gamma=1$ when the return (cumulative reward) is unbiased. Though the artificial $\gamma$ is originally introduced to prevent the return from diverging, it can be also necessary to prevent the algorithm from converging to a large constant in Q-learning, which is not desired.
+
+\section{Discrete Case}
+
+The analysis of the discrete case of the Gambler's problem will give an exact solution. It will also explain the reason the plot on the book has a strange pattern of repeating spurious points.
+
+The discrete case can be described by the following MDP: The state space is $\{0, \dots, N\}$; the action space at $n$ is $\cA(n)=\{0<a\leq\min\{n, N-n\}\}$; the transition from state $n$ and action $a$ is $n-a$ and $n+a$ with probability $p$ and $1-p$, respectively; the reward function is $r(N)=1$ and $r(n)=0$ for $0\leq n \leq N-1$. The MDP terminates at $n\in\{0,N\}$. We use a time-discount factor of $0\leq \gamma\leq 1$, where the agent receives $\gamma^Tr(N)$ rewards if the agent reaches the state $n=N$ at time $T$.
+
+Let $z(n)$, $n\in\cN, 0\leq n\leq N$, be the value function. The exact solution below of the discrete case is relying on Theorem \ref{valuefunction}, our main theorem which describes the exact solution of the continuous case. This theorem will be discussed and proved later in Section \ref{sec:abc1}.
+
+\begin{proposition}
+\label{discretevaluefunction}
+Let $0\leq\gamma\leq 1$ and $p>0.5$. The optimal value function $z(n)$ is $v(n/N)$ in the discrete setting of the Gambler's problem, where $v(\cdot)$ is the optimal value function under the continuous case defined in Theorem \ref{valuefunction}.
+\end{proposition}
+
+\begin{proof}
+We first verify the Bellman equation. 
+By the definition of $v(\cdot)$ we have
+\begin{align*}
+z(n) & = v(n/N)\\
+& = \max_{0<a\leq \min\{n/N, 1-n/N\}}\ p\gamma\ v(n/N-a)+(1-p)\gamma\ v(n/N+a)\\
+& \geq \max_{0<a\leq \min\{n/N, 1-n/N\}, Na\in \mathbb{N}}\ p\gamma\ v(n/N-a)+(1-p)\gamma\ v(n/N+a)\\
+& = \max_{0<a\leq \min\{n, N-n\}, a\in \mathbb{N}}\ p\gamma\ z({n-a})+(1-p)\gamma\ z({n+a}).
+\end{align*}
+Meanwhile let $a^\ast=\min\{n, N-n\}$, Corollary \ref{blackwell} suggests that
+\begin{align*}
+z(n) & = v(n/N)\\
+& = p\gamma\ v((n-a^\ast)/N)+(1-p)\gamma\ v((n+a^\ast)/N)\\
+& = p\gamma\ z({n-a^\ast})+(1-p)\gamma\ v({n+a^\ast})\\
+& \leq \max_{0<a\leq \min\{n, N-n\}, a\in \mathbb{N}}\ p\gamma\ z({n-a})+(1-p)\gamma\ z({n+a}).
+\end{align*}
+Therefore $z(n)=\max_{0<a\leq \min\{n, N-n\}, a\in \mathbb{N}}\ p\gamma\ z({n-a})+(1-p)\gamma\ z({n+a})$ as desired.
+
+We then show that $z(n)=v(n/N)$ is the unique function that satisfies the Bellman equation. The proof is similar to the proof of Lemma \ref{unique}, but the arguments will be relatively easier, as both the state space and the action space are discrete. Let $f(n)$ also satisfy the Bellman equation. We desire to prove that $f(n)$ is identical to $z(n)$.
+
+Define $\delta=\max_{1\leq n\leq N-1}\ f(n)-z(n)$. This maximum must exist as there are finitely many states. Then define the non-empty set $S=\{n\mid f(n)-z(n)=\delta, 1\leq n \leq N-1\}$. 
+For any ${n^\prime}\in S$ and $a^\prime\in\argmax_{1\leq n \leq \min\{n^\prime, N-n^\prime\}}p\gamma\ f(n^\prime-a)+(1-p)\gamma\ f(n^\prime+a)$, we have
+\begin{align*}
+f(n^\prime) &= p\gamma\ f(n^\prime-a^\prime)+(1-p)\gamma\ f(n^\prime+a^\prime) \\
+&\stackrel{(\varheart)}{\leq} p\gamma\ (z(n^\prime-a^\prime)+\delta)+(1-p)\gamma\ (z(n^\prime+a^\prime)+\delta) \\
+&\leq p\gamma\ z(n^\prime-a^\prime)+(1-p)\gamma\ z(n^\prime+a^\prime)+\delta \\
+&\leq z(n^\prime) + \delta \\
+&= f(n^\prime).
+\end{align*}
+As the equality holds, by the equality of $(\varheart)$ we have $n^\prime-a^\prime\in S$ and $n^\prime+a^\prime\in S$.
+
+Now we specify some $n_0\in S$ and $a_0\in\argmax_{1\leq n \leq \min\{n_0, N-n_0\}}p\gamma\ f(n_0-a)+(1-p)\gamma\ f(n_0+a)$. Then, we have $n_0-a_0\in S$. Denote $n_1=n_0-a_0$ and, recursively, $a_t\in\argmax_{1\leq n \leq \min\{n_t, N-n_t\}}p\gamma\ f(n_t-a)+(1-p)\gamma\ f(n_t+a)$ and $n_{t+1}=n_t-a_t$, $t=1,2,\dots$; Since $a_t\geq 1$ and $n_t\in\cN$, there must exist a $T$ such that $n_T=0$. Therefore, $\delta=f(n_T)-z(n_T)=0$.
+
+By the same argument $\bar\delta=\max_{1\leq n\leq N-1}\ z(n)-f(n)=0$. Therefore, $z(n)$ and $f(n)$ are identical, as desired.
+
+As $z(n)$ is the unique function that satisfies the Bellman equation, it is the optimal value function of the problem. 
+\end{proof}
+
+Proposition \ref{discretevaluefunction} indicates the discretization of the problems yields the discrete, exact evaluation of the continuous value function at $0, 1/N, \dots, 1$. If we omit the learning error, the plots on the book and by the open source implementation \citep{zhang2019python} are the evaluation of the fractal $v(s)$ at $0, 1/N, \dots, 1$. This explains the strange appearance of the curve in the figures. 
+
+
+\section{Setting}
+
+We formulate the continuous Gambler's problem as a Markov decision process (MDP) with the state space $\cS=[0,1]$ and the action space $\cA(s)=(0,\min\set{s,1-s}]$, $s\in (0,1)$.
+Here $s\in \cS$ represents the capital the gambler currently possesses and the action $a\in\cA(s)$ denotes the amount of bet. 
+Without loss of generality, we have assumed that the bet amount should be less than or equal to $1-s$ to avoid the total capital to be more than $1$.
+The consecutive state $s'$ transits to $s-a$ and $s+a$ with probability $p\geq 0.5$ and $1-p$ respectively. The process terminates if $s\in\set{0,1}$ and the agent receives an episodic reward $r=s$ at the terminal state. Let $0\leq \gamma\leq 1$ be the discount factor.
+
+Let $f:[0,1]\to\RR$ be a real function. For $f(s)$ to be the optimal value function, the Bellman equation for the non-terminal and terminal states are 
+\[
+f(s) = \max_{a\in \cA(s)} p\gamma\ f(s-a) + (1-p)\gamma\ f(s+a)\ \  \text{for any}\ \ s\in (0,1), \tag{{A}}
+\]
+and
+\[
+f(0)=0,\ \ f(1)=1. \tag{{B}}
+\]
+
+It can be shown (later in Lemma \ref{unique} and Lemma \ref{thm:monotonicity}) that a function satisfying (AB) must be lower bounded by $0$. A reasonable upper bound is $1$, as the value function is the probability of the gambler eventually reaching the target, which must be between $0$ and $1$. It is also reasonable to assume the continuity of the value function at $s=0$. Otherwise an arbitrary small amount of starting capital will have at least a constant probability of reaching the target $1$.\footnote{This continuity assumption is only for a better organization of the settings. The Gambler's problem can be solved without this assumption by solving (AB), as described in Section \ref{sec:solvingbellman}.} Consequently the expectation of capital at the end of the game is greater than the starting capital, which contradicts $p\geq 0.5$. The bounded version (X) of the problem leads to the optimal value function.
+\[
+0\leq\gamma\leq 1,\ p>0.5,\ f(s)\leq 1\ \text{for all}\ s,\ f(s) \ \text{is continuous on} \ s=0. \tag{{X}}
+\]
+Respectively, the unbounded version (Y) of the problem leads to the solutions of the Bellman equation.
+\[
+0\leq\gamma\leq 1,\ p>0.5 \tag{{Y}}.
+\]
+The results extend for $p=0.5$ in general, except an extreme corner case of $\gamma=1$, $p=0.5$, where the monotonicity in Lemma \ref{thm:monotonicity} will not apply. This case ({Z}) involves arguments over measurability and the belief of Axiom of Choice, which we will discuss at the end of Section \ref{sec:analysis}.
+\[
+\gamma=1,\ p=0.5,\ f(s) \ \text{is unbounded} \tag{{Z}}.
+\]
+
+We are mostly interested in two settings: the first setting ({ABX}) and its solution in Theorem \ref{valuefunction}, discuss a set of necessary conditions of $f(s)$ being the optimal value function of the Gambler's problem. As we show later the solution of ({ABX}) is unique, this solution must be the optimal value function. The second setting ({ABY}) and its solutions in Proposition \ref{uniquegammalessthanone} and Theorem \ref{allsolutionbellman} discuss all the functions that satisfy the Bellman equation. These functions are the optimal points that value iteration and Q-learning algorithms may converge to. ({ABZ}) is interestingly connected to some foundations of mathematics like the belief of axioms, and is discussed in Theorem \ref{thm:negativef}.
+
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{Analysis of the Gambler's Problem}
+\label{sec:abc1}
+
+In this section we show that $v(s)$ defined below is a unique solution of the system ({ABX}). Since the optimal state-value function must satisfy the system ({ABX}), $v(s)$ is the optimal state-value function of the Gambler's problem. This statement is rigorously proved in Theorem \ref{valuefunction}.
+
+Let $0\leq\gamma\leq 1$ and $p> 0.5$. We define $v(1)=1$, and 
+\begin{equation*}
+v(s)=\sum_{i=1}^\infty (1-p)\gamma^i b_i\prod_{j=1}^{i-1}((1-p)+(2p-1)b_j) \tag{\ref{eqn:vs}}
+\end{equation*}
+for $0\leq s<1$, where $s={0.b_1b_2\dots b_\ell\dots}_{(2)}$ is the binary representation of $s$. It is obvious that the series converges for any $0\leq s<1$.
+
+The notation $v(s)$ will always refer to the definition above in this paper and will not change with the context. We use the notation $f(s)$ to denote a general function or a general solution of a system, which varies according to the required properties.
+
+Let the set of dyadic rationals be
+\begin{equation}
+G_\ell=\set{k2^{-\ell}\mid k\in \set{1,\dots,2^\ell-1}}
+\end{equation}
+such that $G_\ell$ is the set of numbers that can be represented by at most $\ell$ binary bits. 
+The general idea to verify the Bellman equation (AB) is to prove 
+\[
+v(s)=\max_{a\in G_{\ell}\cap \cA(s)}\ (1-p)\gamma\ v(s+a)+p\gamma\ v(s-a)  \text{ for any } s \in G_{\ell}
+\] 
+by induction on $\ell=1,2,\dots$, and generalize this optimality to the entire interval $s\in (0,1)$. 
+
+It then suffices to show the uniqueness of $v(s)$ that solves the system ({ABX}). This is proved by assuming the existence of a solution $f(s)$ and then deriving the identity $f(s)=v(s)$, conditioning on the Bellman property that $v(s)$ satisfies ({AB}). For presentation purposes, the uniqueness is discussed first.
+
+
+As an overview, Lemma \ref{unique}, \ref{thm:monotonicity}, and \ref{thm:continuity} describe the characterizations of the system ({ABX}). Claim \ref{claim:vdifference}, Lemma \ref{newa}, \ref{induction}, and \ref{continuous} describe the properties of $v(s)$.
+
+\begin{lemma}[Uniqueness under existence]
+\label{unique}
+Let $f(s): [0,1]\to \RR$ be a real function. If $v(s)$ and $f(s)$ both satisfy ({ABX}), then $v(s)=f(s)$ for all $0\leq s \leq 1$.
+\end{lemma}
+
+\begin{proof}
+We prove the lemma by contradiction. Assume that $f(s)$ is also a solution of the system such that $f(s)$ is not identical with $v(s)$ at some $s$. Define $\delta=\sup_{0<s<1} f(s)-v(s)$. As $f(2^{-1})\geq (1-p)\gamma\ f(1)+p\gamma\ f(0)=(1-p)\gamma=v(2^{-1})$, we have $\delta\geq 0$. 
+
+We show that $\delta$ cannot be zero by contradiction. If $\delta$ is zero, as $v(s)$ and $f(s)$ are not identical, there exists an $s$ such that $f(s)<v(s)$. In this case, let $\bar\delta=\sup_{0<s<1} v(s)-f(s)$. Then we choose $\bar\epsilon=(1-p\gamma)\bar\delta$ and specify $s_0$ such that $v(s_0)-f(s_0)>\bar\delta-\bar\epsilon$. Let $a_0=\min\{s_0, 1-s_0\}$, we have 
+\begin{align*}
+v(s_0) &= (1-p)\gamma\ v(s_0-a_0)+p\gamma\ v(s_0+a_0) \\
+& \leq (1-p)\gamma\ f(s_0-a_0)+p\gamma\ f(s_0+a_0)+p\gamma\bar\delta \\
+& \leq f(s_0)+p\gamma\bar\delta.
+\end{align*}
+The above inequality is due to the fact that at least one of $s_0-a_0=0$ and $s_0+a_0=1$ must hold. Thus at least one of $v(s_0-a_0)-f(s_0-a_0)$ and $v(s_0+a_0)-f(s_0+a_0)$ must be zero. The inequality contradicts $v(s_0)-f(s_0)>\bar\delta-\bar\epsilon$. Hence, $\delta$ cannot be zero. We discuss under $\delta>0$ for the rest of the proof.
+
+\textbf{Case (\Romannum{1}): $\bm{\gamma<1}$.} In this case, we choose $\epsilon=(1-\gamma)\delta$. By the definition of $\delta$ we specify $s_0$ such that $f(s_0)>v(s_0)+\delta-\epsilon$. In fact, the existence of $s_0$ is by the condition $\gamma<1$. Let $a_0\in\argmax_{a\in\cA(s_0)}p\gamma\  f(s_0-a)+(1-p)\gamma\ f(s_0+a)$. We have
+\begin{align*}
+f(s_0) & = p\gamma\ f(s_0-a_0)+(1-p)\gamma\ f(s_0+a_0) \\
+& \leq p\gamma\ (v(s_0-a_0)+\delta)+(1-p)\gamma\ (v(s_0+a_0)+\delta) \\
+& = p\gamma\ v(s_0-a_0)+(1-p)\gamma\ v(s_0+a_0)+\gamma\delta \\
+& \leq v(s_0) + \delta-\epsilon.
+\end{align*}
+The inequality $f(s_0)\leq v(s_0) + \delta-\epsilon$ contradicts $f(s_0)>v(s_0)+\delta-\epsilon$. Hence, the lemma is proved for the case $\gamma<1$. 
+
+\textbf{Case (\Romannum{2}): $\bm{\gamma=1}$.}
+When there exists an $s^\prime$ such that $f(s^\prime)-v(s^\prime)=\delta$, we show the contradiction. Let $S=\{s|f(s)-v(s)=\delta, 0<s<1\}\neq \varnothing$. For any $s^\prime\in S$ and $a^\prime\in\argmax_{a\in\cA(s^\prime)}p\gamma\ f(s^\prime-a)+(1-p)\gamma\ f(s^\prime+a)$, we have
+\begin{align*}
+f(s^\prime) &= p\gamma\ f(s^\prime-a^\prime)+(1-p)\gamma\ f(s^\prime+a^\prime) \\
+&= p\ f(s^\prime-a^\prime)+(1-p)\ f(s^\prime+a^\prime) \\
+&\stackrel{(\varheart)}{\leq} p\ (v(s^\prime-a^\prime)+\delta)+(1-p)\ (v(s^\prime+a^\prime)+\delta) \\
+& = p\ v(s^\prime-a^\prime)+(1-p)\ v(s^\prime+a^\prime)+\delta \\
+& \stackrel{(\vardiamond)}{\leq} v(s^\prime) + \delta.
+\end{align*}
+Thus, the equality of $(\varheart)$ and $(\vardiamond)$ must hold. We specify $s_0\in S$, and by the equality of $(\varheart)$ we have $f(s_0-a_0) = v(s_0-a_0)+\delta$, thus $s_0-a_0\in S$. Let $s_1=s_0-a_0$, and we recursively specify an arbitrary $a_t\in\argmax_{a\in\cA(s_t)}(1-p)\gamma\ f(s_t+a)+p\gamma\ f(s_t-a)$ and $s_{t+1}=s_t-a_t$, for $t=1,2,\dots$, until $s_T=0$ for some $T$, or indefinitely if such an $s_T$ does not exist. If $s_T$ exists and the sequence $\{s_t\}$ terminates at $s_T=0$, then $f(s_T) = v(s_T)+\delta=\delta$ by $(\varheart)$, which contradicts the boundary condition $f(s_T)=f(0)=0$. 
+
+We next show the existence of $T$. 
+When there exists $t$ and $\ell$ such that $s_t\in G_\ell$, by Corollary \ref{thm:newairrational} we have $s_{t+1}\in G_\ell$ and inductively $s_{t^\prime} \in G_\ell$ for all $t^\prime\geq t$. 
+Consider that $\{s_t\}$ is strictly decreasing and there are finitely many elements in $G_\ell$, $\{s_t\}$ cannot be infinite.
+Otherwise $s_t\notin G_\ell$ for any $t,\ell \geq 1$. Then by Corollary \ref{thm:policyirrational} the uniqueness of the optimal action we have $s_{t+1}=2s_t-1$ if $s_t\geq \frac{1}{2}$, and $s_{t+1}=0$ if $s_t\leq \frac{1}{2}$. 
+After finitely many steps of $s_{t+1}=2s_t-1$ we will have $s_t=0$ for some $t$.
+
+It amounts to show the existence of $s^\prime$ such that $f(s^\prime)-v(s^\prime)=\delta$. By Lemma \ref{continuous} we have the continuity of $v(s)$. Lemma \ref{thm:monotonicity} indicates the monotonicity of $f(s)$ on $[0,1)$. The upper bound $f(s)\leq f(1)$ in ({X}) extends this monotonicity to the closed interval $[0,1]$. Then by Lemma \ref{thm:continuity} we have the continuity of $f(s)$ on $(0,1]$. By ({X}) this extends to $[0,1]$. Thus we have the continuity of $f(s)-v(s)$, and consequently the existence of $\max_{0\leq s^\prime\leq 1} f(s^\prime)-v(s^\prime)$. As $f(0)-v(0)=f(1)-v(1)=0$ and $\delta>0$, this maximum must be attained at some $s^\prime\in(0,1)$. Therefore we have the existence of $\max_{0< s^\prime< 1} f(s^\prime)-v(s^\prime)$, which concludes the lemma.
+\end{proof}
+
+\begin{lemma}[Monotonicity]
+\label{thm:monotonicity}
+Let $\gamma=1$ and $p>0.5$. If a real function $f(s)$ satisfies ({AB}) then $f(s)$ is monotonically increasing on $[0,1)$.
+\end{lemma}
+
+\begin{proof}
+We prove the claim by contradiction. Assume that there exists $s_1<s_2$ where $f(s_1)>f(s_2)$. Denote $\Delta s=s_2-s_1>0$ and $\Delta f=f(s_1)-f(s_2)>0$. By induction we have
+\[ f(s_2-2^{-\ell}\Delta s) - f(s_2) \geq p^\ell \Delta f \]
+for an arbitrary integer $\ell\geq 1$.
+Then when $s_2+2^{-\ell}\Delta s < 1$, by $f(s_2) \geq pf(s_2-2^{-\ell}\Delta s) + (1-p)f(s_2+2^{-\ell}\Delta s)$,
+\begin{align*}
+f(s_2+2^{-\ell}\Delta s) & \leq \frac{1}{1-p}f(s_2) - \frac{p}{1-p}f(s_2-2^{-\ell}\Delta s)\\
+& = f(s_2) + \frac{p}{1-p}(f(s_2)-f(s_2-2^{-\ell}\Delta s))\\
+& \leq f(s_2) + f(s_2)-f(s_2-2^{-\ell}\Delta s).
+\end{align*}
+This concludes $f(s_2+2^{-\ell}\Delta s) - f(s_2) \leq f(s_2)-f(s_2-2^{-\ell}\Delta s)$. By induction we have \[f(s_2+k2^{-\ell}\Delta s) - f(s_2+(k-1)2^{-\ell}\Delta s) \leq f(s_2+(k-1)2^{-\ell}\Delta s)-f(s_2-(k-2)2^{-\ell}\Delta s)\] 
+for $k=1,2,\dots$, when $s_2+k2^{-\ell}\Delta s < 1$. We sum this inequality over $k$ and get
+\begin{align*}
+f(s_2+k2^{-\ell}\Delta s) - f(s_2) & \leq k(f(s_2)-f(s_2-2^{-\ell}\Delta s))\\
+& \leq -kp^\ell\Delta f.
+\end{align*}
+By letting $k=2^{n}$, $\ell=n+n_0$, $s_2+2^{-n_0}\Delta s<1$, and $n\rightarrow +\infty$, we have $s_2+k2^{-\ell}\Delta s < 1$ and $-kp^\ell\Delta f\rightarrow -\infty$. The arbitrarity of $n$ indicates the non-existence of $f(s_2+k2^{-\ell}\Delta s)$, which contradicts the existence of the solution $f(\cdot)$. 
+\end{proof}
+
+\begin{lemma}[Continuity]
+\label{thm:continuity}
+Let $\gamma=1$ and $p\geq 0.5$. If a real function $f(s)$ is monotonically increasing on $(0,1]$ and it satisfies ({AB}), then $f(s)$ is continuous on $(0,1]$.
+\end{lemma}
+
+\begin{proof}
+We show the continuity by contradiction. Suppose that there exists a point $s^\prime\in (0,1)$ such that $f(s)$ is discontinuous at $s^\prime$, then there exists $\epsilon,\delta>0$ where $f(s'+\epsilon_1)-f(s'-\epsilon_2)\geq \delta$ for any $\epsilon_1+\epsilon_2=\epsilon$.
+Then, by
+\[
+f(s^\prime-\frac{1}{4}\epsilon) \geq p\ f(s^\prime-\epsilon)+(1-p)\ f(s^\prime+\frac{2}{4}\epsilon),
+\]
+we have
+\[
+f(s^\prime-\frac{1}{4}\epsilon)-f(s^\prime-\epsilon) \geq (1-p)\delta/p.
+\]
+Similarly, for $k=1,2,\dots$,
+\[
+f(s^\prime-\frac{1}{4^k}\epsilon) - f(s^\prime-\frac{1}{4^{k-1}}\epsilon) \geq   (1-p)\delta/p.
+\]
+Let $k>((1-p)\delta/p)^{-1}$, we have $f(s^\prime-\frac{1}{4^k}\epsilon)-f(s^\prime-\epsilon)\geq 1$. This contradicts with the fact that $f(s)$ is bounded between $0$ and $1$. The continuity follows on $(0,1)$.
+
+If the function is discontinuous on $s=1$, then there exists $\epsilon, \delta>0$ where $f(1)-f(1-\epsilon_1)\geq \delta$ for any $\epsilon_1\leq\epsilon$. The same argument holds by observing 
+\[
+f(1-\frac{1}{2^{k-1}}\epsilon) \geq p\ f(1-\frac{1}{2^k}\epsilon) \geq f(1).
+\]
+The lemma follows.
+\end{proof}
+
+When $f(s)$ is only required to be monotonically increasing on $(0,1)$, the continuity still holds but only on $(0,1)$.
+
+For simplicity define
+\begin{align}
+Q_v(s,a) = p \gamma \ v(s-a) + (1-p) \gamma \ v(s+a)  .
+\end{align}
+As $v(s)$ is the optimal state-value function (to be proved later in Theorem \ref{valuefunction}), $Q_v(s,a)$ is in fact the optimal action-value function \citep{sutton2018reinforcement,szepesvari2010algorithms}.
+
+Recall that $G_\ell$ is the set of dyadic rationals $\{k2^{-\ell}\mid k\in \{1,\dots,2^\ell-1\}\}$.
+
+\begin{claim}
+\label{claim:vdifference}
+For any $s={0.b_1 b_2 \dots b_\ell}_{(2)} \in G_{\ell} \cup \set{0}$,
+\begin{align}
+\label{diffnewbit}
+v\bracket{s+2^{-(\ell+1)}} - v(s) = (1-p)\gamma^{\ell+1}\prod_{j=1}^{\ell}\bracket{(1-p)+(2p-1)b_j} \le (1-p) p^\ell \gamma^{\ell+1} .
+\end{align}
+
+For any $s={0.b_1 b_2 \dots b_k}_{(2)} \in G_{\ell}$ with $b_k=1$ and $1 \le k\le \ell$,
+\begin{align}
+\label{diffexistbit}
+v(s) - v\bracket{s-2^{-(\ell+1)}} \ge p^{\ell-k+1}(1-p)\gamma^{\ell+1}\prod_{j=1}^{k-1}\bracket{(1-p)+(2p-1)b_j} .
+\end{align}
+Also, 
+\begin{equation}
+\label{diffat1}
+v(1) - v\bracket{1-2^{-(\ell+1)}} \ge p^{\ell+1} \gamma^{\ell+1} .
+\end{equation}
+The equality of \eqref{diffexistbit} and \eqref{diffat1} holds if and only if $\gamma=1$.
+\end{claim}
+
+\begin{proof}
+Inequality \eqref{diffnewbit} and \eqref{diffat1} are obtained by the definition of $v(s)$. To derive inequality \eqref{diffexistbit}, denote $k = \max\set{1\le i \le \ell: b_i=0}$ and then 
+\begin{align*}
+& v(s) - v\bracket{s-2^{-(\ell+1)}} \\ 
+=\ & (1-p) \gamma^{k}\prod_{j=1}^{k-1}((1-p)+(2p-1)b_j) \\
+& - \sum_{i=k+1}^{\ell+1} (1-p) \gamma^i \cdot 1 \cdot \prod_{j=1}^{k-1}((1-p)+(2p-1)b_j) \cdot (1-p) \cdot \prod_{j=k+1}^{i-1} p \\
+=\ & (1-p) \gamma^{k} \prod_{j=1}^{k-1}((1-p)+(2p-1)b_j) \cdot \bracket{1 - (1-p)\sum_{i=k+1}^{\ell+1} \gamma^{i-k} p^{i-k-1}}\\
+=\ & (1-p) \gamma^{k} \prod_{j=1}^{k-1}((1-p)+(2p-1)b_j) \cdot \bracket{1 - (1-p)\gamma \frac{1-(\gamma p)^{\ell-k+1}}{1-\gamma p}}\\
+\ge\ & (1-p) \gamma^{k} \prod_{j=1}^{k-1}((1-p)+(2p-1)b_j) \cdot \bracket{1 - \bracket{1-(\gamma p)^{\ell-k+1}} }\\
+=\ & (1-p) p^{\ell-k+1} \gamma^{\ell+1} \prod_{j=1}^{k-1}((1-p)+(2p-1)b_j).
+\end{align*}
+The arguments are due to the fact that $s-2^{-(\ell+1)} = {0.b_1 b_2 \dots b_{k-1} 0_k 1_{k+1} \dots 1_{\ell+1}}_{(2)}$ and the inequality is by $(1-p)\gamma \le 1-\gamma p$.
+\end{proof}
+
+\begin{lemma}
+\label{newa}
+Let $\ell\geq 1, 0<\gamma \le 1, 0.5 \le p <1$.    
+For any $s\in G_{\ell}$, 
+\begin{align*}
+\max_{a\in (G_{\ell+1}\setminus G_{\ell})\cap \cA(s)}\ Q_v(s,a) \le \max_{a\in G_{\ell}\cap \cA(s)}\ Q_v(s,a) .
+\end{align*}
+\end{lemma}
+
+\begin{proof}
+\textbf{Case (\Romannum{1}):} First we prove that for $\ell>1$, any $s\in G_\ell$, $a\in G_\ell \cap \cA(s)$, $a>2^{-\ell}$, and $s+a<1$,
+\begin{align*}
+Q_v\bracket{s,a-2^{-(\ell+1)}} \le \max\set{Q_v(s,a), Q_v\bracket{s,a-2^{-\ell}}} .
+\end{align*}
+Note that in this case, $a-2^{-(\ell+1)} \in G_{\ell+1} \cap \cA(s)$ and $a-2^{-\ell} \in G_{\ell} \cap \cA(s)$.
+
+Let $s-a={0.c_1 c_2 \dots c_\ell}_{(2)} = {0.c_1 c_2 \dots 0_{k} 1_{k+1} \dots 1_{\ell}}_{(2)}$, where $k = \max\set{1\le i \le \ell: c_i=0}$ is the index of the last $0$ bit in $s-a$. Such $k$ must exist since $0 \le s-a \le 1 - 3\times 2^{-\ell}<1$. 
+Similarly, let $s+a = {0.d_1 d_2\dots d_{\ell}}_{(2)} = {0.d_1 d_2 \dots 1_{k'}}_{(2)}$ where $k'= \max\set{1\le i \le \ell: d_i=1}$ is the index of the last $1$ bit in $s+a$. Such $k'$ must exist since $3\times 2^{-\ell} \le s+a <1$. Also, $s+a-2^{-(\ell+1)} = {0.d_1 d_2 \dots 0_{k'}1_{k'+1}\dots 1_{\ell+1}}_{(2)}$. 
+
+To prove $Q_v\bracket{s,a-2^{-(\ell+1)}} \le Q_v(s,a)$, it is equivalent to proving
+\begin{align*}
+v(s+a) - v\bracket{s+a-2^{-(\ell+1)}} \ge \frac{p}{1-p} \bracket{v\bracket{s-a+2^{-(\ell+1)}} - v(s-a)} .
+\end{align*}
+Then by applying inequality \eqref{diffexistbit}, \eqref{diffat1} and inequality \eqref{diffnewbit} in Claim \ref{claim:vdifference} on the LHS and RHS respectively, it suffices to prove
+\begin{align*}
+p^{\ell-k'}(1-p)\prod_{j=1}^{k'-1} ((1-p)+(2p-1)d_j) &\ge \prod_{j=1}^\ell ((1-p)+(2p-1)c_j) \\
+&= p^{\ell-k}(1-p) \prod_{j=1}^{k-1} ((1-p)+(2p-1)c_j) .
+\end{align*}
+Let $M_c = c_1 + \dots + c_{k-1}, M_d = d_1 + \dots + d_{k'-1}$ be the number of $1$s in $\set{c_1, \ldots, c_{k}}, \set{d_1, \ldots, d_{k'}}$ respectively. Then $Q_v\bracket{s,a-2^{-(\ell+1)}} \le Q_v(s,a)$ holds when $p=0.5$ or $p> 0.5, M_c + k \ge M_b + k'$.
+
+To prove $Q_v\bracket{s,a-2^{-(\ell+1)}} \le Q_v\bracket{s,a-2^{-\ell}}$, it is equivalent to proving
+\begin{align*}
+    v\bracket{s-a+2^{-\ell}} - v\bracket{s-a+2^{-(\ell+1)}} \ge \frac{1-p}{p} \bracket{v\bracket{s+a-2^{-(\ell+1)}} - v\bracket{s+a-2^{-\ell}} }  .
+\end{align*}
+Note that $s-a+2^{-\ell} = {0.c_1 c_2 \dots 1_{k}}_{(2)}$ and $s+a-2^{-\ell} = {0.d_1 d_2 \dots 0_{k'} 1_{k'+1} \dots 1_{\ell}}_{(2)}$. Then by inequality \eqref{diffexistbit}, \eqref{diffat1} and inequality \eqref{diffnewbit} on the LHS and RHS respectively, it suffices to prove
+\begin{align*}
+    p^{\ell-k+2} \prod_{j=1}^{k-1} ((1-p)+(2p-1)c_j) \ge (1-p)^2 p^{\ell-k'} \prod_{j=1}^{k'-1} ((1-p)+(2p-1)d_j) .
+\end{align*}
+Then $Q_v\bracket{s,a-2^{-(\ell+1)}} \le Q_v\bracket{s,a-2^{-\ell}}$ holds when $p=0.5$ or $p> 0.5, M_c+k'+2\ge M_d+k$. 
+
+As at least one of $M_c+k'+1 \geq M_d+k$ and $M_d + k \ge M_c + k' + 1$ holds, thus $Q_v\bracket{s,a-2^{-(\ell+1)}} < \max\set{Q_v(s,a), Q_v\bracket{s,a-2^{-\ell}}}$.
+
+We cover two corner cases for the completeness of the proof.
+
+\textbf{Case (\Romannum{2}):} Next we prove for $\ell \ge 1$, any $s\in G_\ell$, $a\in G_\ell \cap \cA(s)$ and $s+a=1$,
+\begin{align*}
+    Q_v\bracket{s,a-2^{-(\ell+1)}} \le Q_v(s,a) .
+\end{align*}
+Similar to above, it is equivalent prove
+\begin{align*}
+    v(1) - v\bracket{1-2^{-(\ell+1)}} \ge \frac{p}{1-p} \bracket{v\bracket{s-a+2^{-(\ell+1)}} - v(s-a)} .
+\end{align*}
+Note that by Claim \ref{claim:vdifference},
+\begin{align*}
+    v(1) - v\bracket{1-2^{-(\ell+1)}} &\ge p^{\ell+1} \gamma^{\ell+1} = \frac{p}{1-p} \cdot (1-p)p^\ell\gamma^{\ell+1}\\
+    &\ge \frac{p}{1-p} \bracket{v\bracket{s-a+2^{-(\ell+1)}} - v(s-a)}  ,
+\end{align*}
+which concludes the proof.
+
+\textbf{Case (\Romannum{3}):} Last we prove for $\ell > 1$, any $s\in G_{\ell}$ and $a=2^{-\ell}, s<1-2^{-\ell}$. 
+
+When $s={0.b_1 b_2 \dots 0_{m} 1_{m+1} \dots 1_{\ell}}_{(2)}$ with $1\le m < \ell$, to prove
+$Q_v\bracket{s,2^{-(\ell+1)}} \le Q_v\bracket{s,2^{-\ell}}$, it is equivalent to proving 
+\begin{align*}
+    v\bracket{s+2^{-\ell}} - v\bracket{s+2^{-(\ell+1)}} \ge \frac{p}{1-p} \bracket{v\bracket{s-a+2^{-(\ell+1)}} - v(s-a)} .
+\end{align*}
+In this case, $s+2^{-\ell} = {0.b_1 b_2 \dots 1_{m}}_{(2)}, s-2^{-\ell}={0.b_1 b_2 \dots 0_{m} 1_{m+1} \dots 1_{\ell-1}}_{(2)}$ and $M_c=M_d,k=k'=m$, thus $M_d+k\ge M_c+k'$, which concludes the proof similar to the first part of Case (\Romannum{1}).
+
+When $s={0.b_1 b_2 \dots 1_{m'} 0_{m'+1} \dots 0_{\ell}}_{(2)}$ with $1 \le m' < \ell$, let $M_b=b_1+\dots b_{m'}$. Then,
+\begin{align*}
+& Q_v\bracket{s, 2^{-m'}} - Q_v\bracket{s, 2^{-(\ell+1)}}\\ 
+=\ & (1-p)\gamma (v(s+2^{-m'})-v(s-2^{-m'})) - (1-p)\gamma (v(s)-v(s-2^{-m'}))\\
+& - (1-p)\gamma (v(s+2^{-\ell})-v(s)) - p\gamma (v(s-2^{-\ell})-v(s-2^{-m'}))\\
+\ge\ & (1-p)\gamma(p\gamma)^{M_b}((1-p)\gamma)^{m'-2-M_b}(1-p)\gamma - (1-p)\gamma (p\gamma)^{M_b} ((1-p)\gamma)^{m'-1-M_b}(1-p)\gamma \\
+& - (1-p)\gamma (p\gamma)^{M_b+1} ((1-p)\gamma)^{\ell-2-M_b} (1-p)\gamma \\
+& - p\gamma (p\gamma)^{M_b}((1-p)\gamma)^{m'-M_b}(1+(p\gamma)+\dots (p\gamma)^{\ell-m'-1})(1-p)\gamma\\
+=\ & p^{M_b}(1-p)^{m'-M_b}\gamma^{m'} - p^{M_b}(1-p)^{m'+1-M_b}\gamma^{m'+1} - p^{M_b+1}(1-p)^{\ell-M_b}\gamma^{\ell+1}\\
+& - p^{M_b+1}(1-p)^{m'+1-M_b}\gamma^{m'+2}(1-(p\gamma)^{\ell-m'})/(1-p\gamma)\\
+\ge\ & p^{M_b}(1-p)^{m'-M_b}\gamma^{m'} - p^{M_b}(1-p)^{m'+1-M_b}\gamma^{m'+1} - p^{M_b+1}(1-p)^{\ell-M_b}\gamma^{\ell+1}\\
+& - p^{M_b+1}(1-p)^{m'-M_b}\gamma^{m'+1}(1-(p\gamma)^{\ell-m'})\\
+\ge\ & - p^{M_b+1}(1-p)^{\ell-M_b}\gamma^{\ell+1} - p^{M_b+1}(1-p)^{m'-M_b}\gamma^{m'+1}(-(p\gamma)^{\ell-m'})\\
+\ge\ & 0. \tag*{\qedhere}
+\end{align*}
+\end{proof}
+
+The arguments in the proof that either $M_c+k \geq M_d+k^\prime+1$ or $M_d+k^\prime \geq M_c+k$ must hold is tight for integers $M_c$ and $M_d$. This is the case for $a\in G_{\ell+1}\setminus G_\ell$. When $a\notin G_{\ell+1}$, this sufficient condition becomes even looser. The lemma imposes $G_{\ell}$ to be the only set of possible optimal actions, given $s\in G_{\ell}$.
+
+\begin{corollary}
+\label{thm:newairrational}
+Let $\ell\geq 1$. For any $s\in G_{\ell}$, 
+\[\argmax_{a\in \cA(s)}\ Q_v(s,a) \subseteq G_{\ell}.\]
+\end{corollary}
+
+Now we verify the Bellman property on $\bigcup_{\ell \ge 1} G_{\ell}$.
+
+\begin{lemma}
+\label{induction}
+Let $\ell\geq 1$. For any $s\in G_{\ell+1}$, 
+\[\min\{s,1-s\} \in \argmax_{a\in G_{\ell+1}\cap \cA(s)}Q_v(s,a). \]
+\end{lemma}
+
+\begin{proof}
+We prove the lemma by induction on $\ell$. When $\ell=1$, it is obvious since $G_{1}$ has only one element. The base case $\ell=2$ is also immediate by exhausting $a\in\{2^{-1}, 2^{-2}\}$ for $s=2^{-1}$. Now we assume that for any $s\in G_\ell$, $\min\{s,1-s\}\in\argmax_{a\in G_\ell\cap \cA(s)}Q_v(s,a)$. We aim to prove this lemma for $\ell+1$.
+
+For $s\in G_\ell$, by Lemma~\ref{newa}, $\argmax_{a\in G_{\ell+1}\cap \cA(s)}Q_v(s,a)\subseteq G_\ell$. Then by the induction assumption, $\min\{s,1-s\}\in\argmax_{a\in G_{\ell}\cap \cA(s)}Q_v(s,a)\subseteq \argmax_{a\in G_{\ell+1}\cap \cA(s)}Q_v(s,a)$. Hence, the lemma holds for $s\in G_\ell$. We discuss under $s\in G_{\ell+1}\setminus G_\ell$ for the rest of the proof.
+
+We start with two inductive properties of $v(s)$ to reduce the problem from $s\in G_{\ell+1}$ to $s'\in G_{\ell}$, where $s'$ is either $2s$ or $2s-1$. For any $s\geq 2^{-1}$, that is, $s={0.c_1c_2\dots c_{\ell+1}}_{(2)}\in G_{\ell+1}$ with $c_1=1$,
+\begin{align*}
+v(s) &= \sum_{i=1}^\ell (1-p)\gamma^i c_i\prod_{j=1}^{i-1}((1-p)+(2p-1)c_j) \\
+&= (1-p)\gamma + \sum_{i=2}^\ell (1-p)\gamma^i c_i\prod_{j=1}^{i-1}((1-p)+(2p-1)c_j) \\
+&= (1-p)\gamma + \sum_{i=1}^{\ell-1} (1-p)\gamma^{i+1} c_{i+1}((1-p)+(2p-1)c_{1})\prod_{j=1}^{i-1}((1-p)+(2p-1)c_{j+1}) \\
+&= (1-p)\gamma + p\gamma\ v({0.c_2\dots c_{\ell+1}}_{(2)}) \\
+&= (1-p)\gamma + p\gamma\ v(2s-1).
+\end{align*}
+Similarly, for any $s< 2^{-1}$, that is, $s={0.c_1c_2\dots c_{\ell+1}}_{(2)}\in G_{\ell+1}$ with $c_1=0$,
+\begin{align*}
+v(s) & = \sum_{i=1}^{\ell-1} (1-p)^2\gamma^{i+1} c_{i+1}\prod_{j=1}^{i-1}((1-p)+(2p-1)c_{j+1}) \\
+& = (1-p)\gamma v(2s).
+\end{align*}
+
+Armed with the properties, we split the discussion into four cases $2^{-1}+2^{-2}\le s < 1$, $2^{-1} \le s < 2^{-1}+2^{-2}$, $2^{-1}-2^{-2} < s < 2^{-1}$, and $0<s \le 2^{-1}-2^{-2}$.
+
+When $s \geq 2^{-1}+2^{-2}$, As $a\leq 1-s$, we have $s-a\geq 2^{-1}$ and $s+a\geq 2^{-1}$. Hence, the first bit after the decimal of $s-a$ and $s+a$ is $1$. 
+Hence, 
+\begin{align*}
+Q_v(s,a) & = p\gamma\ v(s-a) + (1-p)\gamma\ v(s+a)\\
+& = (1-p)\gamma^2 + p\gamma\ (p\gamma\ v(2s-2a-1)) + (1-p)\gamma\ v(2s+2a-1) \\
+& = (1-p)\gamma^2 +  p\gamma\ (p\gamma\ v((2s-1)-2a) + (1-p)\gamma\ v((2s-1)+2a))\\
+& = (1-p)\gamma^2 + p\gamma\ Q_v(2s-1,2a).
+\end{align*}
+As $2s-1\in G_\ell$ and $2a\in G_\ell$, by the induction assumption the maximum of $Q_v(2s-1,2a)$ is obtained at $a=1-s$. Hence, $1-s\in\argmax_{a\in G_{\ell+1}\cap \cA(s)}Q_v(s,a)$ as desired.
+
+When $2^{-1} \le s < 2^{-1}+2^{-2}$, if $s-a\geq 2^{-1}$, then the first bit after the decimal of $s-a$ and $s+a$ is $1$ and the lemma follows the same arguments as the above case. Otherwise, if $s-a< 2^{-1}$, we have
+\begin{align*}
+Q_v(s,a) & = p\gamma\ v(s-a) + (1-p)\gamma\ v(s+a)\\ 
+& = (1-p)^2\gamma^2 + p(1-p)\gamma^2\ v(2s-2a) + p(1-p)\gamma^2\  v(2s+2a-1)\\
+& = (1-p)\gamma\ (p\gamma\ v((2s-2^{-1})-(2a-2^{-1}))+(1-p)\gamma\ v((2s-2^{-1})+(2a-2^{-1}))) \\
+& \quad + (1-p)(2p-1)\gamma^2\ v(2s+2a-1) + (1-p)^2\gamma^2\\
+& = (1-p)\gamma\ Q_v(2s-2^{-1},2a-2^{-1})+ (1-p)(2p-1)\gamma^2\ v(2s+2a-1) + (1-p)^2\gamma^2.
+\end{align*}
+As $2s-2^{-1}\in G_\ell$ and $2a-2^{-1}\in G_\ell$ whenever $l\geq 2$, by the induction assumption $Q_v(2s-2^{-1},2a-2^{-1})$ obtains its maximum at $a=1-s$. By Claim \ref{claim:vdifference}, $v(s)$ is monotonically increasing on $G_{\ell}$ for any $\ell\ge 2$. Hence, $v(2s+2a-1)$ obtains the maximum at the maximum feasible $a$, which is $a=1-s$. Since both terms take their respective maximum at $a=1-s$, we conclude that $1-s\in\argmax_{a\in G_{\ell+1}\cap \cA(s)}Q_v(s,a)$ as desired. 
+
+The other two cases, $2^{-1}-2^{-2} < s < 2^{-1}$ and $0<s \le 2^{-1}-2^{-2}$, follow similar arguments. The lemma follows.
+\end{proof}
+
+\begin{lemma}
+\label{continuous}
+Both $v(s)$ and $v^\prime(s)=\max_{a\in\cA(s)} Q_v(s,a)$ are continuous at $s$ if there does not exist an $\ell$ such that $s\in G_\ell$.
+\end{lemma}
+
+\begin{proof}
+We first prove the continuity of $v(s)$. For $s=b_1b_2\dots b_\ell\dots_{(2)}$, $s\notin G_\ell$ indicates that for any integer $N$ there exists $n_1\geq N$ such that $b_{n_1}=1$ and $n_0\geq N$ such that $b_{n_0}=0$. The monotonicity of $v(s)$ is obvious from Equation \eqref{eqn:vs} that flipping a $0$ bit to a $1$ bit will always yield a greater value. For any $s-2^{-N}\leq s^\prime\leq s+2^{-N}$, we specify $n_1$ and $n_0$ such that $s-2^{-n_1}\leq s^\prime\leq s+2^{-n_0}$. By the monotonicity of $v(s)$ we have
+\begin{align*}
+& v(s)-v(s^\prime) \leq v(s)-v(s-2^{-n_1}) \\
+=\ & (1-p)\gamma^{n_1}\prod_{j=1}^{n_1-1}((1-p)+(2p-1)b_j)\cdot (1 + \sum_{i=n_1+1}^\infty \gamma^{i-n_1}b_ip\prod_{j=n_1+1}^{i-1}((1-p)+(2p-1)b_j)) \\
+& - (1-p)\gamma^{n_1}\prod_{j=1}^{n_1-1}((1-p)+(2p-1)b_j)\sum_{i=n_1+1}^\infty \gamma^{i-n_1}b_i(1-p)\prod_{j=n_1+1}^{i-1}((1-p)+(2p-1)b_j) \\
+=\ & (1-p)\gamma^{n_1}\prod_{j=1}^{n_1-1}((1-p)+(2p-1)b_j)\cdot (1 \\
+& + \sum_{i=n_1+1}^\infty \gamma^{i-n_1}b_i(2p-1)\prod_{j=n_1+1}^{i-1}((1-p)+(2p-1)b_j)) \\
+\le\ & (1-p)\gamma^{n_1}p^{n_1-1}\cdot (1 + \sum_{i=n_1+1}^\infty \gamma^{i-n_1}(2p-1)p^{n_1-i-1}) \\
+\le\ & 2(1-p)\gamma^{N}p^{N-1}.
+\end{align*}
+And similarly,
+\begin{align*}
+v(s)-v(s^\prime) & \geq v(s)-v(s+2^{-n_0}) \\
+& \geq -(1-p)\gamma^{n_0}p^{n_0-1}\cdot (1 + \sum_{i=n_0+1}^\infty \gamma^{i-n_0}(2p-1)p^{n_0-i-1}) \\
+& \geq -2(1-p)\gamma^{N}p^{N-1}.
+\end{align*}
+Hence, $|v(s)-v(s^\prime)|$ is bounded by $2(1-p)\gamma^{N}p^{N-1}$ for $s-2^{-N}\leq s^\prime\leq s+2^{-N}$. As $2(1-p)\gamma^{N}p^{N-1}$ converges to zero when $N$ approaches infinity, $v(s)$ is continuous as desired.
+
+We then show the continuity of $v^\prime(s)=\max_{a\in\cA(s)} Q_v(s,a)$.
+We first argue that $v^\prime(s)$ is monotonically increasing. In fact, for $s^\prime\geq s$ and $0< a\leq \min\{s,1-s\}$, either $0< a\leq \min\{s^\prime, 1-s^\prime\}$ or $0< a+s-s^\prime\leq \min\{s^\prime, 1-s^\prime\}$ must be satisfied. 
+Therefore $a\in \cA(s)$ indicates at least one of $a\in \cA(s')$ and $a+s-s^\prime\in \cA(s')$.
+
+Let $a^\prime$ be $a$ or $a+s-s^\prime$ whoever is in $\cA(s')$, we have both $s^\prime+a^\prime\geq s+a$ and $s^\prime-a^\prime\geq s-a$. Specifying $a$ such that $v^\prime(s)=Q_v(s,a)$, we have
+\[
+v^\prime(s^\prime)\geq Q_v(s',a')\geq v^\prime(s).
+\]
+The monotonicity follows. 
+
+Let $s=b_1b_2\dots b_\ell\dots_{(2)}$. Similarly, for any $N$, specify $n_1\geq N$ such that $b_{n_1}=1$ and $n_0\geq N+2$ such that $b_{n_0}=0$. Also let $s_0={b_1b_2\dots b_{N}}_{(2)}$. Then for the neighbourhood set $s_0-2^{-(N+1)}\leq s^\prime\leq s_0+2^{-(N+1)}$, $v^\prime(s)=v(s)$ for both the ends of the interval $s_0-2^{-(N+1)},s_0+2^{-(N+1)}\in G_{N+1}$. $|v^\prime(s)-v^\prime(s^\prime)|$ is then bounded by $|v(s_0-2^{-(N+1)})-v(s_0+2^{-(N+1)})|$. According to Claim \ref{claim:vdifference}, this value converges to zero when $N$ approaches infinity. The continuity of $v^\prime(s)$ follows.
+\end{proof}
+
+The continuity of $v(s)$ extends to the dyadic rationals $\bigcup_{\ell\geq 1} G_\ell$ when $\gamma=1$, which means that $v(s)$ is \textit{continuous everywhere} on $[0,1]$ under $\gamma=1$. It is worth noting that similar to the Cantor function, $v(s)$ is \textit{not absolutely continuous}. In fact, $v(s)$ shares more common properties with the Cantor function, as they both have \textit{a derivative of zero almost everywhere}, both their values go from $0$ to $1$, and their range is every value in between $0$ and $1$.
+
+The continuity of $v^\prime(s)=\max_{a\in\cA(s)} Q_v(s,a)$ indicates that the optimal action is uniquely $\min\{s,1-s\}$ on $s\notin G_\ell$. This optimal action agrees with the optimal action we specified on $s\in G_\ell$ in Lemma \ref{induction}, which makes $\pi(s)=\min\{s,1-s\}$ an optimal policy for every state (condition on that $v(s)$ is the optimal value function, which will be proved later).
+
+\begin{corollary}
+\label{thm:policyirrational}
+If $s\notin G_{\ell}$ for any $\ell\geq 1$, 
+\[
+\argmax_{a\in \cA(s)}\ Q_v(s,a) = \set{\min\set{s,1-s}}.
+\]
+\end{corollary}
+
+\begin{lemma}
+\label{uniquegambler}
+$v(s)$ is the unique solution of the system ({ABX}).
+\end{lemma}
+
+\begin{proof}
+Let $v^\prime(s)=\max_{a\in\cA(s)} Q_v(s,a)$. As per Lemma \ref{induction} we have $v(s)=v^\prime(s)$ on the dyadic rationals $\bigcup_{\ell\geq 1} G_\ell$. 
+Since $\bigcup_{\ell\geq 1} G_\ell$ is dense and compact on $(0,1)$, $v(s)=v^\prime(s)$ holds whenever both $v(s)$ and $v^\prime(s)$ are continuous at $s$. 
+By Lemma \ref{continuous} $v(s)$ and $v^\prime(s)$ are continuous for any $s$ if there does not exist an $\ell\ge 1$ such that $s\in G_\ell$, which then indicates $v(s)=v^\prime(s)$ on the complement of $\bigcup_{\ell\geq 1} G_\ell$. 
+Therefore $v(s)=v^\prime(s)$ is satisfied on $(0,1)$, which verifies the Bellman property ({AB}). 
+The boundary conditions ({X}) holds obviously. 
+Finally as per Lemma \ref{unique}, $v(s)$ is the unique solution to the system of Bellman equation and the boundary conditions. 
+\end{proof}
+
+\begin{theorem}
+\label{valuefunction}
+Let $0\leq\gamma\leq 1$ and $p>0.5$. Under the continuous setting of the Gambler's problem, the optimal state-value function is $v(1)=1$ and $v(s)$ defined in Equation \eqref{eqn:vs} for $0\leq s<1$.
+\end{theorem}
+
+\begin{proof}
+As the optimal state-value function must satisfy the system ({ABX}) and $v(s)$ is the unique solution to the system, $v(s)$ is the optimal state-value function.
+\end{proof}
+
+
+
+\begin{corollary}
+\label{blackwell}
+The policy $\pi(s)=\min\{s,1-s\}$ is (Blackwell) optimal. 
+\end{corollary}
+
+It is worth noting that when $\gamma=1$ and $s\in G_{\ell}\setminus G_{\ell-1}$ for some $\ell$, then $\pi^\prime(s)=2^{-\ell}$ is also an optimal policy at $s$.
+
+Theorem \ref{valuefunction} and the proof of Lemma \ref{induction} also induce the following statement that the optimal value function $v(s)$ is fractal and self-similar. The derivation of the corollary is in the introduction.
+\begin{corollary}
+\label{thm:self-similar}
+The curve of the value function $v(s)$ on the interval $[k2^{-\ell}, (k+1)2^{-\ell}]$ is similar (in geometry) to the curve of $v(s)$ itself on $[0,1]$, for any integer $\ell\geq 1$ and $0\leq k\leq 2^\ell-1$.
+\end{corollary}
+
+Some other notable facts about $v(s)$ are as below:
+
+\begin{fact}
+The expectation \[ \int_0^1 v(s)ds=(1-p)\gamma=v(\frac{1}{2}). \]
+\end{fact}
+
+\begin{fact}
+\label{thm:derivative}
+The derivative
+\begin{equation}
+\lim_{\Delta s \rightarrow 0^+}\frac{v(s+\Delta s)}{\Delta s} = 0, \ \ \lim_{\Delta s \rightarrow 0^-}\frac{v(s+\Delta s)}{\Delta s} =
+\begin{cases}
++\infty, & \text{if}\ s=0 \ \text{or} \ s\in\bigcup_{\ell\geq 1} G_\ell, \\
+0, & \text{otherwise}.
+\end{cases}
+\end{equation}
+\end{fact}
+
+\begin{fact}
+The length of the arc $y=v(s)$, $0\leq s \leq 1$ equals $2$.
+\end{fact}
+
+In fact, any singular function (zero derivative almost everywhere) has an arc length of $2$ if it goes from $(0,0)$ to $(1,1)$ monotonically \cite{pelling1977formulae}. This can be intuitively understood as that the curve either goes horizontal, when the derivative is zero, or vertical, when the derivative is infinity. Therefore the arc length is the Manhattan distance between $(0,0)$ and $(1,1)$, which equals $2$.
+
+\begin{fact}
+\[ \argmin_{0\leq s \leq 1} v(s)-s=\{\frac{2}{3}\}. \]
+\end{fact}
+
+It is natural that by the fractal characterization of $v(s)$ the approximation must be inexact. The following two propositions give quantitative lower bounds on such approximation errors.
+
+\begin{proposition}
+\label{thm:approxdisc}
+When $N\in \mathbb{N}^+$, $N\ge 4$ is a power of $2$, let $\bar v_1(s)$ be piecewise constant on any of the intervals $s\in (k/N, (k+1)/N)$, $k=0,\dots,N-1$, then
+\[
+\int_s \left| v(s)-\bar v_1(s) \right| ds \geq \frac{1}{N}\frac{(2-\gamma)(1-p)\gamma}{1-p\gamma} + o(\frac{1}{N}).
+\]
+\end{proposition}
+
+\begin{proof}
+When $N$ is a power of $2$,
+for $k\in \{0,\dots,N-1\}$, the curve of $v(s)$ on each of the intervals $(k/N, (k+1)/N)$ is self-similar to $v(s)$ itself on $(0,1)$. We consider this segment of the curve. By Equation \eqref{eqn:selfsim}, 
+\[
+v(s) = v(\bar s) + \gamma^{\ell}\prod_{j=1}^{\ell}((1-p)+(2p-1)b_j)\cdot v(2^\ell (s-\bar s)),
+\]
+where $\ell=\log_2N$, $\bar s=k/N$ and $s = 0.{b_1b_2\dots b_\ell \ldots}_{(2)}\in (\bar s,\bar s+\frac{1}{N})$.
+
+Let $\Delta s = 1/N$, $\Delta y = v((k+1)/N) - v(k/N)$, we have for $0<s<\Delta s$
+\[
+v(\bar s + s) = v(\bar s) + v(s/\Delta s)\Delta y. 
+\]
+As $v(s)$ is monotonically increasing on every interval $(k/N, (k+1)/N)$, the minimum over $\bar y$
+\[ 
+\int_{s=\bar s}^{\bar s + \Delta s} \left| v(s)-\bar y \right| ds 
+\]
+is obtained when $\bar y_{\bar s} = v(\bar s + \frac{1}{2}\Delta s)$ (intuitively, the median of $v(s)$ on the interval). This results in an approximation error of
+\begin{align*}
+& \min_{\bar y}\int_{s=\bar s}^{\bar s + \Delta s} \left| v(s)-\bar y \right| ds\\
+=\ & \int_{s=\bar s}^{\bar s + \frac{1}{2}\Delta s} v(\bar s + \frac{1}{2}\Delta s) - v(s)\ ds + \int_{s=\bar s + \frac{1}{2}\Delta s}^{\bar s + \Delta s} v(s) - v(\bar s + \frac{1}{2}\Delta s) \ ds\\
+=\ & - \int_{s=\bar s}^{\bar s + \frac{1}{2}\Delta s} v(s)\ ds + \int_{s=\bar s + \frac{1}{2}\Delta s}^{\bar s + \Delta s} v(s)\ ds\\
+=\ & -\frac{1}{2}\Delta s \int_{s=0}^1 v(\bar s) + (v(\bar s + \frac{1}{2}\Delta s) - v(\bar s)) v(s)\ ds\\
+& + \frac{1}{2}\Delta s \int_{s=0}^1 v(\bar s + \frac{1}{2}\Delta s) + (v(\bar s + \Delta s) - v(\bar s + \frac{1}{2}\Delta s)) v(s)\ ds\\
+=\ \ & \frac{1}{2}\Delta s ((1-(1-p)\gamma) (v(\bar s+\frac{1}{2}\Delta s)-v(\bar s))+(1-p)\gamma (v(\bar s+\Delta s)-v(\bar s+\frac{1}{2}\Delta s))).
+\end{align*}
+This error is then summed over $\bar s = 0, 1/N, \ldots, (N-1)/N$ such that
+\begin{align*}
+\sum_{\bar s=0/N}^{(N-1)/N}\int_{s=\bar s}^{\bar s + \Delta s} \left| v(s)-\bar y_{\bar s} \right| ds & \ge \frac{1}{2N}((1-(1-p)\gamma)v(\frac{N-\frac{1}{2}}{N}) + (1-p)\gamma (1-v(\frac{1}{2N})))\\
+& = \frac{1}{2N}((1-(1-p)\gamma)\frac{(1-p)\gamma}{1-p\gamma}(1-(p\gamma)^{\log_2N+1})\\
+&\quad + (1-p)\gamma (1-((1-p)\gamma)^{\log_2N+1}))\\
+& = N^{-1}\frac{(2-\gamma)(1-p)\gamma}{1-p\gamma} - N^{-1+\log_2 p\gamma}\frac{(1-(1-p)\gamma)p(1-p)\gamma^2}{2(1-p\gamma)}\\
+&\quad - N^{-1+\log_2 (1-p)\gamma} \frac{(1-p)^2\gamma^2}{2} \\
+& = \frac{1}{N}\frac{(2-\gamma)(1-p)\gamma}{1-p\gamma} + o(\frac{1}{N}).\tag*{\qedhere}
+\end{align*}
+\end{proof}
+
+An error bound in $\OO(1/N)$ can be generated to any integer $N$, as we can relax $N$ to $2^{\lfloor\log_2N\rfloor-1}$ so that at least one self-similar segment of size $1/N$ is included in each interval.
+
+For Lipschitz continuous functions like neural networks, the following proposition shows an approximation error lower bound in $\OO(1/L)$, where $L$ is the Lipschitz constant.
+
+\begin{proposition}
+\label{thm:approxlip}
+Let $L\ge (1-p)\gamma(1-\gamma)/(1-p\gamma)$. If $\bar v_2(s)$ is Lipschitz continuous on $s\in (0,1)$ where $L$ is the Lipschitz constant, then
+\[
+\int_s \left| v(s)-\bar v_2(s) \right| ds \geq \frac{1}{L}\frac{(1-p)^2\gamma^2(1-\gamma)^2}{4(1-p\gamma)}.
+\]
+\end{proposition}
+
+\begin{proof}
+We consider $v(\frac{1}{2})=(1-p)\gamma$ and 
+\[
+\lim_{s\rightarrow {\frac{1}{2}}^-} v(s) = \frac{(1-p)^2\gamma^2}{1-p\gamma}.
+\]
+When $0<\gamma<1$, we have 
+\[
+v(\frac{1}{2}) - \lim_{s\rightarrow {\frac{1}{2}}^-} v(s) = \frac{(1-p)\gamma(1-\gamma)}{1-p\gamma} > 0.
+\]
+Denote $h = (1-p)\gamma(1-\gamma)/(1-p\gamma)$.
+By the monotonicity of $v(s)$, using ${\bar v}_2(s)$ to approximate $v(s)$ has an error at least $\int_s \left| \xi(s)-\bar v_2(s) \right| ds$, where $\xi(s)$ denotes the step function on $[0,1]$,
+\begin{equation*}
+\xi(s) =
+\begin{cases}
+0 & 0\le s< \frac{1}{2},\\
+h & \frac{1}{2} \le s \le 1.
+\end{cases}       
+\end{equation*}
+In this case, the optimal ${\bar v}_2(s)$ is
+\begin{equation*}
+{\bar v}_2(s) =
+\begin{cases}
+0 & 0\le s< \frac{1}{2}-\frac{h}{2L},\\
+\frac{h}{2} + L(s-\frac{1}{2}) & \frac{1}{2}-\frac{h}{2L}\le s\le \frac{1}{2}+\frac{h}{2L},\\
+h & \frac{1}{2}+\frac{h}{2L} < s \le 1.
+\end{cases}       
+\end{equation*}
+Hence, we have
+\[
+\int_s \left| v(s)-\bar v_2(s) \right| ds \ge \int_s \left| \xi(s)-\bar v_2(s) \right| ds \ge \frac{h^2}{4L},
+\]
+as desired.
+\end{proof}
+
+\subsection{Analysis of the Bellman Equation}
+\label{sec:solvingbellman}
+
+We have proved that $v(s)$ is the optimal value function in Theorem \ref{valuefunction}, by showing the existence and uniqueness of the solution of the system ({ABX}). However, the condition ({X}) is derived from the context of the Gambler's problem.
+It is rigorous enough to find the optimal value function, but we are also interested in solutions purely derived from the MDP setting.
+Also, algorithmic approaches such as Q-learning \citep{watkins1992q,baird1995residual,mnih2015human} optimize the MDP by solving the Bellman equation, without eliciting the context of the problem. 
+Studying such systems will help to understand the behavior of these algorithms.
+In this section, we inspect the system of Bellman equation ({AB}) of the Gambler's problem. 
+We aim to solve the general case ({ABY}) where $p>0.5$ and the corner case ({ABZ}) where $p=0.5$.
+
+
+When $p>0.5$, the value function $v(s)$ is obviously still a solution of the system ({ABY}) without condition ({X}). The natural question is if there exist any other solutions. The answer is two-fold: When $\gamma<1$, $f(s)=v(s)$ is unique; when $\gamma=1$, the solution is either $v(s)$ or a constant function at least $1$. This indicates that algorithms like Q-learning have constant functions as their set of converging points, apart from $v(s)$. As $v(s)$ is harder to approximate due to the non-smoothness, a constant function in fact induces a smaller approximation error and thus has a better optimality for Q-learning with function approximation.
+
+Generating this result to a general MDP with episodic rewards is immediate, as functions of a large constants solve such an MDP. This indicates that Q-learning may have more than one converging points and may diverge from the optimal value function under $\gamma=1$. This leads to the need of $\gamma$, which is artificially introduced and biases the learning objective. More generally, the Bellman equation may have a continuum of finite solutions in an infinite state space, even with $\gamma<1$. Some studies exist on the necessary and sufficient conditions for a solution of the Bellman equation to be the value function \citep{kamihigashi2015necessary,bellman2008latham,harmon1996spurious}, though the majority of this topic remains open.
+
+The discussions above are supported by a series of rigorous statements. We begin with the following proposition that when the discount factor is strictly less than $1$, the solution toward the Bellman equation is the optimal value function.
+
+\begin{proposition}
+\label{uniquegammalessthanone}
+When $\gamma<1$, $v(s)$ is the unique solution of the system ({ABY}).
+\end{proposition}
+
+\begin{proof}
+The uniqueness has been shown in Lemma~\ref{unique} for the system ({ABX}). When $\gamma<1$ it corresponds to case (\Romannum{1}), where neither the upper bound $f(s)\leq 1$ nor the continuity at $s=0$ in condition ({X}) is used. Therefore Lemma~\ref{unique} holds for ({ABY}) under $\gamma<1$, and Lemma~\ref{uniquegambler} follows as desired.
+\end{proof}
+
+This uniqueness no longer holds under $\gamma=1$.
+
+\begin{theorem}
+\label{allsolutionbellman}
+Let $\gamma = 1$, $p>0.5$, and $f(\cdot)$ be a real function on $[0,1]$. $f(s)$ satisfies the Bellman equation ({ABY}) if and only if either
+\begin{itemize}\vspace{-1.0mm}
+\item $f(s)$ is $v(s)$ defined in Theorem \ref{valuefunction}, or
+\item $f(0)=0$, $f(1)=1$, and $f(s)=C$ for all $0<s<1$, for some constant $C\geq 1$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+It is obvious that both $f(s)$ defined above are the solutions of the system. It amounts to show that they are the only solutions. 
+
+
+Without the bound condition ({X}), the function $f(s)$ is not necessarily continuous on $s=0$ and $s=1$ and is not necessarily monotonic on $s=1$. Therefore the same arguments in the proof of Lemma \ref{unique} will not hold. However, the arguments can be extended to ({Y}) by considering the limit of $f(s)$ when $s$ approaches $0$ and $1$.
+
+By Lemma \ref{thm:continuity} the function is continuous on the open interval $(0,1)$. Let 
+\begin{equation*}
+C_0 = \lim_{s\rightarrow 0^+} f(s), \ \ C_1 = \lim_{s\rightarrow 1^-} f(s).
+\end{equation*}
+Then by Lemma \ref{thm:monotonicity}, $0\leq C_0\le f(s)\le C_1$ for $s\in (0,1)$. Here we eliminate the possibility of $C_0=+\infty$ and $C_1=+\infty$. This is because if there is a sequence of $s_t\rightarrow 0$ such that $f(s_t)>t$, then we have $f(\frac{1}{2})\geq p\ f(s_t)+(1-p)\ f(1-s_t)\geq (1-p)t$ for any $t$. Then $f(\frac{1}{2})$ does not exist. Similar arguments show that $C_1$ cannot be $+\infty$.
+
+Now specify a sequence $a_t\rightarrow \frac{1}{2}$, $a_t<\frac{1}{2}$, such that $C_0\leq f(\frac{1}{2}-a_t) \leq C_0+\frac{1}{t}$ and $C_1-\frac{1}{t}\leq f(\frac{1}{2}+a_t) \leq C_1$. Then we have 
+\begin{align*}
+f(\frac{1}{2}) & \geq p\ f(\frac{1}{2}-a_t) + (1-p)\ f(\frac{1}{2}+a_t)\\
+& \geq p\ C_0+(1-p)\ C_1 -\frac{1}{t}.
+\end{align*}
+As $t$ is arbitrary we have $f(\frac{1}{2})\geq pC_0+(1-p)C_1$. By induction on $\ell$ it holds on $s\in\bigcup_{\ell\geq 1} G_\ell$ that
+\[
+f(s) \geq C_0 + (C_1-C_0)v(s).
+\]
+By Lemma \ref{thm:continuity} (the continuity of $f(s)$ and $v(s)$ under $\gamma=1$), this lower bound extends beyond the dyadic rationals to the entire interval $(0,1)$. Define $\tilde f(s)=C_0 + (C_1-C_0)v(s)$ for $s\in (0,1)$, $\tilde f(0)=C_0, \tilde f(1)=C_1$. It is immediate to verify that for any $C_1>C_0\geq 0$, $\tilde f(s)$ solves the system ({AY}) (without ({B}) the boundary conditions). 
+
+If $C_1-C_0\neq 0$, by Lemma \ref{unique} Case (\Romannum{2}) $\tilde f(s)$ on $(0,1)$ is the unique solution of the system ({AY}), given monotonicity, continuity, and the lower bound $\tilde f(s)$. With the boundary conditions ({B}), we have $0=\tilde f(0)=C_0$ and $1=\tilde f(1)=C_1$, therefore $f(s)=v(s)$. This case $C_1-C_0\neq 0$ induces the first possible solution.
+
+It amounts to determine $f(s)$ when $C_1-C_0=0$, that is, when $0\le C_0 = f(s)= C_1$ for $s\in (0,1)$ (by Lemma \ref{thm:monotonicity}). It suffices to prove that $C_0<1$ is not possible. In fact, if $C_0<1$ then $f(\frac{3}{4})<p\ f(\frac{1}{2}) + (1-p)f(1)$, which contradicts ({A}). Then, $f(s)=C_0$ for some $C_0\geq 1$ is the only set of solutions when $C_1-C_0=0$, as desired.
+\end{proof}
+
+The fact that a large constant function can also be a solution toward the Bellman equation can be extended to a wide range of MDPs. The below proposition lists one of the sufficient conditions but even without this condition it is likely to hold in practice.
+
+\begin{proposition}
+For an arbitrary MDP with episodic rewards where every state has an action to transit to a non-terminal state almost surely, $f(s)=C$ for all non-terminal states $s$ is a solution of the Bellman equation system for any $C$ greater or equal to the maximum one-step reward.
+\end{proposition}
+
+\begin{proof}
+The statement is immediate by verifying the Bellman equation.
+\end{proof}
+
+The rest of the section discusses the Gambler's problem under $p=0.5$, where the gambler does not lose capital by betting in expectation. In this case, the optimal value function is still $v(s)$ by similar arguments of Theorem \ref{valuefunction}. It is worth noting that when $\gamma=1$, Theorem \ref{valuefunction} indicates $v(s)=s$. This agrees with the intuition that the gambler does not lose their capital by placing bets in expectation, therefore the optimal value function should be linear to $s$. 
+Proposition \ref{uniquegammalessthanone} also holds that $v(s)$ is the unique solution of the Bellman equation, given $\gamma<1$.
+The remaining problem is to find the solution of the Bellman equation under $\gamma=1$ and $p=0.5$. This corresponds to the system ({ABZ}).
+
+When $p=0.5$, condition ({A}) implies midpoint concavity such that for all $a\in \cA(s)$,
+\begin{equation}
+\label{eqn:midpoint}
+f(s) \geq \frac{1}{2} f(s-a) + \frac{1}{2} f(s+a),
+\end{equation}
+where the equality must hold for some $a$.
+As Lemma \ref{thm:monotonicity} no longer holds, a solution $f(s)$ may have negative values for some $s$. Though, if it does not have a negative value, it must be concave, and thus linear by condition ({A}) (will be proved later in Theorem \ref{thm:negativef}). It suffices to satisfy $f(s)\geq s$ for any $s$. Therefore the non-negative solution is $f(0)=0$, $f(1)=1$, and $f(s)=C^\prime s+B^\prime$ on $0<s<1$ for some constants $C^\prime+B^\prime \geq 1$.
+
+If $f(s)$ does have a negative value at some $s$, then the midpoint concavity \eqref{eqn:midpoint} does not imply concavity.
+In this case, by recursively applying \eqref{eqn:midpoint} we can show that the set $\{(s, f(s))\mid s\in (0,1)\}$ is dense and compact on $(0,1)\times \RR$. Then the function becomes pathological, if it exists. Despite this, the following lemma shows that $f(s)$ needs to be positive on the rationals $\QQ$.
+
+\begin{lemma}
+\label{clm:rationallb}
+Let $f(s)$ satisfy ({ABZ}). If there exists $0\leq s^-<s^+\leq 1$ and a constant $C$ such that $f(s^-), f(s^+)\geq C$, then $f(s)\geq C$ for all $s\in \set{s^-+w(s^+-s^-)\mid w\in \QQ, 0\leq w\leq 1}$.
+\end{lemma}
+
+\begin{proof}
+The statement is immediate for $w\in \set{0,1}$. For $0<w<1$ we prove the lemma by contradiction. Let $f(s^-+w(s^+-s^-))<C$ for some $w\in \QQ$ while $0<w<1$. We define $s_0=s^-+w(s^+-s^-)$ and $s_{t+1}=2s_t-s^-$ for $s_t<\frac{1}{2}(s^-+s^+)$ and $s_{t+1}=2s_t-s^+$ for $s_t>\frac{1}{2}(s^-+s^+)$, respectively. $s_{t+1}$ will be undefined if $s_t=\frac{1}{2}(s^-+s^+)$. Since $w\in \QQ$, let $w=m/n$ where $m$ and $n$ are integers and the greatest common divisor $\text{gcd}(m,n)=1$. Then $(s_t-s^-)/(s^+-s^-)=m_t/n$, where $m_t=2^tm \bmod n$. As $\ZZ_n$ is finite, $\{s_t\}_{t\geq 0}$ can only take finitely many values. Thus either the sequence $\{s_t\}$ is periodic, or it terminates at some $s_t=\frac{1}{2}(s^-+s^+)$.
+
+Then we show that $f(s_t)$ is strictly decreasing by induction. Assume that $f(s_0)>\dots>f(s_t)$. When $s_t<\frac{1}{2}(s^-+s^+)$, by \eqref{eqn:midpoint} we have $f(s_t)\geq \frac{1}{2}f(s^-)+\frac{1}{2}f(s_{t+1})$, which indicates that $f(s_{t+1})-f(s_t)\leq f(s_t)-f(s^-)<f(s_0)-f(s^-)<0$. When $s_t>\frac{1}{2}(s^-+s^+)$, by \eqref{eqn:midpoint} we have $f(s_t)\geq \frac{1}{2}f(s_{t+1})+\frac{1}{2}f(s^+)$, which indicates $f(s_{t+1})-f(s_t)\leq f(s_t)-f(s^+)<f(s_0)-f(s^+)<0$. The base case $f(s_1)<f(s_0)$ holds as at least one of $f(s_0)\geq \frac{1}{2}f(s^-)+\frac{1}{2}f(s_1)$ and $f(s_0)\geq \frac{1}{2}f(s_1)+\frac{1}{2}f(s^+)$ must be true. Thus we conclude that $f(s_t)$ is strictly decreasing.
+
+If the sequence terminates at some $s_t=\frac{1}{2}(s^-+s^+)$, then $f(s_t)<f(s_1)<C$, which contradicts $f(s_t)=f(\frac{1}{2}(s^-+s^+))\geq \frac{1}{2}f(s^-)+\frac{1}{2}f(s^+)\geq C$. Otherwise $s_t$ is periodic and indefinite. Denote the period as $T$ we have $f(s_{t+T})<f(s_t)$, which indicates $f(s_t)<f(s_t)$ as a contradiction.
+\end{proof}
+
+Lemma \ref{clm:rationallb} agrees with the statement that the midpoint concavity indicates rational concavity. The below statements give some insights into the irrational points.
+
+\begin{lemma}
+\label{clm:rationallb2}
+Let $f(s)$ satisfy ({ABZ}). If there exists an $\bar{s}\in \RR\setminus\QQ$ such that $f(\bar{s})\geq 0$, then $f(s)\geq 0$ for all $s\in \set{w\bar{s}+u\mid w,u\in \QQ, 0\leq w, u, \leq 1, w+u\leq 1}$.
+\end{lemma}
+
+\begin{proof}
+Specify $s^-=\bar s$ and $s^+=1$ in Lemma \ref{clm:rationallb}, we have $f(\bar s + \frac{u}{w+u}(1-\bar s)) \geq 0$ whenever $0\leq \frac{u}{w+u} \leq 1$ and $\frac{u}{w+u}\in \QQ$. This is satisfied when $0\leq w,u\leq 1$, $w+u>0$, $w,u\in \QQ$. Specifying $s^-=0$ and $s^+=\bar s + \frac{u}{w+u}(1-\bar s)$ in Lemma \ref{clm:rationallb}, we have $f(w\bar s+u)=f((w+u)(\bar s + \frac{u}{w+u}(1-\bar s)))\geq 0$ whenever $w+u\leq 1$. Thus $f(w\bar s+u)\geq 0$ for $0<w, u<1$, $w,u\in \QQ$, and $0<w+u\leq 1$. Since the case $w=u=0$ is immediate, the statement follows with $s\in \set{w\bar{s}+u\mid w,u\in \QQ, 0\leq w, u, \leq 1, w+u\leq 1}$.
+\end{proof}
+
+\begin{corollary}
+\label{clm:rationallb3}
+Let $f(s)$ satisfy ({ABZ}). If there exists an $\bar{s}\in \RR\setminus\QQ$ such that $f(\bar{s})< 0$, then $f(w\bar s)$ is monotonically decreasing with respect to $w$ for $w\in \QQ$, $1\leq w<1/\bar s$.
+\end{corollary}
+
+Lemma \ref{clm:rationallb2} and Corollary \ref{clm:rationallb3} indicate that when there exists a negative or positive value, infinitely many other points (that are not necessarily its neighbors) must have negative or positive values as well. It is intuitive that the solution with a negative value, if it exists, must be complicated and pathological. In fact, Sierpi{\'n}ski has shown that a midpoint concave but non-concave function is not Lebesgue measurable and is non-constructive \citep{sierpinski1920equation,sierpinski1920fonctions}, so does $f(s)$ if it solves ({ABZ}) while having a negative value.
+
+Such an $f(s)$ exists if and only if we assume Axiom of Choice \citep{jech2008axiom,sierpinski1920equation,sierpinski1920fonctions}. We consider the vector space by field extension $\RR/\QQ$. With the axiom specify a basis $\BB=\{1\}\cup\{g_i\}_{i\in\cI}$, known as a Hamel basis.
+With this basis $\BB$ every real number can be written uniquely as a linear combination of the elements in $\BB$ with rational coefficients. 
+Therefore, denote a real number $s$ uniquely as a vector $(w, w_i)_{i\in \cI}$, $w, w_i\in\QQ$, such that $s=w+\sum_{i\in\cI} w_ig_i$. We correspond each $f(s)=f'(w, \set{w_i}_{i\in \cI})$ uniquely to $f'$ defined on $\QQ^{\left|\BB\right|}$ and use the two spaces interchangeably.
+
+The solution $f(s)$ to \eqref{eqn:midpoint} is any concave function $f'$ on the vector space $\RR/\QQ$. Based on this solution we extend the system \eqref{eqn:midpoint} to (ABZ). To this end, $f(s)$ needs to attain the equality in \eqref{eqn:midpoint} at every $s$, which holds if and only if for every $s=w+\sum_{i\in\cI} w_ig_i$ there exists $s^1=w^1+\sum_{i\in\cI} w_i^1g_i$ and $s^2=w^2+\sum_{i\in\cI} w_i^2g_i$ such that $f'(\lambda w^1+(1-\lambda)w^2, \set{\lambda w_i^1+(1-\lambda)w_i^2}_{i\in \cI})$ is $\lambda f(s^1) + (1-\lambda)f(s^2)$ for any $0<\lambda<1$ (intuitively, local linearity of $f'$ on at least one direction everywhere). 
+By specifying a $\BB$, the condition can be met if $f(s)=f'(w, \set{w_i}_{i\in \cI})=\alpha(w_j) + \beta({\overline w}_j)$ for some $w_j\in \set{w}\cup\set{w_i\mid i\in\cI}$, where $\alpha$ is a linear function, $\beta$ is a concave function, and ${\overline w}_j$ denotes $\set{w}\cup\set{w_i\mid i\in\cI}\setminus \set{w_j}$. When $w_j$ is $w$, $f(s)$ is in fact $w+\beta(\set{w_i}_{i\in\cI})$ for some concave function $\beta$. This is equivalent to specifying a function $\omega(s):\RR\to\QQ$ such that $\omega$ maps reals to rationals additively $\omega(s_1+s_2)=\omega(s_1)+\omega(s_2)$ and $\omega$ is not constantly zero, and then write $f(s)$ as $\omega(s)+\beta_1(s-\omega(s))$ for some concave real function $\beta_1$. Otherwise if $w_j$ is not $w$, $f(s)$ is in the aforementioned form with the boundary conditions (B).
+
+
+
+
+
+While we have shown that under Axiom of Choice $f(s)=\alpha(w_j) + \beta(\overline{w}_j)$ is a set of solutions that can be described by the infinite-dimensional vector space $\RR/\QQ$ and its basis, we do not know if they are the only solutions. Nevertheless, combining our analysis and the literature we conclude the following statement about the system (ABZ).
+
+\begin{theorem}
+\label{thm:negativef}
+Let $\gamma=1$ and $p=0.5$. A real function $f(s)$ satisfies ({ABZ}) if and only if either
+\begin{itemize}\vspace{-1.0mm}
+\item $f(s)=C^\prime s+B^\prime$ on $s\in (0,1)$, for some constants $C^\prime+B^\prime \geq 1$, or
+\item $f(s)$ is some non-constructive, not Lebesgue measurable function under Axiom of Choice.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+The first bullet corresponds to the function $f(s)$ that is non-negative on $[0,1]$. By the midpoint concavity \eqref{eqn:midpoint} and the fact that $f(s)$ is non-negative, $f(s)$ is concave on $[0,1]$ \citep{sierpinski1920equation,sierpinski1920fonctions}. We specify $s_0=\frac{1}{2}$. By (A) we have 
+\[
+f(s_0) = \frac{1}{2} f(s_0-a_0) + \frac{1}{2} f(s_0+a_0)
+\]
+for some $a_0$. Since $f(s)$ is concave, $f(s)$ must be linear on the interval $[s_0-a_0, s_0+a_0]$. Consider the nonempty set 
+\[
+\cA_{1} = \set{a_0\in\cA(s_0) \ \middle\vert\ f(s_0) = \frac{1}{2} f(s_0-a_0) + \frac{1}{2} f(s_0+a_0)}.
+\]
+We show by contradiction that $\sup \cA_{1}$ is $\frac{1}{2}$. If $a_1 = \sup \cA_{1}<\frac{1}{2}$, then by the continuity $a_1\in \cA_1$, where the continuity is implied by the convexity. This indicates that $f(s)=f(s_0) + \frac{f(s_0+a_1) - f(s_0-a_1)}{2a_1}(s-s_0)$ when $s_0-a_1\le s \le s_0+a_1$. But as $a_1$ is the maximum element of $\cA_1$, on at least one of the intervals $[0, s_0-a_1)$ and $(s_0+a_1]$ we have by the convexity $f(s)<f(s_0) + \frac{f(s_0+a_1) - f(s_0-a_1)}{2a_1}(s-s_0)$. Therefore, for at least one of $s\in\set{s_0-a_1, s_0+a_1}$ we have $f(s)>\frac{1}{2}f(s-a)+\frac{1}{2}f(s+a)$ for all $a$, which contradicts condition (A). Hence $\sup \cA_1$ is $\frac{1}{2}$, which implies that $f(s)$ is linear on $(0,1)$. Writing $f(s)$ as $C's+B'$, by the boundary condition (B) we have $C'+B'\ge 1$. It is immediate to verify that $f(s)=C's+B'$ with $C'+B'\ge 1$ is sufficient to satisfy the system (ABZ), and is thus the non-negative solution of the system.
+
+If $f(s)$ is negative at some $s$, then by \eqref{eqn:midpoint} and (B) $f(s)$ must not be concave. By \citet{sierpinski1920equation,sierpinski1920fonctions} such an $f(s)$ exists only if we assume Axiom of Choice, and is non-constructive and not Lebesgue measurable if it exists (some discussion on this function is given above the statement of this theorem). 
+\end{proof}
+
+\section{Conclusion and Future Works}
+
+We give a complete solution to the Gambler's problem, a simple and classic problem in reinforcement learning, under a variety of settings. We show that its optimal value function is very complicated and even pathological. Despite its seeming simpleness, these results are not clearly pointed out in previous studies.
+
+Our contributions are the theoretical finding and the implications. It is worthy to bring the current results to start the discussion among the community. Indicated by the Gambler's problem, the current algorithmic approaches in reinforcement learning might underestimate the complexity. We expect more evidence could be found in the future and new algorithms and implementations could be brought out.
+
+It would be interesting to see how these results of the Gambler's problem generalized to other MDPs. Finding these characterizations of MDPs is in general an important step to understand reinforcement learning and sequential decision processes.
+
+\newpage
+
+\section*{Acknowledgement}
+
+We thank Richard S. Sutton and Andrew G. Barto for raising the Gambler's problem in their book, and Richard S. Sutton for the discussions on our theorems and implications. We thank Andrej Bogdanov for pointing out the connection to the Axiom of Choice, namely, Theorem \ref{thm:negativef}, and Chengyu Lin for the discussions on the properties of $v(s)$, namely, Lemma \ref{newa}, \ref{induction}, and \ref{continuous}. This paper was largely improved by the reviews and comments. We especially would like to thank Csaba Szepesvári, Minming Li, Kirby Banman, and ICLR 2020 anonymous reviewers for their helpful feedback.
+
+\bibliography{iclr2020-arxiv}
+\bibliographystyle{iclr2020_conference}
+
+\end{document}

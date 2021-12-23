@@ -1,0 +1,2609 @@
+
+\documentclass{article} \usepackage{iclr2020_conference,times}
+
+
+
+\usepackage{amsmath,amssymb,amsfonts,bm}
+\usepackage{comment}
+
+\newcommand{\figleft}{{\em (Left)}}
+\newcommand{\figcenter}{{\em (Center)}}
+\newcommand{\figright}{{\em (Right)}}
+\newcommand{\figtop}{{\em (Top)}}
+\newcommand{\figbottom}{{\em (Bottom)}}
+\newcommand{\captiona}{{\em (a)}}
+\newcommand{\captionb}{{\em (b)}}
+\newcommand{\captionc}{{\em (c)}}
+\newcommand{\captiond}{{\em (d)}}
+
+\newcommand{\newterm}[1]{{\bf #1}}
+
+
+\def\figref#1{figure~\ref{#1}}
+\def\Figref#1{Figure~\ref{#1}}
+\def\twofigref#1#2{figures \ref{#1} and \ref{#2}}
+\def\quadfigref#1#2#3#4{figures \ref{#1}, \ref{#2}, \ref{#3} and \ref{#4}}
+\def\secref#1{section~\ref{#1}}
+\def\Secref#1{Section~\ref{#1}}
+\def\twosecrefs#1#2{sections \ref{#1} and \ref{#2}}
+\def\secrefs#1#2#3{sections \ref{#1}, \ref{#2} and \ref{#3}}
+\def\eqref#1{equation~\ref{#1}}
+\def\Eqref#1{Equation~\ref{#1}}
+\def\plaineqref#1{\ref{#1}}
+\def\chapref#1{chapter~\ref{#1}}
+\def\Chapref#1{Chapter~\ref{#1}}
+\def\rangechapref#1#2{chapters\ref{#1}--\ref{#2}}
+\def\algref#1{algorithm~\ref{#1}}
+\def\Algref#1{Algorithm~\ref{#1}}
+\def\twoalgref#1#2{algorithms \ref{#1} and \ref{#2}}
+\def\Twoalgref#1#2{Algorithms \ref{#1} and \ref{#2}}
+\def\partref#1{part~\ref{#1}}
+\def\Partref#1{Part~\ref{#1}}
+\def\twopartref#1#2{parts \ref{#1} and \ref{#2}}
+
+\def\ceil#1{\lceil #1 \rceil}
+\def\floor#1{\lfloor #1 \rfloor}
+\def\1{\bm{1}}
+\newcommand{\train}{\mathcal{D}}
+\newcommand{\valid}{\mathcal{D_{\mathrm{valid}}}}
+\newcommand{\test}{\mathcal{D_{\mathrm{test}}}}
+
+\def\eps{{\epsilon}}
+
+
+\def\reta{{\textnormal{$\eta$}}}
+\def\ra{{\textnormal{a}}}
+\def\rb{{\textnormal{b}}}
+\def\rc{{\textnormal{c}}}
+\def\rd{{\textnormal{d}}}
+\def\re{{\textnormal{e}}}
+\def\rf{{\textnormal{f}}}
+\def\rg{{\textnormal{g}}}
+\def\rh{{\textnormal{h}}}
+\def\ri{{\textnormal{i}}}
+\def\rj{{\textnormal{j}}}
+\def\rk{{\textnormal{k}}}
+\def\rl{{\textnormal{l}}}
+\def\rn{{\textnormal{n}}}
+\def\ro{{\textnormal{o}}}
+\def\rp{{\textnormal{p}}}
+\def\rq{{\textnormal{q}}}
+\def\rr{{\textnormal{r}}}
+\def\rs{{\textnormal{s}}}
+\def\rt{{\textnormal{t}}}
+\def\ru{{\textnormal{u}}}
+\def\rv{{\textnormal{v}}}
+\def\rw{{\textnormal{w}}}
+\def\rx{{\textnormal{x}}}
+\def\ry{{\textnormal{y}}}
+\def\rz{{\textnormal{z}}}
+
+\def\rvepsilon{{\mathbf{\epsilon}}}
+\def\rvtheta{{\mathbf{\theta}}}
+\def\rva{{\mathbf{a}}}
+\def\rvb{{\mathbf{b}}}
+\def\rvc{{\mathbf{c}}}
+\def\rvd{{\mathbf{d}}}
+\def\rve{{\mathbf{e}}}
+\def\rvf{{\mathbf{f}}}
+\def\rvg{{\mathbf{g}}}
+\def\rvh{{\mathbf{h}}}
+\def\rvu{{\mathbf{i}}}
+\def\rvj{{\mathbf{j}}}
+\def\rvk{{\mathbf{k}}}
+\def\rvl{{\mathbf{l}}}
+\def\rvm{{\mathbf{m}}}
+\def\rvn{{\mathbf{n}}}
+\def\rvo{{\mathbf{o}}}
+\def\rvp{{\mathbf{p}}}
+\def\rvq{{\mathbf{q}}}
+\def\rvr{{\mathbf{r}}}
+\def\rvs{{\mathbf{s}}}
+\def\rvt{{\mathbf{t}}}
+\def\rvu{{\mathbf{u}}}
+\def\rvv{{\mathbf{v}}}
+\def\rvw{{\mathbf{w}}}
+\def\rvx{{\mathbf{x}}}
+\def\rvy{{\mathbf{y}}}
+\def\rvz{{\mathbf{z}}}
+
+\def\erva{{\textnormal{a}}}
+\def\ervb{{\textnormal{b}}}
+\def\ervc{{\textnormal{c}}}
+\def\ervd{{\textnormal{d}}}
+\def\erve{{\textnormal{e}}}
+\def\ervf{{\textnormal{f}}}
+\def\ervg{{\textnormal{g}}}
+\def\ervh{{\textnormal{h}}}
+\def\ervi{{\textnormal{i}}}
+\def\ervj{{\textnormal{j}}}
+\def\ervk{{\textnormal{k}}}
+\def\ervl{{\textnormal{l}}}
+\def\ervm{{\textnormal{m}}}
+\def\ervn{{\textnormal{n}}}
+\def\ervo{{\textnormal{o}}}
+\def\ervp{{\textnormal{p}}}
+\def\ervq{{\textnormal{q}}}
+\def\ervr{{\textnormal{r}}}
+\def\ervs{{\textnormal{s}}}
+\def\ervt{{\textnormal{t}}}
+\def\ervu{{\textnormal{u}}}
+\def\ervv{{\textnormal{v}}}
+\def\ervw{{\textnormal{w}}}
+\def\ervx{{\textnormal{x}}}
+\def\ervy{{\textnormal{y}}}
+\def\ervz{{\textnormal{z}}}
+
+\def\rmA{{\mathbf{A}}}
+\def\rmB{{\mathbf{B}}}
+\def\rmC{{\mathbf{C}}}
+\def\rmD{{\mathbf{D}}}
+\def\rmE{{\mathbf{E}}}
+\def\rmF{{\mathbf{F}}}
+\def\rmG{{\mathbf{G}}}
+\def\rmH{{\mathbf{H}}}
+\def\rmI{{\mathbf{I}}}
+\def\rmJ{{\mathbf{J}}}
+\def\rmK{{\mathbf{K}}}
+\def\rmL{{\mathbf{L}}}
+\def\rmM{{\mathbf{M}}}
+\def\rmN{{\mathbf{N}}}
+\def\rmO{{\mathbf{O}}}
+\def\rmP{{\mathbf{P}}}
+\def\rmQ{{\mathbf{Q}}}
+\def\rmR{{\mathbf{R}}}
+\def\rmS{{\mathbf{S}}}
+\def\rmT{{\mathbf{T}}}
+\def\rmU{{\mathbf{U}}}
+\def\rmV{{\mathbf{V}}}
+\def\rmW{{\mathbf{W}}}
+\def\rmX{{\mathbf{X}}}
+\def\rmY{{\mathbf{Y}}}
+\def\rmZ{{\mathbf{Z}}}
+
+\def\ermA{{\textnormal{A}}}
+\def\ermB{{\textnormal{B}}}
+\def\ermC{{\textnormal{C}}}
+\def\ermD{{\textnormal{D}}}
+\def\ermE{{\textnormal{E}}}
+\def\ermF{{\textnormal{F}}}
+\def\ermG{{\textnormal{G}}}
+\def\ermH{{\textnormal{H}}}
+\def\ermI{{\textnormal{I}}}
+\def\ermJ{{\textnormal{J}}}
+\def\ermK{{\textnormal{K}}}
+\def\ermL{{\textnormal{L}}}
+\def\ermM{{\textnormal{M}}}
+\def\ermN{{\textnormal{N}}}
+\def\ermO{{\textnormal{O}}}
+\def\ermP{{\textnormal{P}}}
+\def\ermQ{{\textnormal{Q}}}
+\def\ermR{{\textnormal{R}}}
+\def\ermS{{\textnormal{S}}}
+\def\ermT{{\textnormal{T}}}
+\def\ermU{{\textnormal{U}}}
+\def\ermV{{\textnormal{V}}}
+\def\ermW{{\textnormal{W}}}
+\def\ermX{{\textnormal{X}}}
+\def\ermY{{\textnormal{Y}}}
+\def\ermZ{{\textnormal{Z}}}
+
+\def\vzero{{\bm{0}}}
+\def\vone{{\bm{1}}}
+\def\vmu{{\bm{\mu}}}
+\def\vtheta{{\bm{\theta}}}
+\def\va{{\bm{a}}}
+\def\vb{{\bm{b}}}
+\def\vc{{\bm{c}}}
+\def\vd{{\bm{d}}}
+\def\ve{{\bm{e}}}
+\def\vf{{\bm{f}}}
+\def\vg{{\bm{g}}}
+\def\vh{{\bm{h}}}
+\def\vi{{\bm{i}}}
+\def\vj{{\bm{j}}}
+\def\vk{{\bm{k}}}
+\def\vl{{\bm{l}}}
+\def\vm{{\bm{m}}}
+\def\vn{{\bm{n}}}
+\def\vo{{\bm{o}}}
+\def\vp{{\bm{p}}}
+\def\vq{{\bm{q}}}
+\def\vr{{\bm{r}}}
+\def\vs{{\bm{s}}}
+\def\vt{{\bm{t}}}
+\def\vu{{\bm{u}}}
+\def\vv{{\bm{v}}}
+\def\vw{{\bm{w}}}
+\def\vx{{\bm{x}}}
+\def\vy{{\bm{y}}}
+\def\vz{{\bm{z}}}
+
+\def\evalpha{{\alpha}}
+\def\evbeta{{\beta}}
+\def\evepsilon{{\epsilon}}
+\def\evlambda{{\lambda}}
+\def\evomega{{\omega}}
+\def\evmu{{\mu}}
+\def\evpsi{{\psi}}
+\def\evsigma{{\sigma}}
+\def\evtheta{{\theta}}
+\def\eva{{a}}
+\def\evb{{b}}
+\def\evc{{c}}
+\def\evd{{d}}
+\def\eve{{e}}
+\def\evf{{f}}
+\def\evg{{g}}
+\def\evh{{h}}
+\def\evi{{i}}
+\def\evj{{j}}
+\def\evk{{k}}
+\def\evl{{l}}
+\def\evm{{m}}
+\def\evn{{n}}
+\def\evo{{o}}
+\def\evp{{p}}
+\def\evq{{q}}
+\def\evr{{r}}
+\def\evs{{s}}
+\def\evt{{t}}
+\def\evu{{u}}
+\def\evv{{v}}
+\def\evw{{w}}
+\def\evx{{x}}
+\def\evy{{y}}
+\def\evz{{z}}
+
+\def\mA{{\bm{A}}}
+\def\mB{{\bm{B}}}
+\def\mC{{\bm{C}}}
+\def\mD{{\bm{D}}}
+\def\mE{{\bm{E}}}
+\def\mF{{\bm{F}}}
+\def\mG{{\bm{G}}}
+\def\mH{{\bm{H}}}
+\def\mI{{\bm{I}}}
+\def\mJ{{\bm{J}}}
+\def\mK{{\bm{K}}}
+\def\mL{{\bm{L}}}
+\def\mM{{\bm{M}}}
+\def\mN{{\bm{N}}}
+\def\mO{{\bm{O}}}
+\def\mP{{\bm{P}}}
+\def\mQ{{\bm{Q}}}
+\def\mR{{\bm{R}}}
+\def\mS{{\bm{S}}}
+\def\mT{{\bm{T}}}
+\def\mU{{\bm{U}}}
+\def\mV{{\bm{V}}}
+\def\mW{{\bm{W}}}
+\def\mX{{\bm{X}}}
+\def\mY{{\bm{Y}}}
+\def\mZ{{\bm{Z}}}
+\def\mBeta{{\bm{\beta}}}
+\def\mPhi{{\bm{\Phi}}}
+\def\mLambda{{\bm{\Lambda}}}
+\def\mSigma{{\bm{\Sigma}}}
+
+\DeclareMathAlphabet{\mathsfit}{\encodingdefault}{\sfdefault}{m}{sl}
+\SetMathAlphabet{\mathsfit}{bold}{\encodingdefault}{\sfdefault}{bx}{n}
+\newcommand{\tens}[1]{\bm{\mathsfit{#1}}}
+\def\tA{{\tens{A}}}
+\def\tB{{\tens{B}}}
+\def\tC{{\tens{C}}}
+\def\tD{{\tens{D}}}
+\def\tE{{\tens{E}}}
+\def\tF{{\tens{F}}}
+\def\tG{{\tens{G}}}
+\def\tH{{\tens{H}}}
+\def\tI{{\tens{I}}}
+\def\tJ{{\tens{J}}}
+\def\tK{{\tens{K}}}
+\def\tL{{\tens{L}}}
+\def\tM{{\tens{M}}}
+\def\tN{{\tens{N}}}
+\def\tO{{\tens{O}}}
+\def\tP{{\tens{P}}}
+\def\tQ{{\tens{Q}}}
+\def\tR{{\tens{R}}}
+\def\tS{{\tens{S}}}
+\def\tT{{\tens{T}}}
+\def\tU{{\tens{U}}}
+\def\tV{{\tens{V}}}
+\def\tW{{\tens{W}}}
+\def\tX{{\tens{X}}}
+\def\tY{{\tens{Y}}}
+\def\tZ{{\tens{Z}}}
+
+
+\def\gA{{\mathcal{A}}}
+\def\gB{{\mathcal{B}}}
+\def\gC{{\mathcal{C}}}
+\def\gD{{\mathcal{D}}}
+\def\gE{{\mathcal{E}}}
+\def\gF{{\mathcal{F}}}
+\def\gG{{\mathcal{G}}}
+\def\gH{{\mathcal{H}}}
+\def\gI{{\mathcal{I}}}
+\def\gJ{{\mathcal{J}}}
+\def\gK{{\mathcal{K}}}
+\def\gL{{\mathcal{L}}}
+\def\gM{{\mathcal{M}}}
+\def\gN{{\mathcal{N}}}
+\def\gO{{\mathcal{O}}}
+\def\gP{{\mathcal{P}}}
+\def\gQ{{\mathcal{Q}}}
+\def\gR{{\mathcal{R}}}
+\def\gS{{\mathcal{S}}}
+\def\gT{{\mathcal{T}}}
+\def\gU{{\mathcal{U}}}
+\def\gV{{\mathcal{V}}}
+\def\gW{{\mathcal{W}}}
+\def\gX{{\mathcal{X}}}
+\def\gY{{\mathcal{Y}}}
+\def\gZ{{\mathcal{Z}}}
+
+\def\sA{{\mathbb{A}}}
+\def\sB{{\mathbb{B}}}
+\def\sC{{\mathbb{C}}}
+\def\sD{{\mathbb{D}}}
+\def\sF{{\mathbb{F}}}
+\def\sG{{\mathbb{G}}}
+\def\sH{{\mathbb{H}}}
+\def\sI{{\mathbb{I}}}
+\def\sJ{{\mathbb{J}}}
+\def\sK{{\mathbb{K}}}
+\def\sL{{\mathbb{L}}}
+\def\sM{{\mathbb{M}}}
+\def\sN{{\mathbb{N}}}
+\def\sO{{\mathbb{O}}}
+\def\sP{{\mathbb{P}}}
+\def\sQ{{\mathbb{Q}}}
+\def\sR{{\mathbb{R}}}
+\def\sS{{\mathbb{S}}}
+\def\sT{{\mathbb{T}}}
+\def\sU{{\mathbb{U}}}
+\def\sV{{\mathbb{V}}}
+\def\sW{{\mathbb{W}}}
+\def\sX{{\mathbb{X}}}
+\def\sY{{\mathbb{Y}}}
+\def\sZ{{\mathbb{Z}}}
+
+\def\emLambda{{\Lambda}}
+\def\emA{{A}}
+\def\emB{{B}}
+\def\emC{{C}}
+\def\emD{{D}}
+\def\emE{{E}}
+\def\emF{{F}}
+\def\emG{{G}}
+\def\emH{{H}}
+\def\emI{{I}}
+\def\emJ{{J}}
+\def\emK{{K}}
+\def\emL{{L}}
+\def\emM{{M}}
+\def\emN{{N}}
+\def\emO{{O}}
+\def\emP{{P}}
+\def\emQ{{Q}}
+\def\emR{{R}}
+\def\emS{{S}}
+\def\emT{{T}}
+\def\emU{{U}}
+\def\emV{{V}}
+\def\emW{{W}}
+\def\emX{{X}}
+\def\emY{{Y}}
+\def\emZ{{Z}}
+\def\emSigma{{\Sigma}}
+
+\newcommand{\etens}[1]{\mathsfit{#1}}
+\def\etLambda{{\etens{\Lambda}}}
+\def\etA{{\etens{A}}}
+\def\etB{{\etens{B}}}
+\def\etC{{\etens{C}}}
+\def\etD{{\etens{D}}}
+\def\etE{{\etens{E}}}
+\def\etF{{\etens{F}}}
+\def\etG{{\etens{G}}}
+\def\etH{{\etens{H}}}
+\def\etI{{\etens{I}}}
+\def\etJ{{\etens{J}}}
+\def\etK{{\etens{K}}}
+\def\etL{{\etens{L}}}
+\def\etM{{\etens{M}}}
+\def\etN{{\etens{N}}}
+\def\etO{{\etens{O}}}
+\def\etP{{\etens{P}}}
+\def\etQ{{\etens{Q}}}
+\def\etR{{\etens{R}}}
+\def\etS{{\etens{S}}}
+\def\etT{{\etens{T}}}
+\def\etU{{\etens{U}}}
+\def\etV{{\etens{V}}}
+\def\etW{{\etens{W}}}
+\def\etX{{\etens{X}}}
+\def\etY{{\etens{Y}}}
+\def\etZ{{\etens{Z}}}
+
+\newcommand{\pdata}{p_{\rm{data}}}
+\newcommand{\ptrain}{\hat{p}_{\rm{data}}}
+\newcommand{\Ptrain}{\hat{P}_{\rm{data}}}
+\newcommand{\pmodel}{p_{\rm{model}}}
+\newcommand{\Pmodel}{P_{\rm{model}}}
+\newcommand{\ptildemodel}{\tilde{p}_{\rm{model}}}
+\newcommand{\pencode}{p_{\rm{encoder}}}
+\newcommand{\pdecode}{p_{\rm{decoder}}}
+\newcommand{\precons}{p_{\rm{reconstruct}}}
+
+\newcommand{\laplace}{\mathrm{Laplace}} 
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Ls}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\emp}{\tilde{p}}
+\newcommand{\lr}{\alpha}
+\newcommand{\reg}{\lambda}
+\newcommand{\rect}{\mathrm{rectifier}}
+\newcommand{\softmax}{\mathrm{softmax}}
+\newcommand{\sigmoid}{\sigma}
+\newcommand{\softplus}{\zeta}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\standarderror}{\mathrm{SE}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\normlzero}{L^0}
+\newcommand{\normlone}{L^1}
+\newcommand{\normltwo}{L^2}
+\newcommand{\normlp}{L^p}
+\newcommand{\normmax}{L^\infty}
+
+\newcommand{\parents}{Pa} 
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Tr}{Tr}
+\let\ab\allowbreak
+ 
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{PAC Confidence Sets for Deep Neural Networks via Calibrated Prediction}
+
+
+
+
+
+\author{Sangdon Park \\
+University of Pennsylvania\\
+\texttt{sangdonp@cis.upenn.edu} \\
+\And
+Osbert Bastani \\
+University of Pennsylvania \\
+\texttt{obastani@seas.upenn.edu} \\
+\And
+Nikolai Matni \\
+University of Pennsylvania \\
+\texttt{nmatni@seas.upenn.edu} \\
+\And
+\hspace{17ex} Insup Lee \\
+\hspace{17.5ex} University of Pennsylvania \\
+\hspace{17.5ex} \texttt{lee@cis.upenn.edu} \\
+}
+
+
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{array} \usepackage{booktabs} \usepackage{multirow}
+\usepackage{makecell} 
+
+\usepackage{amsmath} \usepackage{bbm} \usepackage{amsthm}
+
+
+
+
+
+
+\makeatletter
+\@ifundefined{proposition}{\newtheorem{proposition}{Proposition}
+}{}
+\@ifundefined{definition}{\newtheorem{definition}{Definition}}{}
+\@ifundefined{lemma}{\newtheorem{lemma}{Lemma}
+}{}
+\@ifundefined{corollary}{\newtheorem{corollary}{Corollary}
+}{}
+\@ifundefined{theorem}{\newtheorem{theorem}{Theorem}
+}{}
+\@ifundefined{corollary}{\newtheorem{corollary}{Corollary}
+}{}
+\@ifundefined{assumption}{\newtheorem{assumption}{Assumption}
+}{}
+\@ifundefined{problem}{\newtheorem{problem}{Problem}
+}{}
+\@ifundefined{problem*}{\newtheorem*{problem*}{Problem}
+}{}
+\@ifundefined{claim}{\newtheorem{claim}{claim}
+}{}
+\makeatother
+
+\newtheorem{innercustomthm}{Theorem}
+\newenvironment{customthm}[1]
+  {\renewcommand\theinnercustomthm{#1}\innercustomthm}
+  {\endinnercustomthm}
+
+\newtheorem{innercustomprop}{Proposition}
+\newenvironment{customprop}[1]
+  {\renewcommand\theinnercustomprop{#1}\innercustomprop}
+  {\endinnercustomprop}
+
+\newtheorem{innercustomcor}{Corollary}
+\newenvironment{customcor}[1]
+  {\renewcommand\theinnercustomcor{#1}\innercustomcor}
+  {\endinnercustomcor}
+
+\newtheorem{innercustomlem}{Lemma}
+\newenvironment{customlem}[1]
+  {\renewcommand\theinnercustomlem{#1}\innercustomlem}
+  {\endinnercustomlem}
+
+
+
+
+
+
+
+\let\oldReturn\Return
+\newcommand{\algorithmicbreak}{\textbf{break}}
+\newcommand{\Break}{\STATE \algorithmicbreak}
+
+
+
+
+
+
+\newtheorem{innercustomgeneric}{\customgenericname}
+\providecommand{\customgenericname}{}
+\newcommand{\newcustomtheorem}[2]{\newenvironment{#1}[1]
+  {\renewcommand\customgenericname{#2}\renewcommand\theinnercustomgeneric{##1}\innercustomgeneric
+  }
+  {\endinnercustomgeneric}
+}
+\newcustomtheorem{customclaim}{Claim}
+
+
+
+\providecommand{\Fig}{Figure~}
+\providecommand{\Sec}{Section~}
+\providecommand{\Tab}{Table~}
+\providecommand{\Alg}{Algorithm~}
+\providecommand{\Eq}{Equation~}
+\providecommand{\Def}{Definition~}
+\providecommand{\Thm}{Theorem~}
+\providecommand{\Pro}{Proposition~}
+\providecommand{\Lem}{Lemma~}
+
+\providecommand{\eqnref}			[1]		{Equation~(\ref{#1})}
+\providecommand{\tabref}			[1]		{Table~\ref{#1}}
+\providecommand{\figref}			[1]		{Figure~\ref{#1}}
+\providecommand{\alref}			[1]		{Algorithm~\ref{#1}}
+\providecommand{\defref}			[1]		{Definition~\ref{#1}}
+\providecommand{\prbref}			[1]		{Problem~\ref{#1}}
+\providecommand{\thmref}			[1]		{Theorem~\ref{#1}}
+\providecommand{\proref}			[1]		{Proposition~\ref{#1}}
+\providecommand{\lemref}			[1]		{Lemma~\ref{#1}}
+\providecommand{\corref}			[1]		{Corollary~\ref{#1}}
+\providecommand{\secref}			[1]		{Section~\ref{#1}}
+\providecommand{\apxref}			[1]		{Appendix~\ref{#1}}
+
+\providecommand{\eqa}				[1]		{\begin{align}#1\end{align}}
+\providecommand{\eqas}			[1]		{\begin{align*}#1\end{align*}}
+\providecommand{\eqml}			[1]		{\begin{multline}#1\end{multline}}
+\providecommand{\mat}				[2]		{\left[\begin{array}{#1} #2 \end{array}\right]}
+
+\providecommand{\ie}{\emph{i.e.,}~}
+\providecommand{\eg}{\emph{e.g.,}~}
+
+\providecommand\qcomment[1]{ }
+
+\providecommand{\realnum}					{\mathbb{R}}
+\providecommand{\integernum}				{\mathbb{Z}}
+\providecommand{\complexnum}				{\mathbb{C}}
+\providecommand{\naturalnum}				{\mathbb{N}}
+
+\renewcommand{\(}						{\left(}
+\renewcommand{\)}						{\right)}
+\renewcommand{\[}						{\left[}
+\renewcommand{\]}						{\right]}
+\newcommand{\<}						{\left<}
+\renewcommand{\>}						{\right>}
+
+\providecommand{\Prob}{\mathbbm{P}}
+\providecommand{\Probop}{\mathop{\Prob}}
+\providecommand{\Exp}{\mathbbm{E}}
+\providecommand{\Expop}{\mathop{\Exp}}
+\providecommand{\Ind}{\mathbbm{I}}
+\providecommand{\iid}{i.i.d.}
+\providecommand{\findop}{\mathop{\text{find}}}
+
+
+
+\def\a{\bm{a}}
+\def\b{\bm{b}}
+\def\c{\bm{c}}
+\def\d{\bm{d}}
+\def\e{\bm{e}}
+\def\f{\bm{f}}
+\def\g{\bm{g}}
+\def\h{\bm{h}}
+\def\i{\bm{i}}
+\def\i{\bm{j}}
+\def\k{\bm{k}}
+\def\l{\bm{l}}
+\def\m{\bm{m}}
+\def\n{\bm{n}}
+\def\p{\bm{p}}
+\def\q{\bm{q}}
+\def\r{\bm{r}}
+\def\s{\bm{s}}
+\def\t{\bm{t}}
+\def\u{\bm{u}}
+\def\v{\bm{v}}
+\def\w{\bm{w}}
+\def\x{\bm{x}}
+\def\y{\bm{y}}
+\def\z{\bm{z}}
+\def\A{\bm{A}}
+\def\B{\bm{B}}
+\def\C{\bm{C}}
+\def\D{\bm{D}}
+\def\E{\bm{E}}
+\def\F{\bm{F}}
+\def\G{\bm{G}}
+\def\H{\bm{H}}
+\def\I{\bm{I}}
+\def\J{\bm{J}}
+\def\K{\bm{K}}
+\def\L{\bm{L}}
+\def\M{\bm{M}}
+\def\N{\bm{N}}
+\def\O{\bm{O}}
+\def\P{\bm{P}}
+\def\Q{\bm{Q}}
+\def\R{\bm{R}}
+\def\S{\bm{S}}
+\def\T{\bm{T}}
+\def\U{\bm{U}}
+\def\V{\bm{V}}
+\def\W{\bm{W}}
+\def\X{\bm{X}}
+\def\Y{\bm{Y}}
+\def\Z{\bm{Z}}
+\def\aH{\hat{\bm{a}}}
+\def\bH{\hat{\bm{b}}}
+\def\cH{\hat{\bm{c}}}
+\def\dH{\hat{\bm{d}}}
+\def\eH{\hat{\bm{e}}}
+\def\fH{\hat{\bm{f}}}
+\def\gH{\hat{\bm{g}}}
+\def\hH{\hat{\bm{h}}}
+\def\iH{\hat{\bm{i}}}
+\def\iH{\hat{\bm{j}}}
+\def\kH{\hat{\bm{k}}}
+\def\lH{\hat{\bm{l}}}
+\def\mH{\hat{\bm{m}}}
+\def\nH{\hat{\bm{n}}}
+\def\oH{\hat{\bm{o}}}
+\def\pH{\hat{\bm{p}}}
+\def\qH{\hat{\bm{q}}}
+\def\rH{\hat{\bm{r}}}
+\def\sH{\hat{\bm{s}}}
+\def\tH{\hat{\bm{t}}}
+\def\uH{\hat{\bm{u}}}
+\def\vH{\hat{\bm{v}}}
+\def\wH{\hat{\bm{w}}}
+\def\xH{\hat{\bm{x}}}
+\def\yH{\hat{\bm{y}}}
+\def\zH{\hat{\bm{z}}}
+\def\AH{\hat{\bm{A}}}
+\def\BH{\hat{\bm{B}}}
+\def\CH{\hat{\bm{C}}}
+\def\DH{\hat{\bm{D}}}
+\def\EH{\hat{\bm{E}}}
+\def\FH{\hat{\bm{F}}}
+\def\GH{\hat{\bm{G}}}
+\def\HH{\hat{\bm{H}}}
+\def\IH{\hat{\bm{I}}}
+\def\JH{\hat{\bm{J}}}
+\def\KH{\hat{\bm{K}}}
+\def\LH{\hat{\bm{L}}}
+\def\MH{\hat{\bm{M}}}
+\def\NH{\hat{\bm{N}}}
+\def\OH{\hat{\bm{O}}}
+\def\PH{\hat{\bm{P}}}
+\def\QH{\hat{\bm{Q}}}
+\def\RH{\hat{\bm{R}}}
+\def\SH{\hat{\bm{S}}}
+\def\TH{\hat{\bm{T}}}
+\def\UH{\hat{\bm{U}}}
+\def\VH{\hat{\bm{V}}}
+\def\WH{\hat{\bm{W}}}
+\def\XH{\hat{\bm{X}}}
+\def\YH{\hat{\bm{Y}}}
+\def\ZH{\hat{\bm{Z}}}
+\def\aB{\bar{\bm{a}}}
+\def\bB{\bar{\bm{b}}}
+\def\cB{\bar{\bm{c}}}
+\def\dB{\bar{\bm{d}}}
+\def\eB{\bar{\bm{e}}}
+\def\fB{\bar{\bm{f}}}
+\def\gB{\bar{\bm{g}}}
+\def\hB{\bar{\bm{h}}}
+\def\iB{\bar{\bm{i}}}
+\def\iB{\bar{\bm{j}}}
+\def\kB{\bar{\bm{k}}}
+\def\lB{\bar{\bm{l}}}
+\def\mB{\bar{\bm{m}}}
+\def\nB{\bar{\bm{n}}}
+\def\oB{\bar{\bm{o}}}
+\def\pB{\bar{\bm{p}}}
+\def\qB{\bar{\bm{q}}}
+\def\rB{\bar{\bm{r}}}
+\def\sB{\bar{\bm{s}}}
+\def\tB{\bar{\bm{t}}}
+\def\uB{\bar{\bm{u}}}
+\def\vB{\bar{\bm{v}}}
+\def\wB{\bar{\bm{w}}}
+\def\xB{\bar{\bm{x}}}
+\def\yB{\bar{\bm{y}}}
+\def\zB{\bar{\bm{z}}}
+\def\AB{\bar{\bm{A}}}
+\def\BB{\bar{\bm{B}}}
+\def\CB{\bar{\bm{C}}}
+\def\DB{\bar{\bm{D}}}
+\def\EB{\bar{\bm{E}}}
+\def\FB{\bar{\bm{F}}}
+\def\GB{\bar{\bm{G}}}
+\def\HB{\bar{\bm{H}}}
+\def\IB{\bar{\bm{I}}}
+\def\JB{\bar{\bm{J}}}
+\def\KB{\bar{\bm{K}}}
+\def\LB{\bar{\bm{L}}}
+\def\MB{\bar{\bm{M}}}
+\def\NB{\bar{\bm{N}}}
+\def\OB{\bar{\bm{O}}}
+\def\PB{\bar{\bm{P}}}
+\def\QB{\bar{\bm{Q}}}
+\def\RB{\bar{\bm{R}}}
+\def\SB{\bar{\bm{S}}}
+\def\TB{\bar{\bm{T}}}
+\def\UB{\bar{\bm{U}}}
+\def\VB{\bar{\bm{V}}}
+\def\WB{\bar{\bm{W}}}
+\def\XB{\bar{\bm{X}}}
+\def\YB{\bar{\bm{Y}}}
+\def\ZB{\bar{\bm{Z}}}
+\def\xD{\dot{\bm{x}}}
+\def\ah{\hat{{a}}}
+\def\bh{\hat{{b}}}
+\def\ch{\hat{{c}}}
+\def\dh{\hat{{d}}}
+\def\eh{\hat{{e}}}
+\def\fh{\hat{{f}}}
+\def\gh{\hat{{g}}}
+\def\hh{\hat{{h}}}
+\def\ih{\hat{{i}}}
+\def\ih{\hat{{j}}}
+\def\kh{\hat{{k}}}
+\def\lh{\hat{{l}}}
+\def\mh{\hat{{m}}}
+\def\nh{\hat{{n}}}
+\def\oh{\hat{{o}}}
+\def\ph{\hat{{p}}}
+\def\qh{\hat{{q}}}
+\def\rh{\hat{{r}}}
+\def\sh{\hat{{s}}}
+\def\th{\hat{{t}}}
+\def\uh{\hat{{u}}}
+\def\vh{\hat{{v}}}
+\def\wh{\hat{{w}}}
+\def\xh{\hat{{x}}}
+\def\yh{\hat{{y}}}
+\def\zh{\hat{{z}}}
+\def\Ah{\hat{{A}}}
+\def\Bh{\hat{{B}}}
+\def\Ch{\hat{{C}}}
+\def\Dh{\hat{{D}}}
+\def\Eh{\hat{{E}}}
+\def\Fh{\hat{{F}}}
+\def\Gh{\hat{{G}}}
+\def\Hh{\hat{{H}}}
+\def\Ih{\hat{{I}}}
+\def\Jh{\hat{{J}}}
+\def\Kh{\hat{{K}}}
+\def\Lh{\hat{{L}}}
+\def\Mh{\hat{{M}}}
+\def\Nh{\hat{{N}}}
+\def\Oh{\hat{{O}}}
+\def\Ph{\hat{{P}}}
+\def\Qh{\hat{{Q}}}
+\def\Rh{\hat{{R}}}
+\def\Sh{\hat{{S}}}
+\def\Th{\hat{{T}}}
+\def\Uh{\hat{{U}}}
+\def\Vh{\hat{{V}}}
+\def\Wh{\hat{{W}}}
+\def\Xh{\hat{{X}}}
+\def\Yh{\hat{{Y}}}
+\def\Zh{\hat{{Z}}}
+\def\rhoh{\hat{\rho}}
+\def\pih{\hat{\pi}}
+\def\tauh{\hat{\tau}}
+\def\db{\bar{{d}}}
+\def\yb{\bar{{y}}}
+\def\ad{\dot{{a}}}
+\def\bd{\dot{{b}}}
+\def\cd{\dot{{c}}}
+\def\dd{\dot{{d}}}
+\def\ed{\dot{{e}}}
+\def\fd{\dot{{f}}}
+\def\gd{\dot{{g}}}
+\def\hd{\dot{{h}}}
+\def\id{\dot{{i}}}
+\def\id{\dot{{j}}}
+\def\kd{\dot{{k}}}
+\def\ld{\dot{{l}}}
+\def\md{\dot{{m}}}
+\def\nd{\dot{{n}}}
+\def\od{\dot{{o}}}
+\def\pd{\dot{{p}}}
+\def\qd{\dot{{q}}}
+\def\rd{\dot{{r}}}
+\def\sd{\dot{{s}}}
+\def\td{\dot{{t}}}
+\def\ud{\dot{{u}}}
+\def\vd{\dot{{v}}}
+\def\wdot{\dot{{w}}}
+\def\xd{\dot{{x}}}
+\def\yd{\dot{{y}}}
+\def\zd{\dot{{z}}}
+\def\Ad{\dot{{A}}}
+\def\Bd{\dot{{B}}}
+\def\Cd{\dot{{C}}}
+\def\Dd{\dot{{D}}}
+\def\Ed{\dot{{E}}}
+\def\Fd{\dot{{F}}}
+\def\Gd{\dot{{G}}}
+\def\Hd{\dot{{H}}}
+\def\Id{\dot{{I}}}
+\def\Jd{\dot{{J}}}
+\def\Kd{\dot{{K}}}
+\def\Ld{\dot{{L}}}
+\def\Md{\dot{{M}}}
+\def\Nd{\dot{{N}}}
+\def\Od{\dot{{O}}}
+\def\Pd{\dot{{P}}}
+\def\Qd{\dot{{Q}}}
+\def\Rd{\dot{{R}}}
+\def\Sd{\dot{{S}}}
+\def\Td{\dot{{T}}}
+\def\Ud{\dot{{U}}}
+\def\Vd{\dot{{V}}}
+\def\Wd{\dot{{W}}}
+\def\Xd{\dot{{X}}}
+\def\Yd{\dot{{Y}}}
+\def\Zd{\dot{{Z}}}
+\def\as{\mathcal{{a}}}
+\def\bs{\mathcal{{b}}}
+\def\cs{\mathcal{{c}}}
+\def\ds{\mathcal{{d}}}
+\def\es{\mathcal{{e}}}
+\def\fs{\mathcal{{f}}}
+\def\gs{\mathcal{{g}}}
+\def\hs{\mathcal{{h}}}
+\def\is{\mathcal{{i}}}
+\def\is{\mathcal{{j}}}
+\def\ks{\mathcal{{k}}}
+\def\ls{\mathcal{{l}}}
+\def\ms{\mathcal{{m}}}
+\def\ns{\mathcal{{n}}}
+\def\os{\mathcal{{o}}}
+\def\ps{\mathcal{{p}}}
+\def\qs{\mathcal{{q}}}
+\def\rs{\mathcal{{r}}}
+\def\ss{\mathcal{{s}}}
+\def\ts{\mathcal{{t}}}
+\def\us{\mathcal{{u}}}
+\def\vs{\mathcal{{v}}}
+\def\ws{\mathcal{{w}}}
+\def\xs{\mathcal{{x}}}
+\def\ys{\mathcal{{y}}}
+\def\zs{\mathcal{{z}}}
+\def\As{\mathcal{{A}}}
+\def\Bs{\mathcal{{B}}}
+\def\Cs{\mathcal{{C}}}
+\def\Ds{\mathcal{{D}}}
+\def\Dsh{\hat{\mathcal{{D}}}}
+\def\Es{\mathcal{{E}}}
+\def\Fs{\mathcal{{F}}}
+\def\Gs{\mathcal{{G}}}
+\def\Gsh{\hat{\mathcal{{G}}}}
+\def\Hs{\mathcal{{H}}}
+\def\Hsh{\hat{\mathcal{{H}}}}
+\def\Is{\mathcal{{I}}}
+\def\Js{\mathcal{{J}}}
+\def\Ks{\mathcal{{K}}}
+\def\Ksh{\hat{\mathcal{{K}}}}
+\def\Ksb{\bar{\mathcal{{K}}}}
+\def\Ls{\mathcal{{L}}}
+\def\Ms{\mathcal{{M}}}
+\def\Ns{\mathcal{{N}}}
+\def\Os{\mathcal{{O}}}
+\def\Ps{\mathcal{{P}}}
+\def\Qs{\mathcal{{Q}}}
+\def\Rs{\mathcal{{R}}}
+\def\Ss{\mathcal{{S}}}
+\def\Ts{\mathcal{{T}}}
+\def\Us{\mathcal{{U}}}
+\def\Vs{\mathcal{{V}}}
+\def\Ws{\mathcal{{W}}}
+\def\Xs{\mathcal{{X}}}
+\def\Ys{\mathcal{{Y}}}
+\def\Zs{\mathcal{{Z}}}
+
+
+\def\Fsh{\hat{\Fs}}
+
+\def\alphaB{{\bm{\alpha}}}
+\def\betaB{{\bm{\beta}}}
+\def\gammaB{{\bm{\gamma}}}
+\def\deltaB{{\bm{\delta}}}
+\def\epsilonB{{\bm{\epsilon}}}
+\def\zetaB{{\bm{\zeta}}}
+\def\etaB{{\bm{\eta}}}
+\def\thetaB{{\bm{\theta}}}
+\def\iotaB{{\bm{\iota}}}
+\def\kappaB{{\bm{\kappa}}}
+\def\lambdaB{{\bm{\lambda}}}
+\def\muB{{\bm{\mu}}}
+\def\nuB{{\bm{\nu}}}
+\def\piB{{\bm{\pi}}}
+\def\rhoB{{\bm{\rho}}}
+\def\sigmaB{{\bm{\sigma}}}
+\def\tauB{{\bm{\tau}}}
+\def\upsilonB{{\bm{\upsilon}}}
+\def\phiB{{\bm{\phi}}}
+\def\chiB{{\bm{\chi}}}
+\def\psiB{{\bm{\psi}}}
+\def\omegaB{{\bm{\omega}}}
+\def\GammaB{{\bm{\Gamma}}}
+\def\DeltaB{{\bm{\Delta}}}
+\def\ThetaB{{\bm{\Theta}}}
+\def\LambdaB{{\bm{\Lambda}}}
+\def\PiB{{\bm{\Pi}}}
+\def\SigmaB{{\bm{\Sigma}}}
+\def\UpsilonB{{\bm{\Upsilon}}}
+\def\PhiB{{\bm{\Phi}}}
+\def\PsiB{{\bm{\Psi}}}
+\def\OmegaB{{\bm{\Omega}}}
+\def\gammaBH{\hat{\bm{\gamma}}}
+\def\thetaBH{\hat{\bm{\theta}}}
+\def\thetaBB{\bar{\bm{\theta}}}
+\def\alphah{\hat{{\alpha}}}
+\def\betah{\hat{{\beta}}}
+\def\gammah{\hat{{\gamma}}}
+\def\deltah{\hat{{\delta}}}
+\def\epsilonh{\hat{{\epsilon}}}
+\def\zetah{\hat{{\zeta}}}
+\def\etah{\hat{{\eta}}}
+\def\thetah{\hat{{\theta}}}
+\def\iotah{\hat{{\iota}}}
+\def\kappah{\hat{{\kappa}}}
+\def\lambdah{\hat{{\lambda}}}
+\def\muh{\hat{{\mu}}}
+\def\nuh{\hat{{\nu}}}
+\def\pih{\hat{{\pi}}}
+\def\rhoh{\hat{{\rho}}}
+\def\sigmah{\hat{{\sigma}}}
+\def\tauh{\hat{{\tau}}}
+\def\upsilonh{\hat{{\upsilon}}}
+\def\phih{\hat{{\phi}}}
+\def\chih{\hat{{\chi}}}
+\def\psih{\hat{{\psi}}}
+\def\omegah{\hat{{\omega}}}
+\def\Gammah{\hat{{\Gamma}}}
+\def\Deltah{\hat{{\Delta}}}
+\def\Thetah{\hat{{\Theta}}}
+\def\Lambdah{\hat{{\Lambda}}}
+\def\Pih{\hat{{\Pi}}}
+\def\Sigmah{\hat{{\Sigma}}}
+\def\Upsilonh{\hat{{\Upsilon}}}
+\def\Phih{\hat{{\Phi}}}
+\def\Psih{\hat{{\Psi}}}
+\def\Omegah{\hat{{\Omega}}}
+
+
+
+
+ 
+\renewcommand{\t}{{\mathbf{t}}}
+\renewcommand{\x}{{\mathbf{x}}}
+\renewcommand{\y}{{\mathbf{y}}}
+\renewcommand{\s}{{\mathbf{s}}}
+\renewcommand{\c}{{\mathbf{c}}}
+\newcommand{\ybh}{{\hat{\mathbf{y}}}}
+
+\renewcommand{\Sh}{{\hat{S}}}
+\renewcommand{\Rh}{{\hat{R}}}
+
+\renewcommand{\ch}{{{\hat{c}}}}
+
+\providecommand{\findop}{\mathop{\text{find}}}
+
+\providecommand\IL[1]{$\clubsuit$\footnote{IL: #1}}
+\newcommand{\osbert}[1]{{\color{red}{osbert: #1}}}
+\newcommand{\nikolai}[1]{{\color{purple}{nikolai: #1}}}
+\newcommand{\sangdon}[1]{\footnote{\color{blue}{sangdon: #1}}}
+
+
+
+\iclrfinalcopy \begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+We propose an algorithm combining calibrated prediction and generalization bounds from learning theory to construct confidence sets for deep neural networks with PAC guarantees---i.e., the confidence set for a given input contains the true label with high probability. We demonstrate how our approach can be used to construct PAC confidence sets on ResNet for ImageNet, a visual object tracking model, and a dynamics model for the half-cheetah reinforcement learning problem.
+\footnote{Our code is available at \url{https://github.com/sangdon/PAC-confidence-set}.}
+\end{abstract}
+
+
+
+\section{Introduction}
+
+A key challenge facing deep neural networks is that they do not produce reliable confidence estimates, which are important for applications such as safe reinforcement learning~\citep{berkenkamp2017safe}, guided exploration~\citep{malik2019calibrated}, and active learning~\citep{gal2017deep}.
+
+We consider the setting where the test data follows the same distribution as the training data (i.e., we do \emph{not} consider adversarial examples designed to fool the network~\citep{Szegedy2014}); even in this setting, confidence estimates produced by deep neural networks are notoriously unreliable~\citep{guo2017calibration}. One intuition for this shortcoming is that unlike traditional supervised learning algorithms, deep learning models typically overfit the training data~\citep{zhang2017understanding}.
+As a consequence, the confidence estimates of deep neural networks are flawed even for test data from the training distribution since, by construction, they overestimate the likelihood of the training data.
+
+A promising approach to addressing this challenge is \emph{temperature scaling}~\citep{platt1999probabilistic}. This approach takes as input a trained neural network $f_{\hat{\phi}}(y\mid x)$---i.e., whose parameters $\hat{\phi}$ have already been fit to a training dataset $Z_{\text{train}}$---which produces unreliable probabilities $f_{\hat{\phi}}(y\mid x)$.
+Then, this approach rescales these confidence estimates based on a validation dataset to improve their ``calibration''. More precisely, this approach fits confidence estimates of the form
+\begin{align*}
+f_{\hat{\phi},\tau}(y\mid x)\propto\exp(\tau\log f_{\hat{\phi}}(y\mid x)),
+\end{align*}
+where $\tau\in\mathbb{R}_{>0}$ is a \emph{temperature scaling} parameter that is fit based on the validation dataset. The goal is to choose $\tau$ to minimize \emph{calibration error}, which roughly speaking measures the degree to which the reported error rate differs from the actual error rate.
+
+The key insight is that in the temperature scaling approach, only a single parameter $\tau$ is fit to the validation data---thus, unlike fitting the original neural network, the temperature scaling algorithm comes with generalization guarantees based on traditional statistical learning theory.
+
+Despite the improved generalization guarantees, these confidence estimates still do not come with theoretical guarantees. We are interested in producing \emph{confidence sets} that satisfy statistical guarantees while being as small as possible. Given a test input $x\in\mathcal{X}$, a confidence set $C_T(x)\subseteq\mathcal{Y}$ (parameterized by $T\in\mathbb{R}$) should contain the true label $y$ for at least a $1-\epsilon$ fraction of cases:
+\begin{align*}
+\mathbb{P}_{(x,y)\sim D}[y\in C_T(x)]\ge1-\epsilon.
+\end{align*}
+Since we are fitting a parameter $T$ to based on $Z_{\text{val}}$, we additionally incur a probability of failure due to the randomness in $Z_{\text{val}}$. In other words, given $\epsilon,\delta\in\mathbb{R}_{>0}$, we aim to obtain \emph{probably approximately correct (PAC)} confidence sets $C_T(x)\subseteq\mathcal{Y}$ satisfying the guarantee
+\begin{align*}
+\mathbb{P}_{Z_{\text{val}}\sim D^n}\bigg(\mathbb{P}_{(x,y)\sim D}(y\in C_T(x))\ge1-\epsilon\bigg)\ge1-\delta.
+\end{align*}
+Indeed, techniques from statistical learning theory~\citep{vapnik1999overview} can be used to do so~\citep{vovk2013conditional}.
+
+There are a number of reasons why confidence sets can be useful. First, they can be used to inform safety critical decision making. For example, consider a doctor who uses prediction tools to help perform diagnosis. Having a confidence set would both help the doctor estimate the confidence of the prediction (i.e., smaller confidence sets imply higher confidence), but also give a sense of the set of possible diagnoses. Second, having a confidence set can be useful for reasoning about safety since they contain the true outcome with high probability. For instance, robots may use a confidence set over predicted trajectories to determine whether it is safe to act with high probability. As a concrete example, consider a self-driving car that uses a deep neural network to predict the path that a pedestrian might take. We require that the self-driving car avoid the pedestrian with high probability, which it can do by avoiding all possible paths in the predicted confidence set.
+
+\textbf{Contributions.}
+We propose an algorithm combining calibrated prediction and statistical learning theory to construct PAC confidence sets for deep neural networks (Section~\ref{sec:algorithm}). We propose instantiations of this framework in the settings of classification, regression, and learning models for reinforcement learning (Section~\ref{sec:instances}). Finally, we evaluate our approach on three benchmarks: ResNet~\citep{he2016deep} for ImageNet~\citep{russakovsky2015imagenet}, a model~\citep{held2016learning} learned for a visual object tracking benchmark~\citep{WuLimYang13}, and a probabilistic dynamics model~\citep{chua2018deep} learned for the half-cheetah environment~\citep{brockman2016openai} (Section~\ref{sec:experiments}). Examples of ImageNet images with different sized ResNet confidence sets are shown in Table~\ref{fig:images}. As can be seen, our confidence sets become larger and the images become more challenging to classify. In addition, we show predicted confidence sets for ResNet in Table~\ref{table:introimages_confsets}, as well as predicted confidence sets for the visual object tracking model in Table~\ref{fig:introotb_goturn_conf_set}.
+
+
+
+
+
+
+\begin{table*}[t]
+\centering
+\setlength{\fboxsep}{-2pt}	
+\setlength{\fboxrule}{2pt}	
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\setlength\tabcolsep{1.5pt} \begin{tabular}{M{0.02\textwidth} | M{0.24\textwidth} M{0.24\textwidth} M{0.24\textwidth} M{0.24\textwidth}}
+~ & $|C(x) | = 1$ & $5 \leq |C(x) | \leq 10$ & $50 \leq |C(x) | \leq 100$ & $ |C(x) | \geq 200$ \\
+	\toprule
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{airship}}} &
+		\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10119_css_1}}} &
+		\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10117_css_9}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10120_css_80}}}} &
+		\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10138_css_241}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{zebra}}} &
+		\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8519_css_1}}} &
+		\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8525_css_7}}} &
+		\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8539_css_80}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=0.75\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8530_css_227}}}} \\
+\end{tabular}
+\caption{ImageNet images with varying ResNet confidence set sizes. The confidence set sizes are on the top. The true label is on the left-hand side. Incorrectly labeled images are boxed in red.}
+\label{fig:images}
+\end{table*}
+
+
+\begin{table*}[t]
+\centering
+\setlength{\fboxsep}{-2pt}	
+\setlength{\fboxrule}{2pt}	
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\setlength\tabcolsep{1.5pt} \begin{tabular}{M{0.17\textwidth} M{0.15\textwidth} | M{0.17\textwidth} M{0.15\textwidth} | M{0.17\textwidth} M{0.15\textwidth} }
+\multicolumn{2}{c|}{$1 \leq |C(x) | < 5$} &
+	\multicolumn{2}{c|}{$5 \leq |C(x) | < 10$} &
+	\multicolumn{2}{c}{$10 \leq |C(x) | < 20$} \\
+	\toprule
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_335_css_1}}} &
+	{\tiny$\left\{ 
+		\widehat{{\color{red}\text{king penguin}}} 
+	\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_33_css_5}}} &
+	{\tiny$\left\{ \makecell{
+		\widehat{{\color{red}\text{Chihuahua}}}, \\ \text{toy terrier}, \\ \text{Italian greyhound}, \\ \text{Boston bull}, \\ \text{miniature pinscher}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_122_css_10}}} &
+	{\tiny$\left\{ \makecell{
+		\text{banded gecko}, \\ \widehat{{\color{red}\text{common iguana}}}, \\ \text{American chameleon},  \\ \text{whiptail}, \\ \text{agama}, \\ \text{frilled lizard}, \\ \text{alligator lizard}, \\ \text{green lizard}, \\ \text{African chameleon}, \\ \text{Komodo dragon}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_8_css_1}}} &
+	{\tiny$\left\{ 
+		\widehat{{\color{red}\text{shopping basket}}}
+	\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_38_css_6}}} &
+	{\tiny$\left\{ \makecell{
+		\text{English springer},\\ \text{\makecell{Welsh springer \\ spaniel}},\\ \text{collie},\\ \text{boxer},\\ \widehat{{\color{red}\text{Saint Bernard}}},\\ \text{Leonberg}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_69_css_11}}} &
+	{\tiny$\left\{ \makecell{
+		\text{altar}, \\ \text{analog clock}, \\ \text{bell cote}, \text{castle}, \\ \widehat{{\color{red}\text{church}}}, \\ \text{cinema}, \text{dome}, \\ \text{monastery}, \\ \text{palace}, \text{vault}, \\ \text{wall clock}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_23_css_1}}} &
+	{\tiny$\left\{ 
+		\widehat{{\color{red}\text{\makecell{chambered \\nautilus}}}}
+	\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_32_css_5}}} &
+	{\tiny$\left\{ \makecell{
+		\text{face powder},\\ \widehat{{\color{red}\text{hamper}}},\\ \text{lotion},\\ \text{packet},\\ \text{shopping basket}
+	} \right\}$} &
+\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_191_css_12}}} } &
+	{\tiny$\left\{ \makecell{
+		\text{barber chair},\\ \text{hand blower},\\ \text{medicine chest},\\ \text{paper towel},\\ {\color{red}\text{plunger}},\\ \text{shower curtain},\\ \text{soap dispenser},\\ \widehat{\text{toilet seat}},\\ \text{tub}, \text{washbasin},\\ \text{washer}, \text{toilet tissue}
+	}\right\}$} 
+	\\
+	
+\end{tabular}
+\caption{Confidence sets of ImageNet images with varying ResNet confidence set sizes. The predicted  confidence set is shown to the right of the corresponding input image. The true label is shown in red, and the predicted label is shown with a hat. See Table~\ref{table:extraimages_confsets} in Appendix~\ref{sec:additionalresults} for more examples.}
+\label{table:introimages_confsets}
+\end{table*}
+
+\begin{table*}[th!]
+\centering
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0050}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0050}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0076}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0077}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0078}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0079}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0080}} 
+\caption{Visualization of confidence sets for the tracking dataset~\citep{WuLimYang13}, including the ground truth bounding box (white), the bounding box predicted by the original neural network~\citep{held2016learning} (red), and the bounding box produced using our confidence set predictor (green). We have overapproximated the predicted ellipsoid confidence set with a box. Our bounding box contains the ground truth bounding box with high probability. See Table~\ref{fig:otb_goturn_conf_set} in Appendix~\ref{sec:additionalresults} for more examples.}
+\label{fig:introotb_goturn_conf_set}
+\end{table*}
+ 
+
+\textbf{Related work.}
+There has been work on constructing confidence sets with theoretical guarantees. Oftentimes, these guarantees are asymptotic rather than finite sample~\citep{steinberger2016leave,steinberger2018conditional}. Alternatively, there has been work focused on predicting confidence sets with a given expected size \citep{denis2017confidence}. 
+
+More relatedly, there has been recent work on obtaining PAC guarantees. For example, there has been some work specific prediction tasks such as binary classification~\citep{lei2014classification,wang2018learning}. There has also been work in the setting of regression~\citep{lei2018distribution,barber2019predictive}. However, in this case, the confidence sets are fixed in size---i.e., they do not depend on the input $x$~\citep{barber2019predictive}. Furthermore, they make stability assumptions about the learning algorithm (though they achieved improved rates by doing so)~\citep{lei2018distribution,barber2019predictive}.
+
+The most closely related work is on \emph{conformal prediction}~\citep{papadopoulos2008inductive,vovk2013conditional}. Like our approach, this line of work provides a way to construct confidence sets from a given confidence predictor, and provided PAC guarantees for the validity of these confidence sets. Indeed, with some work, our generalization bound Theorem~\ref{thm:geb} can be shown to be equivalent to Theorem 1 in~\cite{vovk2013conditional}. In contrast to their approach, we proposed to use calibrated prediction to construct confidence predictors that can suitably be used with deep neural networks. Furthermore, our approach makes explicit the connections to temperature scaling and as well as to generalization bounds from statistical learning theory~\citep{vapnik1999overview}. In addition, unlike our paper, they do not explicitly provide an efficient algorithm for constructing confidence sets. Finally, we also propose an extension to the case of learning models for reinforcement learning.
+
+Finally, we build on a long line of work on \emph{calibrated prediction}, which aims to construct ``calibrated'' probabilities~\citep{murphy1972scalar,degroot1983comparison,platt1999probabilistic,zadrozny2001obtaining,zadrozny2002transforming,naeini2015obtaining,kuleshov2015calibrated}. Roughly speaking, probabilities are calibrated if events happen at rates equal to the predicted probabilities. This work has recently been applied to obtaining confidence estimates for deep neural networks~\citep{guo2017calibration,kuleshov2018accurate,pearce2018high}, including for learned models for reinforcement learning~\citep{malik2019calibrated}. However, these approaches do not come with PAC guarantees.
+
+\begin{comment}
+
+\textbf{our novelties:}
+\begin{itemize}
+\item confidence of confidence
+\item general frame for both regression and classification
+\item linear to $\frac{1}{\epsilon}$ 
+\item (**) applicable to practical classifiers and regressors
+\end{itemize}
+
+\textbf{predictive confidence set:}
+\begin{itemize}
+
+\item \citep{lei2014classification}
+	\begin{itemize}
+	\item (problem) find a classifier that outputs a set of labels with a specified coverage level
+	\item (setup) binary classification, class-dependent tolerance level
+	\item (approach) minimize set size (coverage) while maintain desired errors (ambiguity) (there are two competing quantities)
+	\item batch mode
+	\item (+) a new framework: novel part is the notion of ambiguity (i don't think so)
+	\item (-) binary classification
+	\item (-) no regression
+	\item extensions: \citep{wang2018learning}
+	\end{itemize}
+\item conformal prediction
+	\begin{itemize}
+	\item tutorial \citep{shafer2008tutorial}: online?
+	\item \citep{vovk2013conditional}: batch
+	\item minimize error (ambiguity)? do not have a concept of coverage? 
+	\item (efficiency) prediction set is as small as possible, (validity) constraint on the ``coverage'' probability.
+	\item hold-out split
+	\item (+) classification and regression
+	\end{itemize}
+	
+
+\item \citep{denis2017confidence}: confidence set with a fixed size
+
+\item \citep{ishida2018binary}: one-class confident
+\item with rejection option: minimize error while satisfying confidence level for each class (??)
+\item Neyman-Pearson (NP) classification: cannot guarantee errors for both classes (??)
+\end{itemize}
+
+\textbf{predictive confidence interval:} recent work summary \citep{barber2019predictive}, resampling given available data
+\begin{itemize}
+\item holdout: \citep{papadopoulos2008inductive}, \citep{vovk2013conditional}, \citep{lei2018distribution}
+
+\item leave-one-out cross-validation (jacknife), \citep{steinberger2016leave,steinberger2018conditional}:  
+\item leave-one-out cross-validation (jacknife+), \citep{barber2019predictive}:
+	\begin{itemize}
+	\item (-) expensive for neural net setups
+	\end{itemize}
+
+\end{itemize}
+
+\textbf{calibration:} asymptotic guarantee
+\begin{itemize}
+\item (classification) 
+	\begin{itemize}
+	\item early work: \citep{murphy1972scalar}, \citep{degroot1983comparison}
+	\item plat scaling:  \citep{platt1999probabilistic}
+	\item \citep{zadrozny2001obtaining}
+	\item \citep{zadrozny2002transforming}
+	\item \citep{naeini2015obtaining}
+	\item temperature scaling: \citep{guo2017calibration}
+	\end{itemize}
+\item (structured prediction) \citep{kuleshov2015calibrated}
+\item (online) \citep{kuleshov2017estimating}
+\item (regression) \citep{kuleshov2018accurate}, \citep{pearce2018high}
+\item (RL) \citep{malik2019calibrated}
+\end{itemize}
+
+\end{comment}
+
+ 
+
+\section{PAC Confidence Sets}
+
+
+
+
+
+Our goal is to estimate confidence sets that are as small as possible, while simultaneously ensuring that they are \emph{probably approximately correct (PAC)}~\citep{valiant1984theory}. Essentially, a confidence set is correct if it contains the true label. More precisely, let $\mathcal{X}$ be the inputs and $\mathcal{Y}$ be the labels, and let $D$ be a distribution over $\mathcal{Z}=\mathcal{X}\times\mathcal{Y}$. A \emph{confidence set predictor} is a function $C:\mathcal{X}\to2^{\mathcal{Y}}$ such that $C(x)\subseteq\mathcal{Y}$ is a set of labels; we denote the set of all confidence set predictors by $\mathcal{C}$. For a given example $(x,y)\sim D$, we say $C$ is \emph{correct} if $y\in C(x)$. Then, the error of $C$ is
+\begin{align}
+\label{eqn:error}
+L(C)=\mathbb{P}_{(x,y)\sim D}[y\not\in C(x)].
+\end{align}
+Finally, consider an algorithm $\mathcal{A}$ that takes as input a validation set $Z_{\text{val}}\subseteq\mathcal{Z}$ consisting of $n$ i.i.d. samples $(x,y)\sim D$, and outputs a confidence set predictor $\hat{C}$. Given $\epsilon,\delta\in\mathbb{R}_{>0}$, we say that $\mathcal{A}$ is \emph{probably approximately correct (PAC)} if
+\begin{align}
+\label{eqn:pac}
+\mathbb{P}_{Z_{\text{val}}\sim D^n}\left[L(\hat{C})>\epsilon~\text{where}~\hat{C}=\mathcal{A}(Z_{\text{val}})\right]<\delta.
+\end{align}
+Our goal is to design an algorithm $\mathcal{A}$ that satisfies (\ref{eqn:pac}) while constructing confidence sets $C(x)$ that are as ``small in size'' as possible on average. The size of $C(x)$ depends on the domain. For classification, we consider confidence sets that are arbitrary subsets of labels $C(x)\subseteq\mathcal{Y}=\{1,...,Y\}$, and we measure the size by $|C(x)|\in\mathbb{N}$---i.e., the number of labels in $C(x)$. For regression, we consider confidence sets that are intervals $C(x)=[a,b]\subseteq\mathcal{Y}=\mathbb{R}$, and we measure size by $b-a$---i.e., the length of the predicted interval. Note that there is an intrinsic tradeoff between satisfying (\ref{eqn:pac}) and average size of $C(x)$---larger confidence sets are more likely to satisfy (\ref{eqn:pac}).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+\section{PAC Algorithm for Confidence Set Construction}
+\label{sec:algorithm}
+
+Our algorithm is formulated in the \emph{empirical risk framework}. Typically, this framework refers to \emph{empirical risk minimization}. In our setting, such an algorithm would take as input (i) a parametric family of confidence set predictors $\mathcal{C}=\{C_{\theta}\mid\theta\in\Theta\}$, where $\Theta$ is the parameter space, and (ii) a training set $Z_{\text{val}}\subseteq\mathcal{Z}$ of $n$ i.i.d. samples $(x,y)\sim D$, and output the confidence set predictor $C_{\hat{\theta}}$, where $\hat{\theta}$ minimizes the empirical risk:
+\begin{align*}
+\hat{\theta}&=\operatorname*{\arg\min}_{\theta\in\Theta}\hat{L}(C_{\theta};Z_{\text{val}})
+\hspace{0.3in}\text{where}\hspace{0.2in}
+\hat{L}(C;Z_{\text{val}})=\frac{1}{n}\sum_{(x,y)\in Z_{\text{val}}}\mathbb{I}[y\not\in C(x)].
+\end{align*}
+Here, $\mathbb{I}[\phi]\in\{0,1\}$ is the indicator function, and the empirical risk $\hat{L}$ in an estimate of the confidence set error (\ref{eqn:error}) based on the validation set $Z_{\text{val}}$.
+
+However, our algorithm does not minimize the empirical risk. Rather, recall that our goal is to minimize the size of the predicted confidence sets given a PAC constraint on the true risk $L(\hat{\theta})$ based on the given PAC parameters $\epsilon,\delta\in\mathbb{R}_{>0}$ and the number of available validation samples $n=|Z_{\text{val}}|$. Thus, the risk shows up as a constraint in the optimization problem, and the objective is instead to minimize the size of the predicted confidence sets:
+\begin{align}
+\label{eqn:algorithm}
+\hat{\theta}=&\operatorname*{\arg\min}_{\theta\in\Theta}S(\theta)
+\hspace{0.1in}\text{subj. to}\hspace{0.1in}\hat{L}(C_{\theta};Z_{\text{val}})\le\alpha.
+\end{align}
+At a high level, the value $\alpha=\alpha(n,\epsilon,\delta)\in\mathbb{R}_{\ge0}$ is chosen to enforce the PAC constraint, and is based on generalization bounds from statistical learning theory~\citep{valiant1984theory}. Furthermore, following the temperature scaling approach~\citep{platt1999probabilistic}, the parameter space $\Theta$ is chosen to be as small as possible (in particular, one dimensional) to enable good generalization. Finally, our choice of size metric $S$ follows straightforwardly based on our choice of parameter space. In the remainder of this section, we describe the choices of (i) parameter space $\Theta$, (ii) size metric $S(\theta)$, and (iii) confidence level $\alpha(n,\epsilon,\delta)$ in more detail, as well as how to solve (\ref{eqn:algorithm}) given these choices.
+
+
+\subsection{Choice of Parameter Space $\Theta$}
+
+\textbf{Probability forecasters.}
+Our construction of the parameteric family of confidence set predictors $C_{\theta}$ assumes given a \emph{probability forecaster} $f:\mathcal{X}\to\mathcal{P}_{\mathcal{Y}}$, where $\mathcal{P}_{\mathcal{Y}}$ is a space of probability distributions over $\mathcal{Y}$. Given such an $f$, we use $f(y\mid x)$ to denote the probability of label $y$ under distribution $f(x)$. Intuitively, $f(y\mid x)$ should be the probability (or probability density) that $y$ is the true label for a given input $x$---i.e.,
+$f(y\mid x)\approx\mathbb{P}_{(X,Y)\sim D}[Y=y\mid X=x]$.
+For example, in classification, we can choose $\mathcal{P}_{\mathcal{Y}}$ to be the space of categorical distributions over $\mathcal{Y}$, and $f$ may be a neural network whose last layer is a softmax layer with $|\mathcal{Y}|$ outputs. Then, $f(y\mid x)=f(x)_y$. Alternatively, in regression, we can choose $\mathcal{P}_{\mathcal{Y}}$ to be the space of Gaussian distributions, and $f$ may be a neural network whose last layer outputs the values $(\mu,\sigma)\in\mathbb{R}\times\mathbb{R}_{>0}$ of a Gaussian distribution. Then, $f(y\mid x)=\mathcal{N}(x;\mu(x),\sigma(x)^2)$, where $(\mu(x),\sigma(x))=f(x)$, and $\mathcal{N}(\cdot;\mu,\sigma^2)$ is the Gaussian density function with mean $\mu$ and variance $\sigma^2$.
+
+\textbf{Training a probability forecaster.}
+To train a probability forecaster, we use a standard approach to calibrated prediction that combines maximum likelihood estimation with \emph{temperature scaling}.
+\footnote{A priori, it is not obvious that using temperature scaling can improve our confidence set predictor; we give a detailed discussion in Appendix~\ref{sec:appendixtemperature}.}
+First, we consider a parametric model family $\mathcal{F}=\{f_{\phi}\mid\phi\in\Phi\}$, where $\Phi$ is the parameter space. Note that $\Phi$ can be high-dimensional---e.g., the weights of a neural network model. Given a training set $Z_{\text{train}}\subseteq\mathcal{Z}$ of $m$ i.i.d. samples $(x,y)\sim D$, the maximum likelihood estimate (MLE) of $\phi$ is
+\begin{align}
+\label{eqn:mle1}
+\hat{\phi}&=\operatorname*{\arg\min}_{\phi\in\Phi}\ell(\phi;Z_{\text{train}})
+\hspace{0.3in}\text{where}\hspace{0.2in}
+\ell(\phi;Z_{\text{train}})=-\sum_{(x,y)\in Z_{\text{train}}}\log f_{\phi}(y\mid x).
+\end{align}
+We could now use $f_{\hat{\phi}}$ as the probability forecaster. However, the problem with directly using $\hat{\phi}$ is that because $\hat{\phi}$ may be high-dimensional, it often overfits the training data $Z_{\text{train}}$. Thus, the probabilities are typically overconfident compared to what they should be.
+
+To reduce their confidence, we use the \emph{temperature scaling} approach to \emph{calibrate} the predicted probabilities~\citep{platt1999probabilistic,guo2017calibration}. Intuitively, this approach is to train an MLE estimate using exactly the same approach used to train $\hat{\phi}$, but using a single new parameter $\tau\in\mathbb{R}_{>0}$. The key idea is that this time, the model family is based on the parameters $\hat{\phi}$ from (\ref{eqn:mle1}). In other words, the ``shape'' of the probabilities forecast by $f_{\hat{\phi}}$ are preserved, but their exact values are shifted.
+
+More precisely, consider the model family $\mathcal{F}'=\{f_{\hat{\phi},\tau}\mid\tau\in\mathbb{R}_{>0}\}$, where
+\begin{align*}
+f_{\hat{\phi},\tau}(y\mid x)\propto\exp\left(\tau\log f_{\hat{\phi}}(y\mid x)\right).
+\end{align*}
+Then, we have the following MLE for $\tau$:
+\begin{align}
+\label{eqn:mle2}
+\hat{\tau}&=\operatorname*{\arg\min}_{\tau\in\mathbb{R}_{>0}}\ell'(\tau;Z_{\text{train}}')
+\hspace{0.3in}\text{where}\hspace{0.2in}
+\ell'(\tau;Z_{\text{train}}')=-\sum_{(x,y)\in Z_{\text{train}}'}\log f_{\hat{\phi},\tau}(y\mid x).
+\end{align}
+Note that $\hat{\tau}$ is estimated based on a second training set $Z_{\text{train}}'$. Because we are only fitting a single parameter, this training set can be much smaller than the training set $Z_{\text{train}}$ used to fit $\hat{\phi}$.
+
+\textbf{Parametric family of confidence set predictors.}
+Finally, given a probability forecaster $f$, we consider one dimensional parameter space $\Theta=\mathbb{R}$; in an analogy to the temperature scaling technique for calibrated prediction, we denote this parameter by $T\in\Theta$. In particular, we assume a confidence probability predictor $f$ is given, and consider
+\begin{align*}
+C_T(x)=
+\{y\in\mathcal{Y}\mid f(y\mid x)\ge e^{-T}\}.
+\end{align*}
+In other words, $C_T(x)$ is the set of $y$ with high probability given $x$ according to $f$.
+Considering this scalar parameter space, we denote the minimum of (\ref{eqn:algorithm}) by $\hat{T}$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Choice of Size Metric $S(T)$}
+
+To choose the size metric $S(T)$, we note that for our chosen parametric family of confidence set predictors, smaller values correspond to uniformly smaller confidence sets---i.e.,
+\begin{align*}
+T\le T'\Rightarrow \forall x,~C_T(x)\subseteq C_{T'}(x).
+\end{align*}
+Thus, we can simply choose the size metric to be
+\begin{align}
+S(T)=T.
+\end{align}
+This choice minimizes the size of the confidence sets produced by our algorithm.
+
+
+\subsection{Choice of Confidence Level $\alpha(n,\epsilon,\delta)$}
+
+\textbf{Naive approach based on VC generalization bound.}
+A naive approach to choosing $\alpha(n,\epsilon,\delta)$ is to do so based on the VC dimension generalization bound~\citep{vapnik1999overview}. It is not hard to show that the problem of estimating $\hat{T}$ is equivalent to a binary classification problem, and that the VC dimension of $\Theta$ for this problem is $1$. Thus, the VC dimension bound implies that for all $T\in\Theta$,
+\begin{align}
+\label{eqn:vc}
+\mathbb{P}_{Z_{\text{val}}\sim D^n}\left[L(C_T)\le\hat{L}(C_T;Z_{\text{val}})+\sqrt{\frac{\log(2n)+1-\log(\delta/4)}{n}}\right]\ge1-\delta.
+\end{align}
+The details of this equivalence are given in Appendix~\ref{sec:gebproof}. Then, suppose we choose
+\begin{align*}
+\alpha(n,\epsilon,\delta)=\epsilon-\sqrt{\frac{\log(2n)+1-\log(\delta/4)}{n}}.
+\end{align*}
+With this choice, for the solution $\hat{T}$ of (\ref{eqn:algorithm}) with $\alpha=\alpha(n,\epsilon,\delta)$, the constraint in (\ref{eqn:algorithm}) ensures that $\hat{L}(C_{\hat{T}};Z_{\text{val}})\le\alpha(n,\epsilon,\delta)$. Together with the VC generalization bound (\ref{eqn:vc}), we have
+\begin{align*}
+\mathbb{P}_{Z_{\text{val}}\sim D^n}\left[L(C_{\hat{T}})>\epsilon\right]<\delta,
+\end{align*}
+which is exactly desired the PAC constraint on our predicted confidence sets.
+
+\textbf{Direct generalization bound.}
+In fact, we can get better choices of $\alpha$ by directly bounding generalization error. For instance, in the realizable setting (i.e., we always have $\hat{L}(C_{\hat{T}};Z_{\text{val}})=0$), we can get rates of $n=\tilde O(1/\epsilon)$ instead of $n=\tilde O(1/\epsilon^2)$~\citep{kearns1994introduction}; see Appendix~\ref{sec:appendixdirect} for details. We can achieve these rates by choosing $\alpha=0$, but then, the PAC guarantees we obtain may actually be stronger than desired (i.e., for $\epsilon'<\epsilon$). Intuitively, we can directly prove a bound that interpolates between the realizable setting and the VC generalization bound---in particular:
+\begin{theorem}
+\label{thm:geb}
+For any $\epsilon\in[0,1]$, $n\in\mathbb{N}_{>0}$, and $k\in\{0,1,...,n\}$, we have
+\begin{align*}
+\mathbb{P}_{Z_{\text{val}}\sim D^n}\left[ L(C_{\hat{T}}) > \epsilon \right] \le \sum_{i=0}^k {n \choose i} \epsilon^{i} (1 - \epsilon)^{n-i},
+\end{align*}
+where $\hat{T}$ is the solution to (\ref{eqn:algorithm}) with $\alpha=k/n$.
+\footnote{The theorem statement relies on additional standard technical conditions; see Appendix~\ref{sec:appendixassumptions}.}
+\end{theorem}
+We give a proof in Appendix~\ref{sec:gebproof}. Based on Theorem~\ref{thm:geb}, we can choose
+\begin{align}
+\label{eqn:alpha}
+\alpha(n,\epsilon,\delta)=&\max_{k\in\mathbb{N} \cup \{0\}}k/n
+\hspace{0.1in}
+\text{subj. to}\hspace{0.1in}\sum_{i=0}^k {n \choose i} \epsilon^{i} (1 - \epsilon)^{n-i} < \delta.
+\end{align}
+
+
+
+\subsection{Theoretical Guarantees}
+
+We have the following guarantee, which follows straightforwardly from Theorem~\ref{thm:geb}: 
+\begin{corollary}
+Let $\hat{T}$ be the solution to (\ref{eqn:algorithm}) for $\alpha=\alpha(n,\epsilon,\delta)$ chosen according to (\ref{eqn:alpha}). Then, we have
+\begin{align*}
+\mathbb{P}_{Z_{\text{val}}\sim D^n}\left[ L(C_{\hat{T}}) > \epsilon \right]<\delta.
+\end{align*}
+\end{corollary}
+In other words, our algorithm is probably approximately correct.
+
+
+\subsection{Practical Implementation}
+
+\begin{algorithm}[t]
+\caption{Algorithm for solving (\ref{eqn:algorithm}).}
+\label{alg:main}
+\begin{algorithmic}
+\Procedure{EstimateConfidenceSetPredictor}{$Z_{\text{train}},Z_{\text{train}}',Z_{\text{val}}$}
+\State Estimate $\hat{\phi},\hat{\tau}$ using (\ref{eqn:mle1}) and (\ref{eqn:mle2}), respectively
+\State Compute $\alpha(n,\epsilon,\delta)$ according to (\ref{eqn:alpha}) by enumerating $k\in\{0,1,...,n\}$
+\State Let $k^*=n\cdot\alpha(n,\epsilon,\delta)$ (note that $k\in\{0,1,...,n\}$)
+\State Sort $(x,y)\in Z_{\text{val}}$ in ascending order of $f_{\hat{\phi},\hat{\tau}}(y\mid x)$
+\State Let $(x_{k^*+1},y_{k^*+1})$ be the $(k^*+1)$st element in the sorted $Z_{\text{val}}$
+\State Solve (\ref{eqn:algorithm}) by choosing $\hat{T}=-\log f_{\hat{\phi},\hat{\tau}}(y_{k^*+1}\mid x_{k^*+1})$
+\State Return $C_{\hat{T}}:x\mapsto\{y\in\mathcal{Y}\mid f_{\hat{\phi},\hat{\tau}}(y\mid x)\ge e^{-\hat{T}}\}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+Our algorithm for estimating a confidence set predictor $C_{\hat{T}}$ is summarized in Algorithm~\ref{alg:main}. The algorithm solves the optimization problem (\ref{eqn:algorithm}) using the choices of $\Theta$, $S(T)$, and $\alpha(n,\epsilon,\delta)$ described in the preceding sections. There are two key implementation details that we describe here.
+
+\textbf{Computing $\alpha(n,\epsilon,\delta)$.}
+To compute $\alpha(n,\epsilon,\delta)$, we need to solve (\ref{eqn:alpha}). A straightforward approach is to enumerate all possible choices of $k\in\{0,1,...,n\}$. There are two optimizations. First, the objective is monotone increasing in $k$, so we can enumerate $k$ in ascending order until the constraint no longer holds. Second, rather than re-compute the left-hand side of the constraint $\sum_{i=0}^k{n\choose i}\epsilon^i(1-\epsilon)^{n-i}$, we can accumulate the sum as we iterate over $k$. We can also incrementally compute ${n\choose i}$, $\epsilon^i$, and $(1-\epsilon)^{n-i}$. For numerical stability, we perform these computations in log space.
+
+
+\textbf{Solving (\ref{eqn:algorithm}).}
+To solve (\ref{eqn:algorithm}), note that the constraint in (\ref{eqn:algorithm}) is equivalent to
+\begin{align}
+\label{eqn:derivation1}
+\sum_{(x,y)\in Z_{\text{val}}}E(x,y;T)\le n\cdot\alpha(n,\epsilon,\delta)\hspace{0.2in}\text{where}\hspace{0.1in}E(x,y;T)=\mathbb{I}\left[f_{\hat{\phi},\hat{\tau}}(y\mid x)< e^{-T}\right].
+\end{align}
+Also, note that $k^*=n\cdot\alpha(n,\epsilon,\delta)$ is an integer due to the definition of $\alpha(n,\epsilon,\delta)$ in (\ref{eqn:alpha}). Thus, we can interpret (\ref{eqn:derivation1}) as saying that $E(x,y;T)=1$ for at most $k^*$ of the points $(x,y)\in Z_{\text{val}}$.
+
+In addition, note that $E(x,y;T)$ decreases monotonically as $f_{\hat{\phi},\hat{\tau}}(y\mid x)$ becomes larger. Thus, we can sort the points $(x,y)\in Z_{\text{val}}$ in ascending order of $f_{\hat{\phi},\hat{\tau}}(y\mid x)$, and require that only the first $k^*$ points $(x,y)$ in this list satisfy $E(x,y;T)=1$. In particular, letting $(x_{k^*+1},y_{k^*+1})$ be the $(k^*+1)$st point, (\ref{eqn:derivation1}) is equivalent to
+\begin{align}
+\label{eqn:derivation2}
+f_{\hat{\phi},\hat{\tau}}(y_{k^*+1}\mid x_{k^*+1})\ge e^{-T}.
+\end{align}
+In other words, this constraint says that $T$ must satisfy $y_{k^*+1}\in C_T(x_{k^*+1})$. Finally, the solution $\hat{T}$ to (\ref{eqn:algorithm}) is the smallest $T$ that satisfies (\ref{eqn:derivation2}), which is the $T$ that makes (\ref{eqn:derivation2}) hold with equality---i.e.,
+\begin{align}
+\hat{T}=-\log f_{\hat{\phi},\hat{\tau}}(y_{k^*+1}\mid x_{k^*+1}).
+\end{align}
+We have assumed $f_{\hat{\phi},\hat{\tau}}(y_{k^*+1}\mid x_{k^*+1})>f_{\hat{\phi},\hat{\tau}}(y_{k^*}\mid x_{k^*})$; if not, we decrement $k^*$ until this holds.
+
+\subsection{Probability Forecasters for Specific Tasks}
+\label{sec:instances}
+
+We briefly discuss the architectures we use for probability forecasters for various tasks. We give details, including how we measure the sizes of predicted confidence sets $C_T(x)$, in Appendix~\ref{sec:appendixforecasters}. We consider three tasks: classification, regression, and model-based reinforcement learning. For classification, we use the standard approach of using a soft-max layer to predict label probabilities $f(y\mid x)$. For regression, we also use a standard approach where the neural network predicts both the mean $\mu(x)$ and covariance $\Sigma(x)$ of a Gaussian distribution $\mathcal{N}(\mu(x),\Sigma(x))$; then, $f(y\mid x)=\mathcal{N}(y;\mu(x),\Sigma(x))$ is the probability density of $y$ according to this Gaussian distribution.
+
+Finally, for model-based reinforcement learning, our goal is to construct confidence sets over trajectories predicted using a learned model of the dynamics. We consider unknown dynamics $g^*(x'\mid x,u)$ mapping a state-action pair $(x,u)$ to a distribution over states $x'$, and consider a known (and fixed) policy $\pi(u\mid x)$ mapping a given state $x$ to a distribution over actions $u\in\mathcal{U}\subseteq\mathbb{R}^{d_U}$. Then, we let $f^*(x'\mid x)=\mathbb{E}_{\pi(u\mid x)}[g^*(x'\mid u)]$ denote the (unknown) closed-loop dynamics.
+
+Next, we consider a forecaster $f(x'\mid x)\approx f^*(x' \mid x)$ of the form $f(x'\mid x)=\mathcal{N}(x';\mu(x),\Sigma(x))$, and our goal is to construct confidence sets for the predictions of $f$. However, we want to do so for not just for one-step predictions, but for predictions over a time horizon $H\in\mathbb{N}$. In particular, given initial state $x_0\in\mathcal{X}$, we can sample $x_{1:H}^*=(x_1,...,x_H)\sim f^*$ by letting $x_0^*=x_0$ and sequentially sampling $x_{t+1}^*\sim f(~\cdot\mid x_t^*)$ for each $t\in\{0,1,...,H-1\}$. Then, our goal is to construct a confidence set that contains $x_{1:H}^*\in\mathcal{X}^H$ with high probability (over both the randomness in an initial state distribution $x_0\sim d_0$ and the randomness in $f^*$).
+
+To do so, we construct and use a forecaster $\tilde f(x_{1:H}\mid x_0)$ based on $f$. In principle, this task is a special case of multivariate regression, where the inputs are $\mathcal{X}$ (i.e., the initial state $x_0$) and the outputs are $\mathcal{Y}=\mathcal{X}^H$ (i.e., a predicted trajectory $x_{1:H}$). However, the variance $\Sigma(x)$ predicted by our probability forecaster is only for a single step, and does not take into account the fact that $x$ is itself uncertain. Thus, we use a simple heuristic where we accumulate variances over time. More precisely, we construct (i) the predicted mean $\bar{x}_{1:H}=(\bar{x}_1,...,\bar{x}_H)$ by $\bar{x}_0=x_0$ and $\bar{x}_{t+1}=\mu(\bar{x}_t)$ for $t\in\{0,1,...,H-1\}$, and (ii) the predicted variances $\tilde{\Sigma}_{1:H}=(\tilde\Sigma_1,...,\tilde\Sigma_H)$ by
+\begin{align*}
+\tilde\Sigma_t=\Sigma(\bar{x}_0)+\Sigma(\bar{x}_1)+...+\Sigma(\bar{x}_{t-1}).
+\end{align*}
+We use a probability forecaster $\tilde{f}(x_{1:H}\mid x_0)=\mathcal{N}(x_{1:H};\bar{x}_{1:H},\tilde\Sigma_{1:H})$ to construct confidence sets.
+ 
+
+\section{Experiments}
+\label{sec:experiments}
+
+We describe our experiments on ImageNet (a classification task), a visual object tracking benchmark (a regression task), and the half-cheetah environment (a model-based reinforcement learning task). We give additional results in Appendix~\ref{sec:additionalresults}.
+
+\begin{figure}[t!]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.35\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.000010_eps_0.010000.png}}} &
+\includegraphics[width=0.35\linewidth]{{{./figs/ImageNet/resnet152/plot_cond/cond_n_20000_delta_0.000010_eps_0.010000.png}}} \\
+(a) & (b) \\
+\includegraphics[width=0.35\linewidth]{{{figs/ImageNet/resnet152/plot_eps/eps_n_20000_delta_0.000010.png}}} &
+\includegraphics[width=0.35\linewidth]{{{./figs/ImageNet/resnet152/plot_delta/delta_n_20000_eps_0.010000.png}}} \\
+(c) & (d)
+\end{tabular}
+\caption{Results on ResNet for ImageNet with $n=20000$. Default parameters are $\epsilon=0.01$ and $\delta=10^{-5}$. We plot the median and min/max confidence set sizes. (a) Ablation study; $C$ is ``calibrated predictor'' (i.e., use $f_{\hat{\phi},\hat{\tau}}$ instead of $f_{\hat{\phi}}$), and $D$ is ``direct bound'' (i.e., use Theorem~\ref{thm:geb} instead of the VC generalization bound). (b) Restricted to correctly vs. incorrectly labeled images. (c) Varying $\epsilon$. (d) Varying $\delta$.}
+\label{fig:imagenet}
+\end{figure}
+
+\textbf{ResNet for ImageNet.}
+We use our algorithm to compute confidence sets for ResNet~\citep{he2016deep} on ImageNet~\citep{russakovsky2015imagenet}, for $\epsilon=0.01$, $\delta=10^{-5}$, and $n=20000$ validation images. We show the results in Figure~\ref{fig:imagenet}. In (a), we compare our approach to an ablation. In particular, $C$ refers to performing an initial temperature scaling step to calibrate the neural network predictor (i.e., using $f_{\hat{\phi}}$ instead of $f_{\hat{\phi},\hat{\tau}}$), and (ii) $D$ refers to using Theorem~\ref{thm:geb} instead of the VC generalization bound. Thus, $C+D$ refers to our approach. As can be seen, using calibrated predictor produces a noticeable reduction in the maximum confidence set size.
+
+We also compared to the ablation $C$---i.e., using the VC generalization bound. However, we were unable to obtain valid confidence sets for our choice of $\epsilon$ and $\delta$---i.e., (\ref{eqn:algorithm}) is infeasible. That is, using Theorem~\ref{thm:geb} outperforms using the VC generalization bound since the VC bound is too loose to satisfy the PAC criterion for our choice of parameters. In addition, in Table~\ref{table:appimagenet} in Appendix~\ref{sec:additionalresults}, we show results for larger choices of $\epsilon$ and $\delta$; these results show that our approach substantially outperforms the ablation based on the VC bound even when the VC bound produces valid confidence sets.
+
+In (b), we show the confidence set sizes for images correctly vs. incorrectly labeled by ResNet. As expected, the sizes are substantially larger for incorrectly labeled images. Finally, in (c) and (d), we show how the sizes vary with $\epsilon$ and $\delta$, respectively. As expected, the dependence on $\epsilon$ is much more pronounced (note that $\delta$ is log-scale).
+
+
+
+
+
+\begin{figure}[tb!]
+\centering
+\begin{tabular}{ccc}
+\makecell{\includegraphics[width=0.3\linewidth]{{{figs/otb/goturn/plot_box/box_n_5000_delta_0.000010_eps_0.010000.png}}}\vspace{1ex}} &
+\makecell{\includegraphics[width=0.3\linewidth]{{{figs/otb/goturn/plot_eps/eps_n_5000_delta_0.000010.png}}}} &
+\makecell{\includegraphics[width=0.3\linewidth]{{{./figs/otb/goturn/plot_delta/delta_n_5000_eps_0.010000.png}}}} \\
+(a) & (b) & (c)
+\end{tabular}
+\caption{Confidence set sizes for an object tracking benchmark~\citep{WuLimYang13}; we use $n=5,000$, $\epsilon=0.01$, and $\delta=10^{-5}$. (a) Ablation study similar to Figure~\ref{fig:cheetah}. In (b) and (c), we show how the confidence set sizes produced using our algorithm vary with respect to $\epsilon$ and $\delta$, respectively.}
+\label{fig:otb_goturn_result_summary}
+\end{figure}
+
+\begin{figure}[t!]
+\centering
+\begin{tabular}{cc}
+\makecell{\includegraphics[width=0.35\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.000010_eps_0.010000.png}}}\vspace{1ex}} &
+\makecell{\includegraphics[width=0.35\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.000010_eps_0.010000.png}}}} \\
+(a) & (b) \\
+\makecell{\includegraphics[width=0.35\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_eps_log/eps_n_5000_delta_0.000010.png}}}} &
+\makecell{\includegraphics[width=0.35\linewidth]{{{./figs/HalfCheetah/per_time_cal/plot_delta_log/delta_n_5000_eps_0.010000.png}}}} \\
+(c) & (d)
+\end{tabular}
+\caption{Results on the dynamics model for the half-cheetah with $n=5000$. Default parameters are $\epsilon=0.01$ and $\delta=10^{-5}$. (a) Ablation study; $A$ is ``accumulated variance'' (i.e., for each $t\in\{1,...,20\}$, use $\tilde{\Sigma}_t$ instead of $\Sigma_t=\Sigma(\bar{x}_{t-1})$), and $C$ and $D$ are as for ResNet. We plot the median and min/max confidence set sizes (see Section~\ref{sec:instances}), averaged across $t\in\{1,...,20\}$. (b) Same ablations, but with per time step size. We plot the average size of the confidence set for the predicted state $x_t$ on step $t$, as a function of $t\in\{1,...,20\}$. (c) Varying $\epsilon$, and (d) varying $\delta$.} \label{fig:cheetah}
+\vspace{-1ex}
+\end{figure}
+
+
+\textbf{Visual object tracking.}
+We apply our confidence set prediction algorithm to a 2D visual single-object tracking task, which is a multivariate regression problem. Specifically, the input space $\Xs$ consists of the previous image, the previous bounding box (in $\realnum^{4}$), and the current image. The output space $\Ys = \realnum^{4}$ is a current bounding box. 
+We use the regression-based tracker from~\cite{held2016learning}, and retrain the regressor neural network to predict the mean and variance of a Gaussian distribution. More precisely, our object tracking model predicts the mean and variance of each bounding box parameter---i.e., $(x_\text{min}, y_\text{min}, x_\text{max}, y_\text{max})$. Given this bounding box forecaster $f_{\hat{\phi}}$, we calibrate and estimate a confidence set predictor as described in Section~\ref{sec:instances}. 
+
+We use the visual object tracking benchmark from \cite{WuLimYang13} to train and evaluate our confidence set predictor. This benchmark consists of 99 video sequences labeled with ground truth bounding boxes. We randomly split these sequences to form the training set for calibration, validation set for confidence set estimation, and test set for evaluation. For each sequence, a pair of two adjacent frames constitute a single example. Our training dataset contains 20,882 labeled examples, each consisting of of a pair of consecutive images and ground truth bounding boxes. The validation set for confidence set estimation and test set contain 22,761 and 22,761 labeled examples, respectively.
+Figure \ref{fig:otb_goturn_result_summary} shows the sizes of the predicted confidence sets; the sizes are measured as described in Section~\ref{sec:instances} for regression tasks. As for ResNet, we omit results for the VC bound ablation since $n$ is too small to get a bound. The trends are similar to the ones for ResNet.
+
+
+
+\textbf{Half-cheetah.}
+We use our algorithm to compute confidence sets for a probabilistic neural network dynamics model~\citep{chua2018deep} for the half-cheetah environment~\citep{brockman2016openai}, for $\epsilon=0.01$, $\delta=10^{-5}$, $H=20$ time steps, and $n=5000$ validation rollouts. When using temperature scaling to calibrate $f_{\hat{\phi}}$ to obtain $f_{\hat{\phi},\hat{\tau}}$, we calibrate each dimension of time steps independently (i.e., we fit $H$ parameters, where $H$ is time horizon). We show the results in Figure~\ref{fig:cheetah}.
+
+In (a), we compare to two ablations. The labels $C$ and $D$ are as for ResNet; in addition, $A$ refers to using the accumulated variance $\tilde{\Sigma}_t$ instead of the one-step predicted variances $\Sigma_t=\Sigma(\bar{x}_{t-1})$. Thus, $A+C+D$ is our approach. As before, we omit results for the ablation using the VC generalization bound since $n$ is so small that the bound does not hold for any $k$ for the given $\epsilon$ and $\delta$. In (b), we show the same ablations over the entire trajectory until $t=20$. As can be seen, using the calibrated predictor produces a large gain;
+these gains are most noticeable in the tails. Using the accumulated confidence produces a smaller, but still significant, gain. In (c) and (d), we show how the sizes vary with $\epsilon$ and $\delta$, respectively. The trends are similar those for ResNet.
+
+\section{Conclusion}
+We have proposed an algorithm for constructing PAC confidence sets for deep neural networks. Our approach leverages statistical learning theory to obtain theoretical guarantees on the predicted confidence sets. These confidence sets quantify the uncertainty of deep neural networks. For instance, they can be used to inform safety-critical decision-making, and to ensure safety with high-probability in robotics control settings that leverage deep neural networks for perception. Future work includes extending these results to more complex tasks (e.g., structured prediction), and handling covariate shift (e.g., to handle policy updates in reinforcement learning). 
+\subsubsection*{Acknowledgments}
+This work was support in part by NSF CCF-1910769 and by the Air Force Research Laboratory and the Defense Advanced Research Projects Agency under Contract No. FA8750-18-C-0090.  Any opinions, findings and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the Air Force Research Laboratory (AFRL), the Defense Advanced Research Projects Agency (DARPA), the Department of Defense, or the United States Government.
+
+\bibliography{externals/mybibtex/sml}
+\bibliographystyle{iclr2020_conference}
+
+\clearpage
+
+
+\appendix
+
+\section{Discussion of Algorithm Design Choices}
+
+\subsection{Usefulness of Temperature Scaling}
+\label{sec:appendixtemperature}
+
+In this section, we discuss why temperature scaling can help improve the predicted confidence sets. A concern is that temperature scaling does not change the ordering of label probabilities. Thus, we may expect that temperature scaling does not affect the predicted confidence sets. However, this fact only holds when considering a single input $x$---i.e., the ordering of the probabilities $p(y\mid x)$ for $y\in\mathcal{Y}$ is not changed by temperature scaling. Indeed, the order of confidences for labels for different inputs can change. For a concrete example, consider two inputs $x$ and $x'$, and the case $\mathcal{Y}=\{0,1,2\}$. Assume that the label probabilities are
+\begin{align*}
+f(~\cdot\mid x) &= \begin{bmatrix} 1/3 & 1/3 & 1/3 \end{bmatrix}^{\top} \\
+f(~\cdot\mid x') &= \begin{bmatrix} 3/4 & 1/4 & 0 \end{bmatrix}^{\top}.
+\end{align*}
+Now, if we take temperature $\tau$ very large, then the labels become roughly
+\begin{align*}
+f_{\tau}(~\cdot\mid x) &= \begin{bmatrix} 1/3 & 1/3 & 1/3 \end{bmatrix}^{\top} \\
+f_{\tau}(~\cdot\mid x') &= \begin{bmatrix} 1/2 & 1/2 & 0 \end{bmatrix}^{\top}.
+\end{align*}
+As a consequence, there are confidence sets that are achievable when using $f_{\tau}$ that are not achievable when using $f$. In particular, the confidence sets
+\begin{align*}
+C_T(x) &= \varnothing \\
+C_T(x') &= \{0, 1\}
+\end{align*}
+can be achieved using $f_{\tau}$ (e.g., with $e^{-T} = 2/5$). However, it is impossible to achieve these confidence sets using $f$ for any choice of $T$, since if $1\in C_T(x')$, then it must be the case that $C_T(x)=\{0,1,2\}$. Intuitively, we expect calibrated prediction to improve the ordering of probabilities across different inputs. Our experiments support this intuition, since they show that empirically,  using calibrated predictors $f_{\tau}$ produces confidence sets of smaller size.
+
+\subsection{Usefulness of Direct Bound}
+\label{sec:appendixdirect}
+
+One key design choice is to use a specialized generalization bound that directly provides PAC guarantees on our confidence sets rather than simply applying the VC dimension bound. The easiest way to determine which bound is better is to examine which one produces a smaller confidence set. In our approach, the size of the confidence set decreases monotonically with the choice of $\alpha=\alpha(n,\epsilon,\delta)$ in (\ref{eqn:algorithm}). Thus, the bound that produces larger $\alpha$ is better. Recall that the VC dimension bound produces
+\begin{align*}
+\alpha_{\text{VC}}(n,\epsilon,\delta)=\epsilon-\sqrt{\frac{\log(2n)+1-\log(\delta/4)}{n}},
+\end{align*}
+whereas our direct bound produces (for $k=0$)
+\begin{align*}
+\alpha_{\text{direct}}(n,\epsilon,\delta)=&\max_{k\in\mathbb{N}}k/n
+\hspace{0.1in}
+\text{subj. to}\hspace{0.1in}\sum_{i=0}^k {n \choose i} \epsilon^{i} (1 - \epsilon)^{n-i} < \delta.
+\end{align*}
+Directly comparing these two choices of $\alpha$ is difficult, but our experiments show empirically that using the direct bound outperforms using the indirect bound.
+
+A more direct way to compare the two approaches is to instead ask how large $n$ needs to be to achieve $\alpha(n,\epsilon,\delta)=0$. For $\alpha_{\text{VC}}$, it is easy to check that we need
+\begin{align*}
+n\ge\frac{\log(2n)+1+\log(4/\delta)}{\epsilon^2}.
+\end{align*}
+Thus, we need $n$ to be \emph{at least} $O(\log(1/\delta)/\epsilon^2)$ (and possibly greater, to account for the $\log(2n)$ term). In contrast, for our direct bound, $\alpha=0$ corresponds to the case $k=0$. To achieve $k=0$, it suffices to have $n$ satisfying $(1-\epsilon)^n<\delta$. Using $(1-\epsilon)^n\le e^{-n\epsilon}$, it suffices to have $n$ satisfying
+\begin{align*}
+n\ge\frac{\log(1/\delta)}{\epsilon}.
+\end{align*}
+In other words, $n$ only needs to be $O(\log(1/\delta)/\epsilon)$. For small $\epsilon$ (e.g., $\epsilon=0.01$), we need $100\times$ fewer samples to achieve the same size confidence set (i.e., with choice $\alpha(n,\epsilon,\delta)=0$). In Figure~\ref{fig:directvvc} (right), we compute the exact values of $n$ needed to get $\alpha(n,\epsilon,\delta)=0$ as a function of $\epsilon$ for each bound (fixing $\delta=10^{-5}$). As expected, our bound requires substantially smaller $n$.
+
+Finally, in Figure~\ref{fig:directvvc} (right), we compare the magnitude of $n$ needed to achieve larger values of $\alpha$ using our direct bound; for simplicity, we actually consider larger values of $k$ (where $\alpha=k/n$), but the qualitative insights are the same. As can be seen, even for large $k$, (e.g., $k=50$), the number of samples increases, but not substantially.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.35\linewidth]{{{figs/bnd_comp/bnd_comp_delta_0.000010_k_0.png}}}
+\includegraphics[width=0.35\linewidth]{{{figs/bnd_comp/bnd_comp_direct_delta_0.000010.png}}}
+\caption{Sample complexity of different bounds; we fix $\delta = 10^{-5}$. Left: Sample complexity of VC bound and direct bound when $k = 0$. Right: Sample complexity of direct bound for varying $k$.}
+\label{fig:directvvc}
+\end{figure}
+
+\section{Theoretical Guarantees}
+
+\subsection{Assumptions}
+\label{sec:appendixassumptions}
+
+We make two additional technical assumptions in Theorem~\ref{thm:geb}, both of which are standard. First, we assume that $f$ is measurable; this assumption holds for all models used in practice, including neural networks (e.g., it holds as long as $f$ is continuous).
+
+Second, letting $\phi:\mathcal{Z}\to\mathbb{R}$, where $\mathcal{Z}=\mathcal{X}\times\mathcal{Y}$, be defined by $\phi((x,y))=-\log f(y\mid x)$, we assume that the distribution $\bar{D}$ induced by $\phi$ on $\mathbb{R}$ has continuous cumulative distribution function (CDF). More precisely, letting $\mu_D$ be the measure defining $D$, then $\bar{D}$ is defined by the measure
+\begin{align*}
+\mu_{\bar{D}}(t)=\mu_D(\phi^{-1}(t)),
+\end{align*}
+where $\phi^{-1}:\mathbb{R}\to2^{\mathcal{Z}}$ is the inverse of $\phi$ in the sense that $z\in\phi^{-1}(\phi(z))$ for all $z\in\mathcal{Z}$. Then, we assume that the CDF corresponding to $\bar{D}$ is continuous. This second assumption is standard in statistical learning theory~\citep{kearns1994introduction}. Essentially, it says that for any $t\in\mathbb{R}$, the probability that $t=-\log f(y\mid x)$ must equal zero. This assumption should hold unless $p(x,y)$ or $f(y\mid x)$ are degenerate in some way. Furthermore, we can detect this case. In particular, the failure mode corresponds to the case that we see multiple points with the same value $-\log f(y\mid x)$. Thus, choosing $\hat T=-\log f(y\mid x)$ would include all these points, so the realized error rate $\alpha$ is larger than desired for $\hat T$. In this case, we can simply choose a slightly larger $\hat T$ to avoid this problem.
+
+\subsection{Proof of Theorem~\ref{thm:geb}}
+\label{sec:gebproof}
+
+\begin{comment}
+\sangdon{original write-up}
+\paragraph{Equivalence to binary classification.}
+
+First, we show that the problem of estimating $T$ is equivalent to a binary classification problem. In particular, define $\phi:\mathcal{Z}\to\mathbb{R}_{>0}$ by $\phi((x,y))=-\log f(y\mid x)$, where $f$ is the probability forecaster used to construct a set of confidence set predictors $\mathcal{C}$. Then, given $T\in\Theta=\mathbb{R}_{>0}$, define a \emph{set membership indicator} $M_T:\mathbb{R}_{>0}\to\{0,1\}$ by $M_T(t)=\mathbb{I}[t\le T]$. Note that the space of confidence set predictors $\mathcal{C}$ is equivalent to the space of set membership indicators $\mathcal{M}=\{M_T\mid T\in\Theta\}$---i.e., for every $T\in\Theta$, we have
+\begin{align*}
+C_T(x)&=\{y\in\mathcal{Y}\mid M_T(\phi(x,y))=1\}.
+\end{align*}
+Furthermore, the problem of estimating a confidence set predictor on a validation set $Z_{\text{val}}\sim D^n$ is equivalent to the problem of estimating $M_T\in\mathcal{M}$ on the validation set
+\begin{align*}
+\tilde{Z}_{\text{val}}=\{(\phi(z),1)\mid z\in Z_{\text{val}}\} \subseteq \tilde{\mathcal{X}}\times\tilde{\mathcal{Y}},
+\end{align*}
+where $\tilde{\mathcal{X}}=\mathbb{R}_{>0}$ and $\tilde{\mathcal{Y}}=\{0,1\}$. Note that $\tilde{Z}_{\text{val}}\sim\tilde{D}$, where the first component of $\tilde{D}$ is the distribution over $\tilde{\mathcal{X}}$ induced by $\phi$ from $D$, and the second component is the distribution over $\tilde{\mathcal{Y}}$ that places all probability mass on $1$---i.e.,
+\begin{align*}
+\tilde{D}((t,1))=\mathbb{P}_{z\sim D}[\phi(z)=t]
+\end{align*}
+In summary, the problem of estimating $C_T$ on a validation set $Z_{\text{val}}\sim D^n$ is equivalent to the problem of estimating $M_T$ on a validation set $\tilde{Z}_{\text{val}}\sim\tilde{D}^n$, which is a binary classification problem with function family $\mathcal{M}$ parameterized by $T\in\Theta$ and loss function
+\begin{align*}
+\tilde{L}(M)=\mathbb{P}_{(t,a)\sim\tilde{D}}[M(t)\neq a].
+\end{align*}
+In particular, note that $L(C_T)=\tilde{L}(M_T)$ for any $T \in \Theta$. Thus, letting $\delta_0=\sum_{i=0}^k{n\choose i}\epsilon^i(1-\epsilon)^{n-i}$, a bound
+\begin{align}
+\label{eqn:gebproof1}
+\mathbb{P}_{\tilde{Z}_{\text{val}}\sim\tilde{D}^n}\left[\tilde{L}(M_{T})>\epsilon\right]\le\delta_0
+\end{align}
+would imply our desired bound
+$\mathbb{P}_{Z_{\text{val}}\sim D^n}\left[L(C_{T})>\epsilon\right]\le\delta_0$.
+
+\paragraph{Generalization bound.}
+
+Let $T^*$ be the smallest $T$ for which $\tilde{L}(M_T)=\epsilon$, and 
+recall $\hat{T}$ be the solution of (\ref{eqn:algorithm}), where $\tilde{L}(M_{\hat{T}}) = L(C_{\hat{T}})$.
+
+Since 
+$\hat{T} < T^*$ implies that $\tilde{L}(M_{\hat{T}}) > \tilde{L}(M_{T^*})=\epsilon$, and vice versa, 
+(\ref{eqn:gebproof1}) is equivalently
+\begin{align*}
+\mathbb{P}_{\tilde{Z}_{\text{val}}\sim\tilde{D}^n}\left[\hat{T}<T^*\right]\le\delta_0.
+\end{align*}
+\footnote{We implicitly assume that the distribution $\tilde{D}$ is continuous, but this assumption is very mild.}
+
+Consider the event $\hat{T}<T^*$; recalling that $\hat{T}$ must satisfy $\hat{L}(C_{\hat{T}};Z_{\text{val}})\le\alpha$, so on this event, we have
+\begin{align*}
+k\ge\sum_{(t,a)\in\tilde{Z}_{\text{val}}}\mathbb{I}[M_{\hat{T}}(t)\neq a]=\sum_{(t,a)\in\tilde{Z}_{\text{val}}}\mathbb{I}[t>\hat{T}]\ge\sum_{(t,a)\in\tilde{Z}_{\text{val}}}\mathbb{I}[t>T^*]
+\end{align*}
+where $k=n\cdot\alpha(n,\epsilon,\delta)$. Thus, we have
+\begin{align*}
+\mathbb{P}_{\tilde{Z}_{\text{val}}\sim\tilde{D}^n}\left[\hat{T}<T^*\right]
+&\le\mathbb{P}_{\tilde{Z}_{\text{val}}\sim\tilde{D}^n}\left[\sum_{(t,a)\in\tilde{Z}_{\text{val}}}\mathbb{I}[t>T^*]\le k\right].
+\end{align*}
+The event in the right-hand side of this inequality is essentially the sum of $n$ i.i.d. random variables $\mathbb{I}[t>T^*]\sim\text{Bernoulli}(\epsilon)$. Thus, this event follows a distribution $\text{Binomial}(n,\epsilon)$, so
+\begin{align*}
+\mathbb{P}_{\tilde{Z}_{\text{val}}\sim\tilde{D}^n}\left[\hat{T}<T^*\right]
+\le\sum_{i=0}^k\text{Binomial}(i;n,\epsilon)=\sum_{i=0}^k{n\choose i}\epsilon^i(1-\epsilon)^{n-i}
+=\delta_0,
+\end{align*}
+as claimed. $\blacksquare$
+\end{comment}
+
+At a high level, our proof proceeds in three steps. First, we show that a confidence set predictor $C_T$ can be encoded as a binary classifier $M_T$. Second, we show that a PAC bound for $M_T$ implies a PAC bound for $C_T$ (where in both cases, the unknown parameter is $T\in\mathbb{R}$). Third, we prove PAC bounds on the error of $M_{\hat T}$; by the second step, these bounds complete our proof.
+
+\textbf{Encoding $C_T$ as a binary classifier $M_T$.}
+We begin by showing how the problem of learning a PAC confidence set predictor $C_T$ reduces to the problem of learning a PAC binary classifier $M_T$.
+First, we show that for any $T\in\mathbb{R}$, the confidence set predictor $C_T$ can be encoded as a binary classifier $M_T$.
+Consider any parameter $T\in\Theta=\mathbb{R}$. Recall that we use the model $f(y\mid x)$ to construct the confidence set predictor
+\begin{align*}
+C_T(x) = \{ y \in \Ys \mid f(y \mid x) \geq e^{-T} \}.
+\end{align*}
+Now, define the map $\phi:\mathcal{Z}\to\mathbb{R}$ by $\phi(x,y)=-\log f(y\mid x)$, where $\Zs = \Xs \times \Ys$, and define the binary classifier $M_T:\mathbb{R}\to\{0,1\}$ by
+\begin{align*}
+M_T(t)=\mathbb{I}[t\le T].
+\end{align*}
+Here, $\mathbb{I}[s]$ is the indicator function, which returns one if a statement $s$ is true and zero otherwise.
+We claim that
+\begin{align} \label{eq:cm_equal}
+C_T(x) 
+&= \{ y \in \Ys \mid M_T(\phi(x,y)) =1 \}.
+\end{align}
+To see this claim, note that
+\begin{align*}
+C_T(x) 
+&= \{ y \in \Ys \mid f(y \mid x) \geq e^{-T} \} \\
+&= \{ y \in \Ys \mid - \log f(y \mid x) \leq T \} \\
+&= \{ y \in \Ys \mid \phi(x,y) \leq T \} \\
+&= \{ y \in \Ys \mid \mathbb{I} [ \phi(x,y) \leq T ] =1 \} \\
+&= \{ y \in \Ys \mid M_T(\phi(x,y)) =1 \},
+\end{align*}
+as claimed.
+
+
+\textbf{PAC bound for $M_T$ implies PAC bound for $C_T$.}
+Next, we show that a PAC bound for $M_T$ implies a PAC bound for $C_T$. More precisely, we design a data distribution $\tilde{D}$ and loss $\tilde{\ell}$, and show that (i) the distribution of $\tilde T$ (trained to optimize $M_T$) is the same as the distribution of $\hat T$ (constructed using our algorithm), and (ii) a PAC bound for $M_{\tilde T}$ (where $\tilde T$ is trained on data from $\tilde D$) implies a PAC bound for $C_{\tilde T}$. We show that as a consequence, a PAC bound on $M_{\tilde T}$ implies a PAC bound on $C_{\hat T}$.
+
+We begin by constructing $\tilde D$ and $\tilde\ell$. To this end, recall that $D$ is a given distribution over $\Xs \times \Ys$. We define a data distribution $\tilde{D}$ over $\tilde{\mathcal{X}}\times\tilde{\mathcal{Y}}$, where $\tilde{\mathcal{X}}=\mathbb{R}$ and $\tilde{\mathcal{Y}}=\{0,1\}$, as follows. The first component of $\tilde{D}$ is the distribution over $\tilde{\mathcal{X}}$ induced by $\phi$ from $D$, and the second component is the distribution over $\tilde{\mathcal{Y}}$ that places all probability mass on $1$. Formally, $\tilde{D}$ exists assuming $\phi$ is measurable, so the induced distribution exists; for all our choices of $f$ (i.e., categorical or Gaussian), this property is satisfied. Then,
+\begin{align*}
+	\mu_{\tilde{D}}((t,a)) = \mu_D(\phi^{-1}(t))\cdot\mathbb{I}[a=1],
+\end{align*}
+where $\mu_{\tilde{D}}$ is the measure encoding $\tilde{D}$, and $\mu_D$ is the measure encoding $D$.
+Furthermore, we define $\ell:\tilde{\mathcal{Y}}\times\tilde{\mathcal{Y}}\to\{0,1\}$ to be the 0-1 loss $\ell(a,a')=\mathbb{I}[a\neq a']$. Finally, let $\hat T$ be chosen using our algorithm---i.e.,
+\begin{align*}
+\hat T&=\operatorname*{\arg\min}~T\hspace{0.1in}\text{subj. to}\hspace{0.1in}L(C_T;Z)\le\alpha \\
+L(C_T;Z)&=\frac{1}{|Z|}\sum_{(x,y)\in Z}\mathbb{I}[y\not\in C_T(x)],
+\end{align*}
+for any $\alpha\in\mathbb{R}_{\ge0}$,
+and let $\tilde T$ be chosen similarly for $M_T$---i.e.,
+\begin{align*}
+\tilde T&=\operatorname*{\arg\min}~T\hspace{0.1in}\text{subj. to}\hspace{0.1in}L(M_T;\tilde Z)\le\alpha \\
+L(M_T;\tilde Z) &= \frac{1}{|\tilde Z|}\sum_{(t,a)\in\tilde Z}\ell(M_T(t),a) = \frac{1}{|\tilde Z|}\sum_{(t,a)\in\tilde Z}\mathbb{I}[M_T(t) \neq a].
+\end{align*}
+Now, we show (i) above. In particular, we claim that $\hat T(Z)$ has the same distribution as $\tilde T(\tilde Z)$, where $Z\sim D^n$ and $\tilde Z\sim\tilde D^n$ are random datasets. To this end, define $\Phi:\mathcal{Z}^n\mapsto\tilde{\mathcal{Z}}^n$ by
+\begin{align*}
+\Phi((z_1,...,z_n)) = ((\phi(z_1),1), ..., (\phi(z_n),1)).
+\end{align*}
+Note that
+\begin{align*}
+\tilde L(M_T;\Phi(Z))
+&= \frac{1}{|\Phi(Z)|} \sum_{i=1}^n \mathbb{I}[M_T(\phi(x_i,y_i)) \neq 1] \\
+&= \frac{1}{|Z|} \sum_{i=1}^n \mathbb{I}[y_i \not\in C_T(x_i)] \\
+&= L(C_T;Z),
+\end{align*}
+from which it follows that
+\begin{align*}
+\hat T(Z)
+&=\operatorname*{\arg\min}~T\hspace{0.1in}\text{subj. to}\hspace{0.1in}L(C_T;Z)\le\alpha \\
+&=\operatorname*{\arg\min}~T\hspace{0.1in}\text{subj. to}\hspace{0.1in}\tilde L(M_T;\Phi(Z))\le\alpha \\
+&=\tilde T(\Phi(Z)).
+\end{align*}
+By construction of $\Phi$, the random variables $\tilde Z$ and $\Phi(Z)$ have the same distribution; thus, it follows that the random variables $\tilde T(\tilde Z)$ and $\tilde T(\Phi(Z))$ have the same distribution as well. Since $\hat T(Z)=\tilde T(\Phi(Z))$, it follows that $\hat T(Z)$ has the same distribution as $\tilde T(\tilde Z)$, as claimed.
+
+Next, we show (ii) above. In particular, we claim that a PAC bound for $M_{\tilde T(\tilde Z)}$---i.e.,
+\begin{align*}
+\mathbb{P}_{\tilde Z\sim\tilde D^n}[\tilde{L}(M_{\tilde T(\tilde Z)})\le\epsilon]\ge1-\delta,
+\end{align*}
+implies a PAC bound for $C_{\tilde T(\tilde Z)}$---i.e.,
+\begin{align*}
+\mathbb{P}_{\tilde Z\sim\tilde D^n}[L(C_{\tilde T(\tilde Z)})\le\epsilon]\ge1-\delta,
+\end{align*}
+where the true losses are
+\begin{align*}
+\tilde L(M_T) &= \mathbb{E}_{(t,a)\sim\tilde D}[\ell(M_T(t),a)] = \mathbb{P}_{(t,a)\sim\tilde D}[M_T(t)\neq a] \\
+L(C_T) &= \mathbb{E}_{(x,y)\sim D}[\mathbb{I}[y\not\in C_T(x)]] = \mathbb{P}_{(x,y)\sim D}[y\not\in C_T(x)].
+\end{align*}
+Note that it suffices to show that the true loss for $C_T$ equals the true loss for $M_T$---i.e., 
+\begin{align*}
+L(C_T) = \tilde{L}(M_T), \end{align*}
+since this equation (together with the PAC bound for $M_{\tilde T(\tilde Z)}$) implies
+\begin{align*}
+\mathbb{P}_{\tilde Z\sim\tilde D^n}[L(C_{\tilde T(\tilde Z)})\le\epsilon]=\mathbb{P}_{\tilde Z\sim\tilde D^n}[\tilde{L}(M_{\tilde T(\tilde Z)})\le\epsilon]\ge1-\delta,
+\end{align*}
+as desired. To see the claim, note that
+\begin{align*}
+\tilde L(M_T) 
+&= \mathbb{P}_{(t,a)\sim\tilde{D}}[M_T(t)\neq a]  \\	&= \int \mathbb{I}[M_T(t)\neq a] d\mu_{\tilde{D}}((t, a)) \\
+&= \sum_{a=0}^1 \mathbb{I}[a=1] \cdot \int \mathbb{I}[M_T(t)\neq a] d\mu_D(\phi^{-1}(t)) \\
+&= \int \mathbb{I}[M_T(t)\neq1] d\mu_D(\phi^{-1}(t))
+\end{align*}
+Now, using the change of variables $t\mapsto\phi(z)$, we have
+\begin{align*}
+\tilde L(M_T) &= \int \mathbb{I}[M_T(\phi(z))\neq1] d\mu_D(z) \\
+&= \int \mathbb{I}[M_T(\phi(x, y))\neq 1] \cdot D(x, y) dx dy.
+\end{align*}
+Then, using (\ref{eq:cm_equal}), we have
+\begin{align*}
+\tilde L(M_T) &= \int \mathbb{I}[y \notin C_T(x)] D(x, y) dx dy \\
+&= \mathbb{P}_{(x, y) \sim D}[ y \notin C_T(x)] \\
+&= L(C_T),
+\end{align*}
+as claimed. 
+
+Finally, combining (i) and (ii), we have
+\begin{align*}
+\mathbb{P}_{Z\sim D^n}[L(C_{\hat T(Z)})\le\epsilon]
+= \mathbb{P}_{\tilde Z\sim\tilde D^n}[L(C_{\tilde T(\tilde Z)})\le\epsilon] \ge 1-\delta,
+\end{align*}
+where the first equality follows since (i) says that $\hat T(Z)$ (where $Z\sim D^n$) has the same distribution as $\tilde T(\tilde Z)$ (where $\tilde Z\sim\tilde D^n$), and the second inequality follows by (ii).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\textbf{Generalization bound.}
+Finally, we prove the PAC bound
+\begin{align}
+\label{eq:finalpac}
+\mathbb{P}_{\tilde Z\sim\tilde D^n}[\tilde{L}(M_{\tilde T})\le\epsilon]\ge1-\delta_0,
+\end{align}
+for $M_{\tilde T}$, where $\delta_0 = \sum_{i=0}^k{n\choose i}\epsilon^i(1-\epsilon)^{n-i}$; for conciseness, we have dropped the dependence of $\tilde T$ on $\tilde Z$. By the previous step, this bound implies the theorem statement. To this end, we first simplify the left-hand side of the inequality (\ref{eq:finalpac}).
+In particular, let $T^*$ be the smallest $T$ for which $\tilde{L}(M_{T^*})=\epsilon$; such a $T^*$ exists by our assumption that $\tilde{D}$ has continuous density function.
+
+
+
+First, we claim that 
+$T < T^*$ implies $\tilde{L}(M_T) > \tilde{L}(M_{T^*})$. Assuming $T < T^*$, then
+\begin{align*}
+\tilde{L}(M_T) 
+&= \mathbb{P}_{(t,a)\sim\tilde{D}}[M_T(t)\neq a] \\
+&= \mathbb{E}_{(t,a)\sim\tilde{D}}[\mathbb{I}[M_T (t)\neq a] \\
+&= \mathbb{E}_{(t,a)\sim\tilde{D}}[\mathbb{I}[M_{\Th} (t)\neq 1]] \\
+&= \mathbb{E}_{(t,a)\sim\tilde{D}}\left[\mathbb{I}[ \mathbb{I}[ t \leq T ] \neq 1]\right] \\
+&= \mathbb{E}_{(t,a)\sim\tilde{D}}\left[\mathbb{I}[ t > T ]\right] \\
+&> \mathbb{E}_{(t,a)\sim\tilde{D}}\left[\mathbb{I}[ t > T^* ]\right] \\
+&= \tilde{L}(M_{T^*}).
+\end{align*}
+Assuming $T \geq T^{*}$, we can similarly show that $\tilde{L}(M_{\hat{T}}) \leq \tilde{L}(M_{T^*})$. It follows that
+\begin{align*}
+\mathbb{P}_{\tilde Z\sim\tilde{D}^n} \left[ \tilde{L}(M_{\tilde T}) > \epsilon \right]
+&= \mathbb{P}_{\tilde{Z}\sim\tilde{D}^n} \left[ \tilde{L}(M_{\tilde T}) > \tilde{L}(M_{T^*}) \right] \\
+&= \mathbb{P}_{\tilde{Z}\sim\tilde{D}^n}\left[\tilde{T}<T^*\right].
+\end{align*}
+As a consequence, (\ref{eq:finalpac}) is equivalent to
+\begin{align*}
+\mathbb{P}_{\tilde{Z}\sim\tilde{D}^n}\left[\tilde T<T^*\right] \le \delta_0.
+\end{align*}
+Next, recall that 
+$\tilde{T}$ must satisfy $\tilde{L}(M_{\tilde{T}};\tilde Z)\le\alpha$, where
+\begin{align*}
+\tilde L(M_{\tilde T};\tilde Z) = \frac{1}{n} \sum_{(t,a) \in \tilde Z} \mathbb{I}[ M_{\tilde T}(t) \neq a ].
+\end{align*}
+Assuming $\Th < T^{*}$, and using $k=n\cdot\alpha$, it follows that
+\begin{align*}
+k
+\ge\sum_{(t,a)\in\tilde{Z}}\mathbb{I}[M_{\tilde{T}}(t)\neq a]
+&=\sum_{(t,a)\in\tilde{Z}}\mathbb{I}[M_{\tilde{T}}(t)\neq1] \\
+&= \sum_{(t,a)\in\tilde{Z}}\mathbb{I}[t > \tilde{T}] \\
+&\ge \sum_{(t,a)\in\tilde{Z}}\mathbb{I}[t > T^*].
+\end{align*}
+As a consequence, we have
+\begin{align*}
+\mathbb{P}_{\tilde{Z}\sim\tilde{D}^n}\left[\tilde{T}<T^*\right]
+&\le\mathbb{P}_{\tilde{Z}\sim\tilde{D}^n}\left[\sum_{(t,a)\in\tilde{Z}}\mathbb{I}[t > T^*]\le k\right] \\
+&= \sum_{i=0}^{k} \mathbb{P}_{\tilde{Z}\sim\tilde{D}^n}\left[\sum_{(t,a)\in\tilde{Z}_{\text{val}}}\mathbb{I}[t > T^*] = i\right].
+\end{align*}
+By our definition of $T^*$, the event in the final expression says that the sum of $n$ i.i.d. Bernoulli random variables $\mathbb{I}[t > T^*]\sim\text{Bernoulli}(\epsilon)$ is at most $k$. Thus, this event follows a distribution $\text{Binomial}(n,\epsilon)$, so
+\begin{align*}
+\mathbb{P}_{\tilde{Z}\sim\tilde{D}^n}\left[\tilde{T}<T^*\right]
+\le\sum_{i=0}^k\text{Binomial}(i;n,\epsilon)=\sum_{i=0}^k{n\choose i}\epsilon^i(1-\epsilon)^{n-i}
+=\delta_0,
+\end{align*}
+as claimed. The theorem statement follows. $\blacksquare$
+
+\section{Details on Probability Forecasters for Specific Tasks}
+\label{sec:appendixforecasters}
+
+In this section, we describe architectures for probability forecasters for classification, regression, and model-based reinforcement learning.
+
+\textbf{Classification.}
+For the case $\mathcal{Y}=\{1,...,Y\}$, we choose the probability forecaster $f$ to be a neural network with a softmax output. Then, we can compute a given confidence set
+\begin{align*}
+C_T(x)=\{y\in\mathcal{Y}\mid f(y\mid x)\ge e^{-T}\}
+\end{align*}
+by explicitly enumerating $y\in\mathcal{Y}$. We measure the size of $C_T(x)$ as $|C_T(x)|$.
+
+\textbf{Regression.}
+For the case $\mathcal{Y}=\mathbb{R}$, we choose the probability forecaster $f$ to be a neural network that outputs the parameters $(\mu,\sigma)\in\mathcal{Y}\times\mathbb{R}_{>0}$ of a Gaussian distribution. Then, we have
+\begin{align*}
+C_T(x)=\left[\mu-\sigma\sqrt{2( T-\log(\sigma\sqrt{2\pi}))},\mu+\sigma\sqrt{2( T-\log(\sigma\sqrt{2\pi}))}\right].
+\end{align*}
+This choice generalizes to $\mathcal{Y}=\mathbb{R}^d$ by having $f$ output the parameters $(\mu,\Sigma)\in\mathcal{Y}\times\mathbb{S}_{\succ0}^d$ (where $\mathbb{S}_{\succ0}^d$ is the set of $d$ dimensional symmetric positive definite matrices) of a $d$ dimensional Gaussian distribution. Note that $C_T(x)$ is an ellipsoid $C_T(x)=\mu+\Lambda S^{d-1}$, where $\Lambda\in\mathbb{R}^{d\times d}$ and $S^{d-1}$ is the unit sphere in $\mathbb{R}^d$; in particular, $\Lambda = D^{-\frac{1}{2}} Q$, where $QDQ^{\top}$ is the eigendecomposition of
+\begin{align*}
+(2T - d \ln 2 \pi - \ln \det \Sigma)^{-1}\cdot\Sigma^{-1}.
+\end{align*}
+We measure the size of $C_T(x)$ as $\|\Lambda\|_F$, where $\|\cdot\|_F$ is the Frobenius norm.
+
+\textbf{Model-based reinforcement learning.}
+In model-based reinforcement learning, the goal is to predict trajectories based on a model of the dynamics. We consider an MDP with states $\mathcal{X}\subseteq\mathbb{R}^{d_X}$, actions $\mathcal{U}\subseteq\mathbb{R}^{d_U}$, an unknown distribution over initial states $x_0\sim d_0$, and unknown dynamics $g^*(x'\mid x,u)$ mapping a state-action pair $(x,u)\in\mathcal{X}\times\mathcal{U}$ to a distribution over states $x'\in\mathcal{X}$. We assume a fixed, known policy $\pi(u\mid x)$, mapping a state $x\in\mathcal{X}$ to a distribution over actions $u\in\mathcal{U}$. The (unknown) closed-loop dynamics are $f^*(x'\mid x)=\mathbb{E}_{\pi(u\mid x)}[g^*(x'\mid x,u)]$.
+
+
+Given initial state $x_0\in\mathcal{X}$ and time horizon $H\in\mathbb{N}$, we can sample a trajectory $x_{1:H}^*=(x_1^*,...,x_H^*)\sim f^*$ by setting $x_0^*=x_0$ and sequentially sampling $x_{t+1}^*\sim f^*(~\cdot\mid x_t^*)$ for $t\in\{0,1,...,H-1\}$. Our goal is to predict a confidence set $C_T(x_0)\subseteq\mathcal{X}^H$ that contains $x_{1:H}^*\in\mathcal{X}^H$ with high probability (according to both the randomness in initial states $x_0\sim d_0$ and in $f$). This problem is a multivariate regression problem with inputs $\mathcal{X}$ and outputs $\mathcal{Y}=\mathcal{X}^H$.
+
+We assume given a probability forecaster $f(x'\mid x)=\mathcal{N}(x';\mu(x),\Sigma(x))$ trained to predict the distribution over next states---i.e., $f(x'\mid x)\approx f^*(x'\mid x)$. Given initial state $x_0\in\mathcal{X}$ and time horizon $H\in\mathbb{N}$, we construct the mean trajectory $\bar{x}_{1:H}$ by setting $\bar{x}_0=x_0$ and letting $\bar{x}_{t+1}=\mu(\bar{x}_t)$. To account for the fact that the variances accumulate over time, we sum them together to obtain the predicted variances $\tilde\Sigma_{1:H}$---i.e.,
+\begin{align*}
+\tilde\Sigma_t=\Sigma(\bar{x}_0)+\Sigma(\bar{x}_1)+...+\Sigma(\bar{x}_{t-1}).
+\end{align*}
+Then, we use the probability forecast $\tilde{f}(\bar{x}_{1:H},\tilde\Sigma_{1:H})=\mathcal{N}(\bar{x}_{1:H},\tilde\Sigma_{1:H})$ (where we think of $\bar{x}_{1:H}$ as a vector in $\mathbb{R}^{H\cdot d_X}$ and $\tilde\Sigma_{1:H}$ as a block diagonal matrix in $\mathbb{R}^{(H\cdot d_X)\times(H\cdot d_X)}$) to construct confidence sets.
+
+Finally, we describe how we measure the size of a predicted confidence set $C_T(x_0)\subseteq\mathcal{X}^H$. In particular, note that $C_T(x_0)$ has the form
+\begin{align*}
+C_T(x_0)=(C_{T,1}(x_0),...,C_{T,H}(x_0)),
+\end{align*}
+i.e., $C_{T,t}(x_0)$ is the confidence set for the state $x_t$ reached after $t$ time steps. Then, we measure the size of the confidence set for each component $C_{T,t}(x_0)$ (for $t\in\{1,...,H\}$) individually, and take the average. As in the case of regression, $C_{T,t}(x_0)$ is an ellipsoid $C_{T,t}(x_0)=\bar{x}_t+\Lambda_tS^{d_X-1}$; then, the size of $C_T(x_0)$ is
+$H^{-1}\sum_{t=1}^H\|\Lambda_t\|_F$.
+
+
+An additional detail is that when we calibrate this forecaster, we calibrate each component $C_{T,t}(x_0)$ individually---i.e., we use $H$ calibration parameters $\tau_1,...,\tau_H$.
+
+\begin{comment}
+
+Our goal is to obtain a confidence set for subsequent states from the initial state $x_0$ by the dynamics $h^{*}$. If we only consider one-step predictions $\hh(x_{t}\mid x_{t-1})$, then this setting reduces to the regression setting with labels $\mathcal{Y}=\mathcal{X}$. However, we are interested in the multi-step prediction setting. We use $h_{t}^*(x_{1:t} \mid x_0)$ to denote the true distribution of states after $t$ steps --- i.e., $h_{t}^*(x_{1:t} \mid x_0) = \prod_{t=1}^{H} h^{*}(x_t \mid x_{0:t-1})$.
+We can define the predicted distribution $\hh_{t}(x_{1:t} \mid x_0)$ of states after $t$ steps in the same way. In principle, the multi-step setting is still a regression problem. The key difference is that it is in general intractable to compute $\hh_t(x _t \mid x_{0:t-1})$ in closed form due to its long state dependency.
+Instead, we use a heuristic to estimate this distribution. In particular, we use a Gaussian distribution 
+$\tilde{h}_t(x_{t}\mid x_{0:t-1}) = \mathcal{N}(x_{t} ; \tilde{\mu}(x_{0:t-1}), \tilde{\Sigma}(x_{0:t-1}))$, 
+where
+$\tilde{\mu}(x_{0:t-1}) = \hat{\mu}(x_{t-1})$, and 
+\begin{align}
+\label{eqn:modelbased}
+	\tilde{\Sigma}(x_{0:t-1})=\hat{\Sigma}(x_0)+ \dots + \hat{\Sigma}(x_{t-1}).
+\end{align}
+Thus, we use this predicted distribution $\tilde{h}_t$ as a probability forecaster $\fh$ to predict states after $H$ steps (i.e., $\fh(x_0) = \tilde{h}_H( x_{1:H} \mid x_0)$). Then, the problem of predicting confidence sets for a state trajectory $h_H^*(x_{1:H} \mid x_0)$ reduces to the case of regression.
+
+We also consider model-based reinforcement learning, where the goal is to learn a model of the dynamics. In particular, we consider an MDP with states $\mathcal{X}$, actions $\mathcal{U}$, and unknown dynamics $g^*:\mathcal{X}\times\mathcal{U}\to\mathcal{X}$. In general, the goal is to learn a policy that achieves high performance according to some reward function, but in this paper we are interested in obtaining confidence sets on a learned model. Therefore, we assume given a fixed policy $\pi:\mathcal{X}\to\mathcal{U}$, and let $f^*:\mathcal{X}\to\mathcal{X}$ denote the closed-loop dynamics---i.e., $f^*(x)=g^*(x,\pi(x))$. Additionally, we consider the case where $g^*$ and $\pi$ may be stochastic, so $f^*(x'\mid x)$ actually encodes a probability distribution over the next state $x'$ given the current state $x$.
+
+In this context, we assume given a learned model $f(x'\mid x)\approx f^*(x'\mid x)$ that estimates the probability of transitioning from $x_t$ to $x_{t+1}$; furthermore, we assume that $f$ has the form
+\begin{align*}
+f(x_{t+1}\mid x_t)=\mathcal{N}(x_{t+1};\mu(x_t),\Sigma(x_t)).
+\end{align*}
+Our goal is to obtain confidence sets for our prediction of subsequent states from an initial state $x_0$. If we only consider one-step predictions $f(x_{t+1}\mid x_t)$, then this setting reduces to the regression setting with labels $\mathcal{Y}=\mathcal{X}$. However, we are interested in the multi-step prediction setting. We use $f_t^*(x'\mid x)$ to denote the true distribution of states after $t$ steps---i.e., $f_1^*(x'\mid x)=f^*(x'\mid x)$ and
+$f_{t+1}^*(x'\mid x)=\int_{\mathcal{X}}f^*(x'\mid x'')\cdot f_t^*(x''\mid x)dx''$.
+We can define the predicted distribution $f_t(x'\mid x)$ of states after $t$ steps in the same way. In principle, the multi-step setting is still a regression problem. The key difference is that it is in general intractable to compute $f_t(x'\mid x)$ in closed form since $f$ can be nonlinear. Instead, we use a heuristic to estimate this distribution. In particular, we use a Gaussian distribution $\tilde{f}_t(x'\mid x)=(\tilde{\mu}(x),\tilde{\Sigma}(x))$, where $\tilde{\mu}(x)=\bar{x}_t$, where $\bar{x}_0=x$ and $\bar{x}_{t+1}=\mu(\bar{x}_t)$, and
+\begin{align}
+\label{eqn:modelbased}
+\tilde{\Sigma}(x)=\Sigma(\bar{x}_0)+...+\Sigma(\bar{x}_{t-1}).
+\end{align}
+We use the probability forecaster $\tilde{f}_t$ for calibrating the predicted state distribution after $t$ steps. Then, the problem of predicting confidence sets for $f_t^*(x'\mid x)$ reduces to the case of regression.
+\end{comment}
+
+
+
+
+
+
+\begin{comment}
+
+
+
+
+
+\subsection{Algorithm  $\As_{\Cs}$} 
+
+\sangdon{how to describe the threshold adjustment, which is actually included in the implementation}
+
+\subsection{Classification} \label{subsec:cls}
+
+\textbf{classification specific definitions:}
+\begin{itemize}
+\item $f(x) = \sigma(z(x))$
+\item $d(u, v) = - \sum_{k=1}^{Y} \mathbbm{1}\{u = k\} \ln(v_k)$
+\item a prediction set for classification is defined as follows:
+\eqas{
+	C_T(x) =\left\{ k \mid f(x)_k \geq T' \right\},
+}
+where $T' \coloneqq e^{-T}$.
+Here, one example of $f$ is a softmax output of a neural network. 
+\item $\Cs = \{ C_T \mid 0 \leq T \leq 1\}$: a collection of prediction sets
+\end{itemize}
+
+
+
+\subsection{Regression} \label{subsec:reg}
+
+\textbf{regression specific definitions:} (we will specifically use this work \citep{chua2018deep} )
+\begin{itemize}
+\item a set of states: $\Ss = \realnum^{S}$, where $S$ is the dimension of a state
+\item a set of actions: $\As$
+\item example: a randomly initialized state $s_0 \in \Ss$
+\item label: a trajectory of states (\ie $(s_1, s_2, \dots, x_N) \in \Ss^{N}$)
+\item a policy: $\hat{\pi}: \Ss \rightarrow \As$
+\item true label: $(s_1, s_2, \dots, s_N)$, where $x_{n+1}=f^{*}(x_n, \hat{\pi}(x_n))$
+\item predicted label: $(\sh_1, \sh_2, \dots, \sh_N)$, where $\sh_1 = \fh(s_0, \hat{\pi}(s_0))$ and $\sh_{n+1} = \fh(\sh_n, \hat{\pi}(\xh_n))$.
+\item trajectory forecaster: $g: \Ss \rightarrow \Delta \Ss^{N}$
+\item consider $g(x_0) = \Ns(\mu(x_0), \Sigma(x_0))$ (gaussian is useful when we want to compute the size of a confidence set for regression)
+\item $d(u, v) = - \ln v(u)$
+\item prediction set definition $C: \Ss \rightarrow 2^{\Ss^{N}}$:
+\eqas{
+	C(x) =\left\{ k ~\middle|~ \frac{1}{2} \| k - \mu(x) \|_{\Sigma(x)^{-1}}^{2} + \ln \sqrt{(2\pi)^{SN} \det \Sigma(x)} \leq T  \right\}.
+}
+
+\eqas{
+	C(x) =\left\{ k ~\middle|~ \frac{1}{2} \| k - \mu(x) \|_{\Sigma(x)^{-1}}^{2} + \frac{1}{2}SN \ln 2\pi + \frac{1}{2} \ln \det \Sigma(x) \leq T  \right\}.
+}
+
+\eqas{
+	C(x) =\left\{ k ~\middle| - \ln \Ns \( k ; \mu(x), \Sigma(x) \)  \leq T  \right\}.
+}
+\item Note on the size of a confidence set: we consider an ellipsoid when the equality holds. Thus, we summarize the size of the ellipsoid as the product of the length of principal axes, which is equivalent to the product of eigenvalues of the corresponding positive definite matrix, \ie
+\eqas{
+	| C(x) | \coloneqq \frac{1}{T'} \det \Sigma(x)^{-1},
+}
+where 
+$T' = T -  \frac{1}{2}SN \ln 2\pi - \frac{1}{2} \ln \det \Sigma(x)$.
+\end{itemize}
+
+
+\textbf{trajectory calibration:}
+\begin{itemize}
+
+\item dynamics model: (assume a diagonal covariance matrix)
+\eqas{
+	f(s_n, a_n) = \Prob(s_{n+1} | s_n, a_n) = \Ns( \hat{\mu}(s_n, a_n), \hat{\Sigma}(s_n, a_n) ),
+}
+where $\hat{\mu}: \Ss \times \As \rightarrow \Ss$ and $\hat{\Sigma}: \Ss \times \As \rightarrow S \times S$.
+\item trajectory forecaster:
+\eqas{
+	g(s_0; \hat{\pi}, T_{\text{cal}}) = \Ns \( \bar{\mu}(s_0; \hat{\pi}), \bar{\Sigma}(s_0; \hat{\pi}) \),
+}
+where 
+and
+
+
+\end{itemize}
+
+
+
+
+\end{comment}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Additional Results}
+\label{sec:additionalresults}
+
+\begin{figure}[t]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.35\linewidth]{{{figs/ImageNet/resnet152/plot_comp/cs_error_n_20000_delta_0.000010_eps_0.010000.png}}} &
+\includegraphics[width=0.35\linewidth]{{{figs/ImageNet/resnet152/plot_comp/box_n_20000_delta_0.000010_eps_0.010000.png}}} \\
+(a) & (b) \\
+\includegraphics[width=0.35\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_comp/cs_error_n_5000_delta_0.000010_eps_0.010000.png}}} &
+\includegraphics[width=0.35\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_comp/box_n_5000_delta_0.000010_eps_0.010000.png}}} \\
+(c) & (d)
+\end{tabular}
+\caption{Comparison to baselines that do not have theoretical guarantees. In (a) and (b), we show results for ImageNet, and in (c) and (d), we show results for the half-cheetah. In (a) and (c), we show the empirical error in the confidence set sizes; the dotted line denotes $\epsilon=0.01$, our target confidence set error. In (b) and (d), we show the sizes of the constructed confidence sets.}
+\label{fig:appendixbaselineresults}
+\end{figure}
+
+\subsection{Comparison to Additional Baselines}
+
+We compare to two baselines that do not have theoretical guarantees. We assume given a probability forecaster $f(y\mid x)$. Then, given an input $x\in\mathcal{X}$, we construct the confidence set to satisfy
+\begin{align}
+\label{eqn:baselineconf}
+\sum_{y \in C(x)} f(y \mid x) \geq 1 - \epsilon.
+\end{align}
+More precisely, we first rank the labels in decreasing order of $f(y\mid x)$, to obtain a list $(y_1,y_2,...,y_{|\mathcal{Y}|})$. Then, we choose the smallest $k$ such that (\ref{eqn:baselineconf}) holds for $C(x)=\{y_1,...,y_k\}$. Intuitively, if the probabilities $f(y\mid x)$ are correct (i.e., $f(y\mid x)$ is the true probability of $y$ given $x$), then this confidence set should contain the true label $y$ with high probability.
+
+For regression, we cannot explicitly rank labels $y\in\mathcal{Y}\subseteq\mathbb{R}^{d}$, but they are monotonically decreasing away from the mean. Then, assuming $f(y\mid x)=\mathcal{N}(y;\mu(x),\Sigma(x))$ is Gaussian, we take an ellipsoid of shape $\Sigma(x)$ around $\mu(x)$ with minimum radius that captures $1-\epsilon$ of the probability mass of $f(y\mid x)$. More precisely, we choose
+\begin{align*}
+C(x)&=C_{\hat T(x)}(x) \\
+\hat T(x)&=\operatorname{\arg\min}_{T\in\mathbb{R}}T\hspace{0.1in}\text{subj. to}\hspace{0.1in}\mathbb{P}_{f(y\mid x)}[y\in C_T(x)]\ge1-\epsilon,
+\end{align*}
+where
+$C_T(x)=\{y\in\mathcal{Y}\mid f(y\mid x)\ge e^{-T}\}$ as before. Note that unlike our algorithm, the threshold $\hat T(x)$ is not a learned parameter, but is computed independently for each new input $x$. We can solve for $\hat T(x)$ efficiently by changing basis to convert $f(y\mid x)$ to a standard Gaussian distribution, and then using the error function to compute the cutoff that includes the desired probability mass.
+
+
+
+
+
+In Figure~\ref{fig:appendixbaselineresults}, we compare the confidence sets constructed using this approach with (i) the forecaster $f_{\hat\phi}(y\mid x)$ without any calibration, and (ii) the calibrated forecaster $f_{\hat\phi,\hat\tau}(y\mid x)$. We plot both the confidence set sizes and the empirical error rates. For the latter, recall that a confidence set predictor $C$ is correct if $L(C)<\epsilon$, where $L(C)$ the true error rate. However, we cannot measure $L(C)$; instead, we approximate it on a held-out test set $Z_{\text{test}}\subseteq\mathcal{X}\times\mathcal{Y}$---i.e., $L(C) \approx \Lh(C;Z_{\text{test}})$, where
+\begin{align*}
+\Lh(C;Z_{\text{test}})=\frac{1}{|Z_{\text{test}}|}\sum_{(x,y)\in Z_{\text{test}}}\mathbb{I}[y\not\in C(x)].
+\end{align*}
+Intuitively, $\Lh(C;Z_{\text{test}})$ is the fraction of inputs $(x,y)\in Z_{\text{test}}$ such that the predicted confidence set for $x$ does not contain $y$. We say a confidence set $C$ is \emph{empirically valid} when $\Lh(C;Z_{\text{test}})<\epsilon$. Recall that our algorithm guarantees correctness with probability at least $1-\delta$, where $\delta=10^{-5}$. 
+
+As can be seen, the baseline approaches are not empirically valid in all cases. In one case---namely, the baseline with the calibrated forecaster on ImageNet---the confidence sets are almost empirically valid. However, in this case, the confidence sets are much larger than those based on our approach, despite the fact that the error rate of our confidence sets are empirically valid. Thus, our algorithms outperform the baselines in all cases.
+
+
+\subsection{Results on Additional ImageNet Neural Network Architectures}
+
+\begin{figure}[t]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.35\linewidth]{{{figs/ImageNet/alexnet/plot_box/box_n_20000_delta_0.000010_eps_0.010000.png}}}
+\includegraphics[width=0.35\linewidth]{{{figs/ImageNet/googlenet/plot_box/box_n_20000_delta_0.000010_eps_0.010000.png}}}
+\end{tabular}
+\caption{Confidence set sizes for two neural network architectures trained on ImageNet; for both, we use $n = 20,000$, $\epsilon = 0.01$ and $\delta = 10^{-5}$. Left: AlexNet \citep{krizhevsky2014one}; here, the empirical confidence set error of our approach $C+D$ is $0.0066$.
+Right: GoogLeNet~\citep{szegedy2015going}; here, the empirical confidence set error of our approach is $0.0061$.}
+\label{fig:appendixarchitectureresults}
+\end{figure}
+
+
+We apply our approach to two additional neural network architectures for ImageNet: AlexNet \citep{krizhevsky2014one} and GoogLeNet~\citep{szegedy2015going}. Our results are shown in Figure \ref{fig:appendixarchitectureresults}. As can be seen, calibration reduces the confidence set sizes for AlexNet, but actually increases the confidence set sizes for GoogleNet. Thus, both calibrated and uncalibrated models may need to be considered when constructing confidence set predictors. Also, we find that confidence set sizes are correlated with classification error---the test errors for AlexNet, GoogleNet, and ResNet are $47.83\%$, $29.41\%$, and $21.34\%$, respectively, and their confidence set sizes decrease in the same order.
+
+\subsection{Results on Additional Classification Datasets}
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[b]{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{{{figs/arrhythmia/plot_box/box_n_90_delta_0.050000_eps_0.100000.png}}}
+\caption{Arrhythmia}
+\end{subfigure}
+\begin{subfigure}[b]{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{{{figs/car/plot_box/box_n_345_delta_0.000010_eps_0.050000.png}}}
+\caption{Car}
+
+\end{subfigure}
+\begin{subfigure}[b]{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{{{figs/alarm/plot_box/box_n_1000_delta_0.000010_eps_0.020000.png}}}
+\caption{CHOP Alarm}
+\end{subfigure}
+\begin{subfigure}[b]{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{{{figs/alarm/plot_confexs/sup_bar_n_1000_eps_0.020000_delta_0.000010.png}}}
+\caption{Suppressed alarms}
+\end{subfigure}
+
+\caption{Confidence set sizes for three additional classification benchmarks:
+(a) the arrhythmia detection dataset~\citep{guvenir1997supervised}; here, $n = 90$, $\epsilon = 0.1$, $\delta=0.05$, and the empirical confidence set error of our approach $C+D$ is $0.0435$,
+(b) the car evaluation dataset \citep{bohanec1988knowledge}; here, $n = 345$, $\epsilon = 0.05$, $\delta=10^{-5}$, and the empirical confidence set error of our approach $C+D$ is $0.0172$, and
+(c) the CHOP alarm dataset \citep{bonafide2017video}; here, $n = 1000$, $\epsilon = 0.02$, $\delta=10^{-5}$, and the empirical confidence set error of our approach $C+D$ is $0.0159$.
+(d) The fractions of actionable and false alarms with a confidence set $\{0\}$ (i.e., only contains false alarm).
+} \label{fig:appendixextraclsresults}
+\end{figure}
+
+We apply our approach to three small classification datasets: an Arrhythmia detection dataset \citep{guvenir1997supervised}, a car evaluation dataset \citep{bohanec1988knowledge}, and a medical alarm dataset \citep{bonafide2017video}. The confidence set sizes are shown in Figure \ref{fig:appendixextraclsresults}. We choose larger values of $\epsilon$ and $\delta$ since we cannot obtain confidence sets that satisfy the PAC criterion with smaller $\epsilon$ and $\delta$ when the number of validation examples $n$ is too small. For all three datasets, the empirical confidence set error is smaller than the specified error $\epsilon$; thus, the constructed confidence sets are empirically valid. For these datasets, the confidence set sizes of our approach $C+D$ and our approach without calibration $D$ are similar, most likely due to the small number of class labels.
+
+We additionally ran our approach on a medical dataset where classification decisions are safety critical; thus, correct predicted confidence sets are required. 
+In particular, we use the Children's Hospital of Philadelphia (CHOP) alarm dataset \citep{bonafide2017video}. 
+This dataset consists of vital signs from 100 patients around one year of age. One of the vital signs is the oxygen level of the blood, and a medical device generates an alarm if the oxygen level is below a specified level. The labels indicate whether the generated alarm is true ($y=1$) or false ($y=0$).
+We use $n = 1000$, $\epsilon = 0.02$, and $\delta = 10^{-5}$. The empirical confidence set error of our approach is $\Lh(C; Z_\text{test}) = 0.0159$.
+
+The key question is how many false alarms can be reliably detected using machine learning to help reduce alarm fatigue. We consider an approach where we use the predicted confidence sets to detect false alarms. In particular, we first train a probability forecaster $f:\mathcal{X}\to\mathcal{P}_{\mathcal{Y}}$, where $\mathcal{Y}=\{0,1\}$, to predict the probability that an alarm is true, and then construct a calibrated confidence set predictor $\tilde{f}:\mathcal{X}\to2^{\mathcal{Y}}$ based on this forecaster. We consider an alarm to be false if the predicted confidence set is $\tilde{f}(x)=\{0\}$---i.e., according to our confidence set predictor, the alarm is definitely false. Then, our PAC guarantee says that the alarm is actually false with probability at least $1-\epsilon$. In summary, we suppress an alarm if $\tilde{f}(x)=\{0\}$. Using our approach, $176/630$ (i.e., $27.94\%$) of false alarms are suppressed, while only $13/187$ (i.e., $6.95\%$) true alarms are suppressed (see Figure~\ref{fig:appendixextraclsresults} (d)).
+
+\subsection{Results on Additional Regression Datasets}
+
+\begin{figure}[t]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.35\linewidth]{{{figs/mpg/plot_box/box_n_70_delta_0.050000_eps_0.100000.png}}}
+\includegraphics[width=0.35\linewidth]{{{figs/students/plot_box/box_n_100_delta_0.050000_eps_0.100000.png}}}
+\end{tabular}
+\caption{Confidence set sizes for two benchmarks focused on regression; for both, we use $\epsilon = 0.1$ and $\delta = 0.05$. Left: the Auto MPG dataset~\citep{quinlan1993combining}; here, $n = 70$, and the empirical confidence set error of our approach $C+D$ is $0.1250$.
+Right: The student grade dataset~\citep{cortez2008using}; here, $n = 100$, and the empirical confidence set error of our approach is $0.0597$.}
+\label{fig:appendixregressionresults}
+\end{figure}
+
+
+We ran our algorithm on two small regression baselines---the Auto MPG dataset
+~\citep{quinlan1993combining} and the student grade dataset~\citep{cortez2008using}. We show results in Figure~\ref{fig:appendixregressionresults}. The parameters we use are $\epsilon=0.1$ and $\delta=0.05$; as with the smaller classification datasets, we use larger choices of $\epsilon$ and $\delta$ since we cannot construct valid confidence sets for smaller choices. For the Auto MPG dataset, the empirical confidence set error of our final model $C+D$ is $\Lh(C; Z_{\text{test}})=0.0597$, so these are empirically valid. For the student grade dataset, the error is $\Lh(C; Z_{\text{test}})=0.1250$, which is slightly larger than desired; this failure is likely due to the fact that the failure probability $\delta=0.05$ is somewhat large.
+
+\subsection{Additional Results on ImageNet, Half-Cheetah, and Object Tracking}
+
+Table~\ref{table:extraimages} \&~\ref{table:extraimages_confsets} show examples of ResNet confidence set sizes for ImageNet images. Table~\ref{table:appimagenet} shows results for varying $\epsilon,\delta$ on ResNet. Tables~\ref{table:appcheetah1} \&~\ref{table:appcheetah2} show results for varying $\epsilon,\delta$ on the Half-Cheetah. Table~\ref{fig:otb_goturn_conf_set} shows visualizations of the confidence sets predicted for our object tracking benchmark.
+
+\begin{table*}[th!]
+\centering
+\setlength{\fboxsep}{-2pt}	
+\setlength{\fboxrule}{2pt}	
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\setlength\tabcolsep{1.5pt} \begin{tabular}{M{0.02\textwidth} | M{0.24\textwidth} M{0.24\textwidth} M{0.24\textwidth} M{0.24\textwidth}}
+~ & $|C(x) | = 1$ & $5 \leq |C(x) | \leq 10$ & $50 \leq |C(x) | \leq 100$ & $ |C(x) | \geq 200$ \\
+	\toprule
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{airship}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10119_css_1}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10117_css_9}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10120_css_80}}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/airship/id_10138_css_241}}} \\
+		
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{zebra}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8519_css_1}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8525_css_7}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8539_css_80}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/zebra/id_8530_css_227}}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{banana}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/banana/id_23843_css_1}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/banana/id_23834_css_10}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/banana/id_23837_css_84}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/banana/id_23842_css_302}}} \\
+		
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{carousel}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/carousel/id_11879_css_1}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/carousel/id_11877_css_5}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/carousel/id_11889_css_97}}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/carousel/id_11882_css_386}}}} \\
+		
+
+
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{starfish}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/starfish/id_8187_css_1}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/starfish/id_8203_css_7}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/starfish/id_8189_css_71}}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/starfish/id_8190_css_383}}} \\
+		
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{street sign}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/street_sign/id_22957_css_1}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/street_sign/id_22963_css_6}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/street_sign/id_22965_css_52}}}} &
+		\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/gen_exs_with_Various_cs_size_30/street_sign/id_22970_css_235}}}} \\
+	
+\end{tabular}
+\caption{ImageNet images with varying ResNet confidence set sizes. The confidence set sizes are on the top. The true label is on the left-hand side. Incorrectly labeled images are boxed in red.}
+\label{table:extraimages}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\setlength{\fboxsep}{-2pt}	
+\setlength{\fboxrule}{2pt}	
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\setlength\tabcolsep{1.5pt} \begin{tabular}{M{0.17\textwidth} M{0.15\textwidth} | M{0.17\textwidth} M{0.15\textwidth} | M{0.17\textwidth} M{0.15\textwidth} }
+\multicolumn{2}{c|}{$1 \leq |C(x) | < 5$} &
+	\multicolumn{2}{c|}{$5 \leq |C(x) | < 10$} &
+	\multicolumn{2}{c}{$10 \leq |C(x) | < 20$} \\
+	\toprule
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_335_css_1}}} &
+	{\tiny$\left\{ 
+		\widehat{{\color{red}\text{king penguin}}} 
+	\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_33_css_5}}} &
+	{\tiny$\left\{ \makecell{
+		\widehat{{\color{red}\text{Chihuahua}}}, \\ \text{toy terrier}, \\ \text{Italian greyhound}, \\ \text{Boston bull}, \\ \text{miniature pinscher}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_122_css_10}}} &
+	{\tiny$\left\{ \makecell{
+		\text{banded gecko}, \\ \widehat{{\color{red}\text{common iguana}}}, \\ \text{American chameleon},  \\ \text{whiptail}, \\ \text{agama}, \\ \text{frilled lizard}, \\ \text{alligator lizard}, \\ \text{green lizard}, \\ \text{African chameleon}, \\ \text{Komodo dragon}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_8_css_1}}} &
+	{\tiny$\left\{ 
+		\widehat{{\color{red}\text{shopping basket}}}
+	\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_38_css_6}}} &
+	{\tiny$\left\{ \makecell{
+		\text{English springer},\\ \text{\makecell{Welsh springer \\ spaniel}},\\ \text{collie},\\ \text{boxer},\\ \widehat{{\color{red}\text{Saint Bernard}}},\\ \text{Leonberg}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_69_css_11}}} &
+	{\tiny$\left\{ \makecell{
+		\text{altar}, \\ \text{analog clock}, \\ \text{bell cote}, \text{castle}, \\ \widehat{{\color{red}\text{church}}}, \\ \text{cinema}, \text{dome}, \\ \text{monastery}, \\ \text{palace}, \text{vault}, \\ \text{wall clock}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_23_css_1}}} &
+	{\tiny$\left\{ 
+		\widehat{{\color{red}\text{\makecell{chambered \\nautilus}}}}
+	\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_32_css_5}}} &
+	{\tiny$\left\{ \makecell{
+		\text{face powder},\\ \widehat{{\color{red}\text{hamper}}},\\ \text{lotion},\\ \text{packet},\\ \text{shopping basket}
+	} \right\}$} &
+\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_191_css_12}}} } &
+	{\tiny$\left\{ \makecell{
+		\text{barber chair},\\ \text{hand blower},\\ \text{medicine chest},\\ \text{paper towel},\\ {\color{red}\text{plunger}},\\ \text{shower curtain},\\ \text{soap dispenser},\\ \widehat{\text{toilet seat}},\\ \text{tub}, \text{washbasin},\\ \text{washer}, \text{toilet tissue}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_72_css_1}}} &
+	{\tiny$\left\{ 
+		\widehat{{\color{red}\text{bonnet}}}
+	\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_41_css_5}}} &
+	{\tiny$\left\{ \makecell{
+		\widehat{{\color{red}\text{kite}}},\\ \text{bald eagle},\\ \text{vulture},\\ \text{great grey owl},\\ \text{bittern}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_197_css_13}}} &
+	{\tiny$\left\{ \makecell{
+		\widehat{{\color{red}\text{beach wagon}}},\\ \text{cab}, \text{car wheel},\\ \text{convertible}, \text{grille},\\ \text{limousine}, \text{minivan},\\ \text{mobile home},\\ \text{passenger car},\\ \text{pickup},\\ \text{recreational vehicle},\\ \text{sports car}, \text{tow truck}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_6_css_2}}} &
+	{\tiny$\left\{ \makecell{
+		\text{Madagascar cat},\\ \widehat{{\color{red}\text{indri}}}
+	}\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_40_css_7}}} &
+	{\tiny$\left\{ \makecell{
+		\text{tiger cat},\\ \text{lynx},\\ \text{leopard},\\ \text{snow leopard},\\ \widehat{{\color{red}\text{jaguar}}},\\ \text{tiger},\\ \text{cheetah}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_248_css_14}}} &
+	{\tiny$\left\{ \makecell{
+		\text{cannon}, \text{castle},\\ \widehat{{\color{red}\text{cliff dwelling}}},\\ \text{megalith}, \text{monastery},\\ \text{obelisk}, \text{prison},\\ \text{stone wall},\\ \text{triumphal arch},\\ \text{vault}, \text{alp},\\ \text{cliff}, \text{promontory},\\ \text{valley}
+	}\right\}$} 
+	\\
+
+	
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_10_css_2}}} &
+	{\tiny$\left\{\makecell{
+		\text{ballpoint},\\ \widehat{{\color{red}\text{fountain pen}}}
+	}\right\}$} &
+\fcolorbox{red}{white}{\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_42_css_8}}} } &
+	{\tiny$\left\{ \makecell{
+		\text{cash machine},\\ \text{desktop computer},\\ \widehat{\text{entertain. center}},\\ {\color{red}\text{home theater}},\\ \text{loudspeaker},\\ \text{monitor},\\ \text{screen},\\ \text{television}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_252_css_15}}} &
+	{\tiny$\left\{ \makecell{
+		\text{amphibian},\\ \text{cassette player},\\ \text{fire engine},\\ \text{minibus}, \text{minivan},\\ \text{passenger car},\\ \text{pole}, \text{police van},\\ \text{puck}, \text{racer},\\ \text{radio}, \text{school bus},\\ \text{screwdriver}, \text{streetcar},\\ \widehat{{\color{red}\text{trolleybus}}}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_73_css_3}}} &
+	{\tiny$\left\{\makecell{
+		\text{ibex},\\ \text{impala},\\ \widehat{{\color{red}\text{gazelle}}}
+	}\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_51_css_9}}} &
+	{\tiny$\left\{ \makecell{
+		\widehat{{\color{red}\text{common iguana}}},\\ \text{whiptail}, \text{agama},\\ \text{frilled lizard},\\ \text{alligator lizard},\\ \text{green lizard},\\ \text{Komodo dragon},\\ \text{African crocodile},\\ \text{American alligator}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_260_css_16}}} &
+	{\tiny$\left\{ \makecell{
+		\text{junco}, \text{water ouzel},\\ \text{water snake}, \text{drake},\\ \text{red-breasted merganser},\\ \text{goose}, \text{crayfish},\\ \text{little blue heron},\\ \text{European gallinule},\\ \text{ruddy turnstone},\\ \text{red-backed sandpiper},\\ \widehat{{\color{red}\text{redshank}}}, \text{dowitcher},\\ \text{oystercatcher}, \text{albatross},\\ \text{otter}
+	}\right\}$} 
+	\\
+	
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_1_5/id_74_css_4}}} &
+	{\tiny$\left\{\makecell{
+		\text{indigo bunting},\\ \text{bee eater},\\ \text{hummingbird},\\ \widehat{{\color{red}\text{jacamar}}}
+	}\right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_5_10/id_106_css_9}}} &
+	{\tiny$\left\{ \makecell{
+		\widehat{{\color{red}\text{barber chair}}},\\ \text{barbershop},\\ \text{electric fan},\\ \text{hand blower},\\ \text{iron},\\ \text{rocking chair},\\ \text{table lamp},\\ \text{tricycle},\\ \text{vacuum}
+	} \right\}$} &
+\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/fig_exs/css_range_10_20/id_369_css_17}}} &
+	{\tiny$\left\{ \makecell{
+		\text{accordion},\\ \text{acoustic guitar},\\ \text{banjo}, \text{bassoon},\\ \text{cornet}, \text{drum},\\ \text{drumstick},\\ \text{electric guitar},\\ \text{French horn},\\ \text{maraca}, \text{microphone},\\ \text{oboe}, \text{sax},\\ \text{stage}, \text{torch},\\ \widehat{{\color{red}\text{trombone}}}, \text{violin}
+	}\right\}$} 
+	\\
+\end{tabular}
+\caption{Confidence sets of ImageNet images with varying ResNet confidence set sizes. The predicted  confidence set is shown to the right of the corresponding input image. The true label is shown in red, and the predicted label is shown with a hat.}
+\label{table:extraimages_confsets}
+\end{table*}
+
+
+\begin{table*}[th!]
+\centering
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\setlength\tabcolsep{1.5pt} \begin{tabular}{M{0.02\textwidth} | M{0.33\textwidth} M{0.33\textwidth} M{0.33\textwidth}}
+~ & $\delta=10^{-1}$ & $\delta=10^{-3}$ & $\delta=10^{-5}$ \\
+	\toprule
+	\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.05$}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.100000_eps_0.050000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.001000_eps_0.050000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.000010_eps_0.050000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.04$}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.100000_eps_0.040000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.001000_eps_0.040000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.000010_eps_0.040000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.03$}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.100000_eps_0.030000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.001000_eps_0.030000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.000010_eps_0.030000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.02$}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.100000_eps_0.020000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.001000_eps_0.020000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.000010_eps_0.020000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.01$}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.100000_eps_0.010000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.001000_eps_0.010000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/ImageNet/resnet152/plot_box/box_n_20000_delta_0.000010_eps_0.010000.png}}} \\
+\end{tabular}
+\caption{Confidence set sizes for ResNet trained on ImageNet, for varying $\epsilon,\delta$ and for $n=20,000$. The plots are as in Figure~\ref{fig:imagenet}~(a).}
+
+\label{table:appimagenet}
+\end{table*}
+
+
+
+\begin{table*}[th!]
+\centering
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\setlength\tabcolsep{1.5pt} \begin{tabular}{M{0.02\textwidth} | M{0.33\textwidth} M{0.33\textwidth} M{0.33\textwidth}}
+~ & $\delta=10^{-1}$ & $\delta=10^{-3}$ & $\delta=10^{-5}$ \\
+	\toprule
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.05$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.100000_eps_0.050000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.001000_eps_0.050000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.000010_eps_0.050000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.04$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.100000_eps_0.040000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.001000_eps_0.040000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.000010_eps_0.040000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.03$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.100000_eps_0.030000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.001000_eps_0.030000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.000010_eps_0.030000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.02$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.100000_eps_0.020000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.001000_eps_0.020000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.000010_eps_0.020000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.01$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.100000_eps_0.010000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.001000_eps_0.010000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_box_log/ablation_n_5000_delta_0.000010_eps_0.010000.png}}} \\
+\end{tabular}
+\caption{Confidence set sizes for a neural network dynamics model trained on the half-cheetah environment, for varying $\epsilon,\delta$ and for $n=5000$. The plots are as in Figure~\ref{fig:cheetah} (a).}
+\label{table:appcheetah1}
+\end{table*}
+
+
+\begin{table*}[th!]
+\centering
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\setlength\tabcolsep{1.5pt} \begin{tabular}{M{0.02\textwidth} | M{0.33\textwidth} M{0.33\textwidth} M{0.33\textwidth}}
+~ & $\delta=10^{-1}$ & $\delta=10^{-3}$ & $\delta=10^{-5}$ \\
+	\toprule
+	\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.05$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.100000_eps_0.050000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.001000_eps_0.050000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.000010_eps_0.050000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.04$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.100000_eps_0.040000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.001000_eps_0.040000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.000010_eps_0.040000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.03$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.100000_eps_0.030000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.001000_eps_0.030000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.000010_eps_0.030000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.02$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.100000_eps_0.020000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.001000_eps_0.020000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.000010_eps_0.020000.png}}} \\
+\parbox[t]{2mm}{{\rotatebox[origin=c]{90}{$\epsilon=0.01$}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.100000_eps_0.010000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.001000_eps_0.010000.png}}} &
+		\includegraphics[width=\linewidth]{{{figs/HalfCheetah/per_time_cal/plot_traj_mean/ablation_n_5000_delta_0.000010_eps_0.010000.png}}} \\
+\end{tabular}
+\caption{Confidence set sizes for a neural network dynamics model trained on the half-cheetah environment, for varying $\epsilon,\delta$ and for $n=5000$. The plots are as in Figure~\ref{fig:cheetah} (b).}
+\label{table:appcheetah2}
+\end{table*}
+
+
+
+
+
+\begin{table*}[th!]
+\centering
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car4_0050}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Car24_0050}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0076}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0077}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0078}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0079}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurCar4_0080}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/CarDark_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/CarDark_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/CarDark_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/CarDark_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/CarDark_0050}} 
+	\\
+\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurFace_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurFace_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurFace_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurFace_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/BlurFace_0050}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Dancer2_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Dancer2_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Dancer2_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Dancer2_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Dancer2_0050}} 
+	\\
+\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Subway_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Subway_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Subway_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Subway_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Subway_0050}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Woman_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Woman_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Woman_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Woman_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/Woman_0050}} 
+	\\
+\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/MountainBike_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/MountainBike_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/MountainBike_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/MountainBike_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/MountainBike_0050}} 
+	\\
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/ClifBar_0010}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/ClifBar_0020}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/ClifBar_0030}} 
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/ClifBar_0040}}
+	\includegraphics[width=0.19\linewidth]{{figs/otb/goturn/plot_conf_set/ClifBar_0050}} 
+\caption{Visualization of confidence sets for the tracking dataset~\citep{WuLimYang13}, including the ground truth bounding box (white), the bounding box predicted by the original neural network~\citep{held2016learning} (red), and the bounding box produced using our confidence set predictor (green). We have overapproximated the predicted ellipsoid confidence set with a box. Our bounding box contains the ground truth bounding box with high probability.}
+\label{fig:otb_goturn_conf_set}
+\end{table*}
+
+
+ 
+
+
+
+\end{document}

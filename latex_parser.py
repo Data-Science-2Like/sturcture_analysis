@@ -189,7 +189,7 @@ def compare_with_template():
 
 # Write Sections to JSON File
 # json_data = json.dumps(section_dict, indent = 4)
-# with open("section_headings.json", "w") as outfile:
+# with open("JSON/section_headings.json", "w") as outfile:
 #     outfile.write(json_data)
 
 
