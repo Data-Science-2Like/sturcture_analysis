@@ -1,0 +1,184 @@
+{
+    "0": {
+        "": 1,
+        "INTRODUCTION": 2,
+        "Introduction": 1,
+        "Introduction and Main Result": 1,
+        "Introduction and Model Outlines": 1,
+        "Introduction and Motivation": 1,
+        "Introduction and Related Work": 1,
+        "Related work": 2,
+        "uppercaseIntroduction": 4
+    },
+    "1": {
+        "A Bayesian approach to seismicimaging": 1,
+        "A Brief Review of Stochastic Gradient Langevin Dynamics": 1,
+        "A Prototype Lifelong Reinforcement Learning System": 1,
+        "Approach": 2,
+        "Approach Overview": 1,
+        "Background": 5,
+        "Background and Related Work": 3,
+        "Background and Threat Model": 1,
+        "Introduction": 4,
+        "Materials and Methods": 1,
+        "Materials and methods": 1,
+        "Method": 4,
+        "Methodology": 9,
+        "Preliminary": 1,
+        "Preprocessing using An Information Sampling Approach": 1,
+        "Related Work": 2,
+        "uppercaseRelated Work": 1
+    },
+    "2": {
+        "": 1,
+        "Algorithm": 1,
+        "Approach": 4,
+        "Background": 2,
+        "Basic Relations": 1,
+        "Experimental Results": 1,
+        "Experiments": 2,
+        "Experiments and Results": 2,
+        "Method": 1,
+        "Methodology": 3,
+        "Methods": 2,
+        "uppercaseResults": 1
+    },
+    "3": {
+        "": 1,
+        "Analysis and Statistics": 1,
+        "Approach": 1,
+        "Conclusion": 1
+    },
+    "4": {
+        "Acknowledgements": 2,
+        "Background": 1,
+        "Conclusion": 1,
+        "uppercaseOnline Map Learning with an Ensemble of Sparse GP Experts": 1
+    },
+    "5": {
+        " Acknowledgments": 1,
+        "Acknowledgement": 1,
+        "Conclusion": 2,
+        "uppercaseExperimental Results": 1,
+        "uppercasePerformance Results": 1
+    },
+    "6": {
+        " Acknowledgments": 1,
+        "A direct comparison to RFGSM from citettramer2017ensemble": 1,
+        "A primer on Distributed Hash Tables": 1,
+        "ACKNOWLEDGEMENT": 2,
+        "uppercaseDiscussion and Future Work": 1
+    },
+    "7": {
+        "": 1,
+        "2d Norms Additional Details": 1,
+        "Ablation Study": 1,
+        "studyB Detailed Results": 1
+    },
+    "8": {
+        "A greedy algorithm": 1,
+        "AOUP attention analysis": 1,
+        "Verification and reduction of the prediction horizon": 1,
+        "clai User Study": 1
+    },
+    "9": {
+        "Ablation Study on Reduce Tree Degree": 1,
+        "Acknowledgments": 2,
+        "Transferring TDV to different linear inverse problems": 1,
+        "Typefaces": 1,
+        "Variance of CNN Divergence Between Runs": 1,
+        "Vector Methods for PDs": 1,
+        "Verification of Reprojection Property": 1
+    },
+    "10": {
+        "Acknowledgement": 1,
+        "Additional Details and Experiments": 1,
+        "Additional Results": 1,
+        "XML Recursive Networks": 1
+    },
+    "11": {
+        "Ablation Study": 1,
+        "Accuracy of Perturbation Defenses on Clean Data": 1,
+        "Additional Setup Details and Results from MIMIC ICU Hypotension Domain": 1,
+        "What Makes an Item Regular or Irregular": 1
+    },
+    "12": {
+        "Acknowledgement": 1,
+        "Additional Analysis of Metaknowledge Graph": 1,
+        "Additional Experimental Results": 1,
+        "Rights Information": 1,
+        "Sensitivity of cscores to the Number of Models": 1,
+        "StrokeRehab dataset details": 1,
+        "Theoretical Limitations of the Structural Information Learning Machinery SiLeM": 1
+    },
+    "13": {
+        "Additional Lemmas": 1,
+        "Attack Input Perturbation Defenses Nonadaptively": 1,
+        "Robustness Certification for MNIST Network SDPNN citeraghunathan2018certified": 1,
+        "The Problem Context": 1
+    },
+    "14": {
+        "Comparison with Smaller Networks": 1,
+        "The Effect of Concentration Parameter": 1,
+        "Transferability of the adversarial images": 1
+    },
+    "15": {
+        "Additional Experimental Results": 1,
+        "Concentration of binomial coefficients": 1,
+        "Multiple Trials For Stochastic Perturbations": 1,
+        "Qualitative Keypoint Matching Results": 1,
+        "Tables": 1,
+        "The Effect of Parameter Sharing": 1,
+        "The Proposed MetaArchitecture": 1,
+        "Where is the performance gain of LAP coming from": 1
+    },
+    "16": {
+        "Comparison with Related Works": 1,
+        "Connections to implicit bias of SGD": 1,
+        "Math Equations": 1,
+        "More Details on The WhiteBox Adaptive Attack": 1,
+        "Training Graphs": 1
+    },
+    "17": {
+        "Comparison with the CURL": 1,
+        "Figures": 1,
+        "Gradientbased Analysis": 1,
+        "The emphCHAMELEON Instantiations": 1,
+        "Top1 error rates for TinyImageNet experiments": 1
+    },
+    "18": {
+        "Baseline Recommendation Methods": 1,
+        "Citations and Bibliographies": 1,
+        "Hessianbased Analysis": 1
+    },
+    "19": {
+        "Evaluation Methodology": 1,
+        "SIGCHI Extended Abstracts": 1,
+        "Visualizations of attacks and imprecise channels": 1
+    },
+    "20": {
+        "Implementation": 1,
+        "Regularization": 1,
+        "Research Methods": 1
+    },
+    "21": {
+        "Additional Experiments for blackbox attacks": 1,
+        "Evaluation of Recommendation Quality RQ1": 1,
+        "Online Resources": 1
+    },
+    "22": {
+        "": 1,
+        "Analyzing the Importance of Input Features for the emphNAR Module RQ2": 1,
+        "Other domains": 1
+    },
+    "23": {
+        "Analyzing the Effect of Textual Representation in Recommendations RQ3": 1,
+        "Appendices": 1
+    },
+    "24": {
+        "Reducing the Item ColdStart Problem for News  Recommendation RQ4": 1
+    },
+    "25": {
+        "Balancing Accuracy and Novelty with emphCHAMELEON RQ5": 1
+    }
+}

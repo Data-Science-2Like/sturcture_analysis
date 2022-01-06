@@ -1,0 +1,225 @@
+{
+    "0": [
+        "",
+        "INTRODUCTION",
+        "INTRODUCTION",
+        "Introduction",
+        "Introduction and Main Result",
+        "Introduction and Model Outlines",
+        "Introduction and Motivation",
+        "Introduction and Related Work",
+        "Related work",
+        "Related work",
+        "uppercaseIntroduction",
+        "uppercaseIntroduction",
+        "uppercaseIntroduction",
+        "uppercaseIntroduction"
+    ],
+    "1": [
+        "A Bayesian approach to seismicimaging",
+        "A Brief Review of Stochastic Gradient Langevin Dynamics",
+        "A Prototype Lifelong Reinforcement Learning System",
+        "Approach",
+        "Approach",
+        "Approach Overview",
+        "Background",
+        "Background",
+        "Background",
+        "Background",
+        "Background",
+        "Background and Related Work",
+        "Background and Related Work",
+        "Background and Related Work",
+        "Background and Threat Model",
+        "Introduction",
+        "Introduction",
+        "Introduction",
+        "Introduction",
+        "Materials and Methods",
+        "Materials and methods",
+        "Method",
+        "Method",
+        "Method",
+        "Method",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Preliminary",
+        "Preprocessing using An Information Sampling Approach",
+        "Related Work",
+        "Related Work",
+        "uppercaseRelated Work"
+    ],
+    "2": [
+        "",
+        "Algorithm",
+        "Approach",
+        "Approach",
+        "Approach",
+        "Approach",
+        "Background",
+        "Background",
+        "Basic Relations",
+        "Experimental Results",
+        "Experiments",
+        "Experiments",
+        "Experiments and Results",
+        "Experiments and Results",
+        "Method",
+        "Methodology",
+        "Methodology",
+        "Methodology",
+        "Methods",
+        "Methods",
+        "uppercaseResults"
+    ],
+    "3": [
+        "",
+        "Analysis and Statistics",
+        "Approach",
+        "Conclusion"
+ 
+    ],
+    "4": [
+        "Acknowledgements",
+        "Acknowledgements",
+        "Background",
+        "Conclusion",
+        "uppercaseOnline Map Learning with an Ensemble of Sparse GP Experts"
+    ],
+    "5": [
+        " Acknowledgments",
+        "Acknowledgement",
+        "Conclusion",
+        "Conclusion",
+        "uppercaseExperimental Results",
+        "uppercasePerformance Results"
+    ],
+    "6": [
+        " Acknowledgments",
+        "A direct comparison to RFGSM from citettramer2017ensemble",
+        "A primer on Distributed Hash Tables",
+        "ACKNOWLEDGEMENT",
+        "ACKNOWLEDGEMENT",
+        "uppercaseDiscussion and Future Work"
+    ],
+    "7": [
+        "",
+        "2d Norms Additional Details",
+        "Ablation Study",
+        "studyB Detailed Results"
+    ],
+    "8": [
+        "A greedy algorithm",
+        "AOUP attention analysis",
+        "Verification and reduction of the prediction horizon",
+        "clai User Study"
+    ],
+    "9": [
+        "Ablation Study on Reduce Tree Degree",
+        "Acknowledgments",
+        "Acknowledgments",
+        "Transferring TDV to different linear inverse problems",
+        "Typefaces",
+        "Variance of CNN Divergence Between Runs",
+        "Vector Methods for PDs",
+        "Verification of Reprojection Property"
+    ],
+    "10": [
+        "Acknowledgement",
+        "Additional Details and Experiments",
+        "Additional Results",
+        "XML Recursive Networks"
+    ],
+    "11": [
+        "Ablation Study",
+        "Accuracy of Perturbation Defenses on Clean Data",
+        "Additional Setup Details and Results from MIMIC ICU Hypotension Domain",
+        "What Makes an Item Regular or Irregular"
+    ],
+    "12": [
+        "Acknowledgement",
+        "Additional Analysis of Metaknowledge Graph",
+        "Additional Experimental Results",
+        "Rights Information",
+        "Sensitivity of cscores to the Number of Models",
+        "StrokeRehab dataset details",
+        "Theoretical Limitations of the Structural Information Learning Machinery SiLeM"
+    ],
+    "13": [
+        "Additional Lemmas",
+        "Attack Input Perturbation Defenses Nonadaptively",
+        "Robustness Certification for MNIST Network SDPNN citeraghunathan2018certified",
+        "The Problem Context"
+    ],
+    "14": [
+        "Comparison with Smaller Networks",
+        "The Effect of Concentration Parameter",
+        "Transferability of the adversarial images"
+    ],
+    "15": [
+        "Additional Experimental Results",
+        "Concentration of binomial coefficients",
+        "Multiple Trials For Stochastic Perturbations",
+        "Qualitative Keypoint Matching Results",
+        "Tables",
+        "The Effect of Parameter Sharing",
+        "The Proposed MetaArchitecture",
+        "Where is the performance gain of LAP coming from"
+    ],
+    "16": [
+        "Comparison with Related Works",
+        "Connections to implicit bias of SGD",
+        "Math Equations",
+        "More Details on The WhiteBox Adaptive Attack",
+        "Training Graphs"
+    ],
+    "17": [
+        "Comparison with the CURL",
+        "Figures",
+        "Gradientbased Analysis",
+        "The emphCHAMELEON Instantiations",
+        "Top1 error rates for TinyImageNet experiments"
+    ],
+    "18": [
+        "Baseline Recommendation Methods",
+        "Citations and Bibliographies",
+        "Hessianbased Analysis"
+    ],
+    "19": [
+        "Evaluation Methodology",
+        "SIGCHI Extended Abstracts",
+        "Visualizations of attacks and imprecise channels"
+    ],
+    "20": [
+        "Implementation",
+        "Regularization",
+        "Research Methods"
+    ],
+    "21": [
+        "Additional Experiments for blackbox attacks",
+        "Evaluation of Recommendation Quality RQ1",
+        "Online Resources"
+    ],
+    "22": [
+        "",
+        "Analyzing the Importance of Input Features for the emphNAR Module RQ2",
+        "Other domains"
+    ],
+    "23": [
+        "Analyzing the Effect of Textual Representation in Recommendations RQ3",
+        "Appendices"
+    ],
+    "24": [
+        "Reducing the Item ColdStart Problem for News  Recommendation RQ4"
+    ],
+    "25": [
+        "Balancing Accuracy and Novelty with emphCHAMELEON RQ5"
+    ]
+}
