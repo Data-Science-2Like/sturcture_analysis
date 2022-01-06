@@ -7,17 +7,6 @@ with open('JSON/section_headings.json') as f:
 new_dict = {}
 count_dict = {}
 
-empty_list = 1
-empty_list = []
-
-# for value in data.values():
-#     for item in value:
-#         if item in new_dict:
-#             new_dict[item] += 1
-#         if item not in new_dict:
-#             item = { item : empty_list}
-#             new_dict.update(item)
-
 
 for key, value in data.items():
     for item in value:
