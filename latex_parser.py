@@ -37,7 +37,6 @@ for filename in os.listdir(directory):
         texfiles.append(f)
 
 # Load File into Soup
-#
 logger.info("Load LaTex File into Soup")
 # Create Dictionary to store soup objects
 soup_dict = {}
@@ -72,6 +71,8 @@ section_dict = {
     25 : []  
 }
 
+# This method is for test purposes only
+# to maximize the input for the soup items
 def load_items_into_soup():
     for i,item in enumerate(texfiles):
         try:

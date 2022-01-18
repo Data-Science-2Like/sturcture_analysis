@@ -1,6 +1,6 @@
 import json 
 
-with open('JSON/sorted_headings_v2_main.json') as f:
+with open('JSON/sorted_headings_v2_lemmatizer.json') as f:
     data = json.load(f)
 
 
@@ -17,5 +17,5 @@ for key, value in data.items():
 
         
 
-with open("JSON/sorted_headings_top_v2_main.json", "w") as json_file:
+with open("JSON/sorted_headings_top_v2_lemmatizer.json", "w") as json_file:
     json.dump(new_dict, json_file)

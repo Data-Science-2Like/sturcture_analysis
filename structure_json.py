@@ -1,9 +1,9 @@
 import json 
-from nltk.stem import PorterStemmer
-from nltk.tokenize import word_tokenize
+import nltk
+from nltk.stem import WordNetLemmatizer
 
- #creating an instance of the class
-ps = PorterStemmer()
+wordnet_lemmatizer = WordNetLemmatizer()
+
 
 with open('JSON/section_headings_main.json') as f:
     data = json.load(f)
@@ -15,8 +15,18 @@ count_dict = {}
 
 for key, value in data.items():
     for item in value:
+        # String completly lowercase
         item = item.lower()    
-        item = ps.stem(item)
+
+        # Stemming the Sections to reduce redudancy
+        words = nltk.word_tokenize(item)
+        stem_sentence = []
+        for x in words:
+            stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+            stem_sentence.append(" ")
+        item = "".join(stem_sentence)
+
+        # Add items to Dict
         if item not in count_dict:
             count_dict[item] = 1
         else:
@@ -26,5 +36,5 @@ for key, value in data.items():
     count_dict = {}
         
 
-with open("JSON/sorted_headings_v2_stemming.json", "w") as json_file:
+with open("JSON/sorted_headings_v2_lemmatizer.json", "w") as json_file:
     json.dump(new_dict, json_file)
