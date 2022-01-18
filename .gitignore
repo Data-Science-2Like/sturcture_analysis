@@ -133,8 +133,8 @@ dmypy.json
 /Tex Files
 /Temp
 /Latex
-#/Latex_small
-# /JSON
+/Latex_small
+#/JSON
 
 # Scripts
 # sturcture_json.py
