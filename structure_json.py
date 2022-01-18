@@ -16,7 +16,7 @@ count_dict = {}
 for key, value in data.items():
     for item in value:
         item = item.lower()    
-        #item = ps.stem(item)
+        item = ps.stem(item)
         if item not in count_dict:
             count_dict[item] = 1
         else:
@@ -26,5 +26,5 @@ for key, value in data.items():
     count_dict = {}
         
 
-with open("JSON/sorted_headings_v2_main.json", "w") as json_file:
+with open("JSON/sorted_headings_v2_stemming.json", "w") as json_file:
     json.dump(new_dict, json_file)
