@@ -1,6 +1,11 @@
 import json 
+from nltk.stem import PorterStemmer
+from nltk.tokenize import word_tokenize
 
-with open('JSON/section_headings.json') as f:
+ #creating an instance of the class
+ps = PorterStemmer()
+
+with open('JSON/section_headings_main.json') as f:
     data = json.load(f)
 
 
@@ -10,6 +15,8 @@ count_dict = {}
 
 for key, value in data.items():
     for item in value:
+        item = item.lower()    
+        #item = ps.stem(item)
         if item not in count_dict:
             count_dict[item] = 1
         else:
@@ -19,5 +26,5 @@ for key, value in data.items():
     count_dict = {}
         
 
-with open("JSON/sorted_JSON_headings.json", "w") as json_file:
+with open("JSON/sorted_headings_v2_main.json", "w") as json_file:
     json.dump(new_dict, json_file)

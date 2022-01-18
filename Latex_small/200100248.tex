@@ -1,0 +1,1945 @@
+
+\documentclass{article} \usepackage{iclr2020_conference,times}
+
+
+\usepackage{amsmath,amsfonts,bm}
+
+\newcommand{\figleft}{{\em (Left)}}
+\newcommand{\figcenter}{{\em (Center)}}
+\newcommand{\figright}{{\em (Right)}}
+\newcommand{\figtop}{{\em (Top)}}
+\newcommand{\figbottom}{{\em (Bottom)}}
+\newcommand{\captiona}{{\em (a)}}
+\newcommand{\captionb}{{\em (b)}}
+\newcommand{\captionc}{{\em (c)}}
+\newcommand{\captiond}{{\em (d)}}
+
+\newcommand{\newterm}[1]{{\bf #1}}
+
+
+\def\figref#1{figure~\ref{#1}}
+\def\Figref#1{Figure~\ref{#1}}
+\def\twofigref#1#2{figures \ref{#1} and \ref{#2}}
+\def\quadfigref#1#2#3#4{figures \ref{#1}, \ref{#2}, \ref{#3} and \ref{#4}}
+\def\secref#1{section~\ref{#1}}
+\def\Secref#1{Section~\ref{#1}}
+\def\twosecrefs#1#2{sections \ref{#1} and \ref{#2}}
+\def\secrefs#1#2#3{sections \ref{#1}, \ref{#2} and \ref{#3}}
+\def\eqref#1{equation~\ref{#1}}
+\def\Eqref#1{Equation~\ref{#1}}
+\def\plaineqref#1{\ref{#1}}
+\def\chapref#1{chapter~\ref{#1}}
+\def\Chapref#1{Chapter~\ref{#1}}
+\def\rangechapref#1#2{chapters\ref{#1}--\ref{#2}}
+\def\algref#1{algorithm~\ref{#1}}
+\def\Algref#1{Algorithm~\ref{#1}}
+\def\twoalgref#1#2{algorithms \ref{#1} and \ref{#2}}
+\def\Twoalgref#1#2{Algorithms \ref{#1} and \ref{#2}}
+\def\partref#1{part~\ref{#1}}
+\def\Partref#1{Part~\ref{#1}}
+\def\twopartref#1#2{parts \ref{#1} and \ref{#2}}
+
+\def\ceil#1{\lceil #1 \rceil}
+\def\floor#1{\lfloor #1 \rfloor}
+\def\1{\bm{1}}
+\newcommand{\train}{\mathcal{D}}
+\newcommand{\valid}{\mathcal{D_{\mathrm{valid}}}}
+\newcommand{\test}{\mathcal{D_{\mathrm{test}}}}
+
+\def\eps{{\epsilon}}
+
+
+\def\reta{{\textnormal{$\eta$}}}
+\def\ra{{\textnormal{a}}}
+\def\rb{{\textnormal{b}}}
+\def\rc{{\textnormal{c}}}
+\def\rd{{\textnormal{d}}}
+\def\re{{\textnormal{e}}}
+\def\rf{{\textnormal{f}}}
+\def\rg{{\textnormal{g}}}
+\def\rh{{\textnormal{h}}}
+\def\ri{{\textnormal{i}}}
+\def\rj{{\textnormal{j}}}
+\def\rk{{\textnormal{k}}}
+\def\rl{{\textnormal{l}}}
+\def\rn{{\textnormal{n}}}
+\def\ro{{\textnormal{o}}}
+\def\rp{{\textnormal{p}}}
+\def\rq{{\textnormal{q}}}
+\def\rr{{\textnormal{r}}}
+\def\rs{{\textnormal{s}}}
+\def\rt{{\textnormal{t}}}
+\def\ru{{\textnormal{u}}}
+\def\rv{{\textnormal{v}}}
+\def\rw{{\textnormal{w}}}
+\def\rx{{\textnormal{x}}}
+\def\ry{{\textnormal{y}}}
+\def\rz{{\textnormal{z}}}
+
+\def\rvepsilon{{\mathbf{\epsilon}}}
+\def\rvtheta{{\mathbf{\theta}}}
+\def\rva{{\mathbf{a}}}
+\def\rvb{{\mathbf{b}}}
+\def\rvc{{\mathbf{c}}}
+\def\rvd{{\mathbf{d}}}
+\def\rve{{\mathbf{e}}}
+\def\rvf{{\mathbf{f}}}
+\def\rvg{{\mathbf{g}}}
+\def\rvh{{\mathbf{h}}}
+\def\rvu{{\mathbf{i}}}
+\def\rvj{{\mathbf{j}}}
+\def\rvk{{\mathbf{k}}}
+\def\rvl{{\mathbf{l}}}
+\def\rvm{{\mathbf{m}}}
+\def\rvn{{\mathbf{n}}}
+\def\rvo{{\mathbf{o}}}
+\def\rvp{{\mathbf{p}}}
+\def\rvq{{\mathbf{q}}}
+\def\rvr{{\mathbf{r}}}
+\def\rvs{{\mathbf{s}}}
+\def\rvt{{\mathbf{t}}}
+\def\rvu{{\mathbf{u}}}
+\def\rvv{{\mathbf{v}}}
+\def\rvw{{\mathbf{w}}}
+\def\rvx{{\mathbf{x}}}
+\def\rvy{{\mathbf{y}}}
+\def\rvz{{\mathbf{z}}}
+
+\def\erva{{\textnormal{a}}}
+\def\ervb{{\textnormal{b}}}
+\def\ervc{{\textnormal{c}}}
+\def\ervd{{\textnormal{d}}}
+\def\erve{{\textnormal{e}}}
+\def\ervf{{\textnormal{f}}}
+\def\ervg{{\textnormal{g}}}
+\def\ervh{{\textnormal{h}}}
+\def\ervi{{\textnormal{i}}}
+\def\ervj{{\textnormal{j}}}
+\def\ervk{{\textnormal{k}}}
+\def\ervl{{\textnormal{l}}}
+\def\ervm{{\textnormal{m}}}
+\def\ervn{{\textnormal{n}}}
+\def\ervo{{\textnormal{o}}}
+\def\ervp{{\textnormal{p}}}
+\def\ervq{{\textnormal{q}}}
+\def\ervr{{\textnormal{r}}}
+\def\ervs{{\textnormal{s}}}
+\def\ervt{{\textnormal{t}}}
+\def\ervu{{\textnormal{u}}}
+\def\ervv{{\textnormal{v}}}
+\def\ervw{{\textnormal{w}}}
+\def\ervx{{\textnormal{x}}}
+\def\ervy{{\textnormal{y}}}
+\def\ervz{{\textnormal{z}}}
+
+\def\rmA{{\mathbf{A}}}
+\def\rmB{{\mathbf{B}}}
+\def\rmC{{\mathbf{C}}}
+\def\rmD{{\mathbf{D}}}
+\def\rmE{{\mathbf{E}}}
+\def\rmF{{\mathbf{F}}}
+\def\rmG{{\mathbf{G}}}
+\def\rmH{{\mathbf{H}}}
+\def\rmI{{\mathbf{I}}}
+\def\rmJ{{\mathbf{J}}}
+\def\rmK{{\mathbf{K}}}
+\def\rmL{{\mathbf{L}}}
+\def\rmM{{\mathbf{M}}}
+\def\rmN{{\mathbf{N}}}
+\def\rmO{{\mathbf{O}}}
+\def\rmP{{\mathbf{P}}}
+\def\rmQ{{\mathbf{Q}}}
+\def\rmR{{\mathbf{R}}}
+\def\rmS{{\mathbf{S}}}
+\def\rmT{{\mathbf{T}}}
+\def\rmU{{\mathbf{U}}}
+\def\rmV{{\mathbf{V}}}
+\def\rmW{{\mathbf{W}}}
+\def\rmX{{\mathbf{X}}}
+\def\rmY{{\mathbf{Y}}}
+\def\rmZ{{\mathbf{Z}}}
+
+\def\ermA{{\textnormal{A}}}
+\def\ermB{{\textnormal{B}}}
+\def\ermC{{\textnormal{C}}}
+\def\ermD{{\textnormal{D}}}
+\def\ermE{{\textnormal{E}}}
+\def\ermF{{\textnormal{F}}}
+\def\ermG{{\textnormal{G}}}
+\def\ermH{{\textnormal{H}}}
+\def\ermI{{\textnormal{I}}}
+\def\ermJ{{\textnormal{J}}}
+\def\ermK{{\textnormal{K}}}
+\def\ermL{{\textnormal{L}}}
+\def\ermM{{\textnormal{M}}}
+\def\ermN{{\textnormal{N}}}
+\def\ermO{{\textnormal{O}}}
+\def\ermP{{\textnormal{P}}}
+\def\ermQ{{\textnormal{Q}}}
+\def\ermR{{\textnormal{R}}}
+\def\ermS{{\textnormal{S}}}
+\def\ermT{{\textnormal{T}}}
+\def\ermU{{\textnormal{U}}}
+\def\ermV{{\textnormal{V}}}
+\def\ermW{{\textnormal{W}}}
+\def\ermX{{\textnormal{X}}}
+\def\ermY{{\textnormal{Y}}}
+\def\ermZ{{\textnormal{Z}}}
+
+\def\vzero{{\bm{0}}}
+\def\vone{{\bm{1}}}
+\def\vmu{{\bm{\mu}}}
+\def\vtheta{{\bm{\theta}}}
+\def\va{{\bm{a}}}
+\def\vb{{\bm{b}}}
+\def\vc{{\bm{c}}}
+\def\vd{{\bm{d}}}
+\def\ve{{\bm{e}}}
+\def\vf{{\bm{f}}}
+\def\vg{{\bm{g}}}
+\def\vh{{\bm{h}}}
+\def\vi{{\bm{i}}}
+\def\vj{{\bm{j}}}
+\def\vk{{\bm{k}}}
+\def\vl{{\bm{l}}}
+\def\vm{{\bm{m}}}
+\def\vn{{\bm{n}}}
+\def\vo{{\bm{o}}}
+\def\vp{{\bm{p}}}
+\def\vq{{\bm{q}}}
+\def\vr{{\bm{r}}}
+\def\vs{{\bm{s}}}
+\def\vt{{\bm{t}}}
+\def\vu{{\bm{u}}}
+\def\vv{{\bm{v}}}
+\def\vw{{\bm{w}}}
+\def\vx{{\bm{x}}}
+\def\vy{{\bm{y}}}
+\def\vz{{\bm{z}}}
+
+\def\evalpha{{\alpha}}
+\def\evbeta{{\beta}}
+\def\evepsilon{{\epsilon}}
+\def\evlambda{{\lambda}}
+\def\evomega{{\omega}}
+\def\evmu{{\mu}}
+\def\evpsi{{\psi}}
+\def\evsigma{{\sigma}}
+\def\evtheta{{\theta}}
+\def\eva{{a}}
+\def\evb{{b}}
+\def\evc{{c}}
+\def\evd{{d}}
+\def\eve{{e}}
+\def\evf{{f}}
+\def\evg{{g}}
+\def\evh{{h}}
+\def\evi{{i}}
+\def\evj{{j}}
+\def\evk{{k}}
+\def\evl{{l}}
+\def\evm{{m}}
+\def\evn{{n}}
+\def\evo{{o}}
+\def\evp{{p}}
+\def\evq{{q}}
+\def\evr{{r}}
+\def\evs{{s}}
+\def\evt{{t}}
+\def\evu{{u}}
+\def\evv{{v}}
+\def\evw{{w}}
+\def\evx{{x}}
+\def\evy{{y}}
+\def\evz{{z}}
+
+\def\mA{{\bm{A}}}
+\def\mB{{\bm{B}}}
+\def\mC{{\bm{C}}}
+\def\mD{{\bm{D}}}
+\def\mE{{\bm{E}}}
+\def\mF{{\bm{F}}}
+\def\mG{{\bm{G}}}
+\def\mH{{\bm{H}}}
+\def\mI{{\bm{I}}}
+\def\mJ{{\bm{J}}}
+\def\mK{{\bm{K}}}
+\def\mL{{\bm{L}}}
+\def\mM{{\bm{M}}}
+\def\mN{{\bm{N}}}
+\def\mO{{\bm{O}}}
+\def\mP{{\bm{P}}}
+\def\mQ{{\bm{Q}}}
+\def\mR{{\bm{R}}}
+\def\mS{{\bm{S}}}
+\def\mT{{\bm{T}}}
+\def\mU{{\bm{U}}}
+\def\mV{{\bm{V}}}
+\def\mW{{\bm{W}}}
+\def\mX{{\bm{X}}}
+\def\mY{{\bm{Y}}}
+\def\mZ{{\bm{Z}}}
+\def\mBeta{{\bm{\beta}}}
+\def\mPhi{{\bm{\Phi}}}
+\def\mLambda{{\bm{\Lambda}}}
+\def\mSigma{{\bm{\Sigma}}}
+
+\DeclareMathAlphabet{\mathsfit}{\encodingdefault}{\sfdefault}{m}{sl}
+\SetMathAlphabet{\mathsfit}{bold}{\encodingdefault}{\sfdefault}{bx}{n}
+\newcommand{\tens}[1]{\bm{\mathsfit{#1}}}
+\def\tA{{\tens{A}}}
+\def\tB{{\tens{B}}}
+\def\tC{{\tens{C}}}
+\def\tD{{\tens{D}}}
+\def\tE{{\tens{E}}}
+\def\tF{{\tens{F}}}
+\def\tG{{\tens{G}}}
+\def\tH{{\tens{H}}}
+\def\tI{{\tens{I}}}
+\def\tJ{{\tens{J}}}
+\def\tK{{\tens{K}}}
+\def\tL{{\tens{L}}}
+\def\tM{{\tens{M}}}
+\def\tN{{\tens{N}}}
+\def\tO{{\tens{O}}}
+\def\tP{{\tens{P}}}
+\def\tQ{{\tens{Q}}}
+\def\tR{{\tens{R}}}
+\def\tS{{\tens{S}}}
+\def\tT{{\tens{T}}}
+\def\tU{{\tens{U}}}
+\def\tV{{\tens{V}}}
+\def\tW{{\tens{W}}}
+\def\tX{{\tens{X}}}
+\def\tY{{\tens{Y}}}
+\def\tZ{{\tens{Z}}}
+
+
+\def\gA{{\mathcal{A}}}
+\def\gB{{\mathcal{B}}}
+\def\gC{{\mathcal{C}}}
+\def\gD{{\mathcal{D}}}
+\def\gE{{\mathcal{E}}}
+\def\gF{{\mathcal{F}}}
+\def\gG{{\mathcal{G}}}
+\def\gH{{\mathcal{H}}}
+\def\gI{{\mathcal{I}}}
+\def\gJ{{\mathcal{J}}}
+\def\gK{{\mathcal{K}}}
+\def\gL{{\mathcal{L}}}
+\def\gM{{\mathcal{M}}}
+\def\gN{{\mathcal{N}}}
+\def\gO{{\mathcal{O}}}
+\def\gP{{\mathcal{P}}}
+\def\gQ{{\mathcal{Q}}}
+\def\gR{{\mathcal{R}}}
+\def\gS{{\mathcal{S}}}
+\def\gT{{\mathcal{T}}}
+\def\gU{{\mathcal{U}}}
+\def\gV{{\mathcal{V}}}
+\def\gW{{\mathcal{W}}}
+\def\gX{{\mathcal{X}}}
+\def\gY{{\mathcal{Y}}}
+\def\gZ{{\mathcal{Z}}}
+
+\def\sA{{\mathbb{A}}}
+\def\sB{{\mathbb{B}}}
+\def\sC{{\mathbb{C}}}
+\def\sD{{\mathbb{D}}}
+\def\sF{{\mathbb{F}}}
+\def\sG{{\mathbb{G}}}
+\def\sH{{\mathbb{H}}}
+\def\sI{{\mathbb{I}}}
+\def\sJ{{\mathbb{J}}}
+\def\sK{{\mathbb{K}}}
+\def\sL{{\mathbb{L}}}
+\def\sM{{\mathbb{M}}}
+\def\sN{{\mathbb{N}}}
+\def\sO{{\mathbb{O}}}
+\def\sP{{\mathbb{P}}}
+\def\sQ{{\mathbb{Q}}}
+\def\sR{{\mathbb{R}}}
+\def\sS{{\mathbb{S}}}
+\def\sT{{\mathbb{T}}}
+\def\sU{{\mathbb{U}}}
+\def\sV{{\mathbb{V}}}
+\def\sW{{\mathbb{W}}}
+\def\sX{{\mathbb{X}}}
+\def\sY{{\mathbb{Y}}}
+\def\sZ{{\mathbb{Z}}}
+
+\def\emLambda{{\Lambda}}
+\def\emA{{A}}
+\def\emB{{B}}
+\def\emC{{C}}
+\def\emD{{D}}
+\def\emE{{E}}
+\def\emF{{F}}
+\def\emG{{G}}
+\def\emH{{H}}
+\def\emI{{I}}
+\def\emJ{{J}}
+\def\emK{{K}}
+\def\emL{{L}}
+\def\emM{{M}}
+\def\emN{{N}}
+\def\emO{{O}}
+\def\emP{{P}}
+\def\emQ{{Q}}
+\def\emR{{R}}
+\def\emS{{S}}
+\def\emT{{T}}
+\def\emU{{U}}
+\def\emV{{V}}
+\def\emW{{W}}
+\def\emX{{X}}
+\def\emY{{Y}}
+\def\emZ{{Z}}
+\def\emSigma{{\Sigma}}
+
+\newcommand{\etens}[1]{\mathsfit{#1}}
+\def\etLambda{{\etens{\Lambda}}}
+\def\etA{{\etens{A}}}
+\def\etB{{\etens{B}}}
+\def\etC{{\etens{C}}}
+\def\etD{{\etens{D}}}
+\def\etE{{\etens{E}}}
+\def\etF{{\etens{F}}}
+\def\etG{{\etens{G}}}
+\def\etH{{\etens{H}}}
+\def\etI{{\etens{I}}}
+\def\etJ{{\etens{J}}}
+\def\etK{{\etens{K}}}
+\def\etL{{\etens{L}}}
+\def\etM{{\etens{M}}}
+\def\etN{{\etens{N}}}
+\def\etO{{\etens{O}}}
+\def\etP{{\etens{P}}}
+\def\etQ{{\etens{Q}}}
+\def\etR{{\etens{R}}}
+\def\etS{{\etens{S}}}
+\def\etT{{\etens{T}}}
+\def\etU{{\etens{U}}}
+\def\etV{{\etens{V}}}
+\def\etW{{\etens{W}}}
+\def\etX{{\etens{X}}}
+\def\etY{{\etens{Y}}}
+\def\etZ{{\etens{Z}}}
+
+\newcommand{\pdata}{p_{\rm{data}}}
+\newcommand{\ptrain}{\hat{p}_{\rm{data}}}
+\newcommand{\Ptrain}{\hat{P}_{\rm{data}}}
+\newcommand{\pmodel}{p_{\rm{model}}}
+\newcommand{\Pmodel}{P_{\rm{model}}}
+\newcommand{\ptildemodel}{\tilde{p}_{\rm{model}}}
+\newcommand{\pencode}{p_{\rm{encoder}}}
+\newcommand{\pdecode}{p_{\rm{decoder}}}
+\newcommand{\precons}{p_{\rm{reconstruct}}}
+
+\newcommand{\laplace}{\mathrm{Laplace}} 
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Ls}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\emp}{\tilde{p}}
+\newcommand{\lr}{\alpha}
+\newcommand{\reg}{\lambda}
+\newcommand{\rect}{\mathrm{rectifier}}
+\newcommand{\softmax}{\mathrm{softmax}}
+\newcommand{\sigmoid}{\sigma}
+\newcommand{\softplus}{\zeta}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\standarderror}{\mathrm{SE}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\normlzero}{L^0}
+\newcommand{\normlone}{L^1}
+\newcommand{\normltwo}{L^2}
+\newcommand{\normlp}{L^p}
+\newcommand{\normmax}{L^\infty}
+
+\newcommand{\parents}{Pa} 
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Tr}{Tr}
+\let\ab\allowbreak
+ 
+\usepackage{hyperref}
+\usepackage{url}
+
+\usepackage[utf8]{inputenc} \usepackage[T1]{fontenc}    \usepackage{booktabs}       \usepackage{amsfonts}       \usepackage{nicefrac}       \usepackage{microtype}      \usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{wrapfig}
+\usepackage[font={small}]{caption}
+\usepackage{subfigure}
+\usepackage{enumitem}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{boldline}
+\usepackage{color}
+\usepackage[export]{adjustbox}
+\usepackage{xspace}
+\usepackage{comment}
+\usepackage{placeins}
+\usepackage{microtype}
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\nti}{{MSGI}}
+\newcommand{\GC}{ G_{\mb{c}} }
+\newcommand{\GR}{ G_{\mb{r}} }
+\newcommand{\GChat}{{\smash{\widehat{G}_{\mb{c}}}}}
+\newcommand{\GRhat}{{\smash{\widehat{G}_{\mb{r}}}}}
+\newcommand{\CSet}{ \mc{S}_{\text{comp}} }
+\newcommand{\ESet}{ \mc{S}_{\text{elig}} }
+\newcommand{\jongwook}[1]{\todo[color=purple!40,inline]{Wook: #1}}
+\newcommand{\hyunjae}[1]{\todo[color=green!40,inline]{Hyunjae: #1}}
+\newcommand{\sungryull}[1]{\todo[color=blue!40,inline]{Sungryull: #1}}
+\newcommand{\honglak}[1]{\todo[color=yellow!40,inline]{Honglak: #1}}
+\newcommand{\memo}[1]{{\color{red}[#1]}}
+
+\usepackage{marginnote}
+\renewcommand*{\marginfont}{\color{red}\sffamily\scriptsize}
+\setlength{\marginparwidth}{1.1in}
+
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+\newcommand{\mb}{\mathbf}
+\newcommand{\tb}{\textbf}
+\newcommand{\mbb}{\mathbb}
+\newcommand{\mc}{\mathcal}
+\newcommand{\wt}{\widetilde}
+\newcommand{\tr}{\textrm}
+
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\onedot{.}
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+
+
+\newcommand{\cutabstractup}{\vspace*{-0.15in}}
+\newcommand{\cutabstractdown}{\vspace*{-0.05in}}
+
+\newcommand{\cutsectionup}{\vspace*{-0.1in}}
+\newcommand{\cutsectiondown}{\vspace*{-0.05in}}
+
+\newcommand{\cutsubsectionup}{\vspace*{-0.1in}}
+\newcommand{\cutsubsectiondown}{\vspace*{-0.05in}}
+
+\newcommand{\cutsubsubsectionup}{\vspace*{-0in}}
+\newcommand{\cutsubsubsectiondown}{\vspace*{-0in}}
+
+\newcommand{\cutcaptionup}{\vspace*{-0.0in}}
+\newcommand{\cutcaptiondown}{\vspace*{-0.0in}}
+
+\newcommand{\cutparagraphup}{\vspace{-2pt}}
+\newcommand{\cutparagraphdown}{\vspace*{-0in}}
+
+\newcommand{\cutitemizeup}{\vspace{-6pt}}
+\newcommand{\cutitemizedown}{\vspace{-8pt}}
+
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\setlength{\abovedisplayskip}{3pt}
+\setlength{\belowdisplayskip}{3pt}
+
+\setlength{\parskip}{.4pc}  
+
+\iclrfinalcopy 
+
+
+\title{Meta Reinforcement Learning with\\\textls[-22]{Autonomous Inference of Subtask Dependencies}}
+
+
+
+\author{Sungryull Sohn$^{1}$        \hspace{1em}
+    Hyunjae Woo$^{1}$           \hspace{1em}
+    Jongwook Choi$^{1}$         \hspace{1em}
+    Honglak Lee$^{2,1}$         \\[2pt]
+    $^1$University of Michigan \hspace{7.5em}
+    \hspace{2.3em}
+    $^2$Google Brain \hspace{2.9em}
+    \\
+    \texttt{{\rm\{}srsohn,hjwoo,jwook{\rm\}}@umich.edu}
+    \hspace{2.2em}
+    \texttt{honglak@google.com} \\
+}
+
+\begin{document}
+
+\maketitle
+\cutabstractup
+\begin{abstract}
+\vspace*{-5pt}
+We propose and address a novel few-shot RL problem,
+where a task is characterized by a subtask graph which describes a set of subtasks and their dependencies that are unknown to the agent.
+The agent needs to quickly adapt to the task over few episodes during adaptation phase to maximize the return in the test phase.
+Instead of directly learning a meta-policy,     we develop a \textit{Meta-learner with Subtask Graph Inference} (\nti{}),
+which infers the latent parameter of the task by interacting with the environment and maximizes the return given the latent parameter.
+To facilitate learning, we adopt an intrinsic reward inspired by upper confidence bound (UCB) that encourages efficient exploration.
+Our experiment results on two grid-world domains and StarCraft II environments show that the proposed method is able to accurately infer the latent task parameter,
+and to adapt more efficiently than existing meta RL and hierarchical RL methods~\footnote{The demo videos and the code are available at {\small\url{https://bit.ly/msgi-videos}} and\\ {\small\url{https://github.com/srsohn/msgi}}.}.
+
+
+\end{abstract}
+ \cutabstractdown
+\cutsectionup
+\section{Introduction}\label{sec:i}
+\cutsectiondown
+
+Recently, reinforcement learning (RL) systems have achieved super-human performance on many complex tasks \citep{mnih2015human,silver2016mastering,van2017hybrid}.
+However, these works mostly have been focused on a single known task where the agent can be trained for a long time (\eg, \cite{silver2016mastering}).
+We argue that agent should be able to solve multiple tasks with varying sources of reward.
+Recent work in multi-task RL has attempted to address this; however, they focused on the setting where the structure of task are \emph{explicitly} described
+with natural language instructions~\citep{oh2017zero, Andreas2017Modular, yu2017deep, chaplot2018aaai}, programs~\citep{denil2017programmable}, or graph structures~\citep{sohn2018hierarchical}. 
+However, such task descriptions may not readily be available.
+A more flexible solution is to have the agents infer the task by interacting with the environment.
+Recent work in Meta RL~\citep{hochreiter2001learning, duan2016rl, wang2016learning, finn2017model} (especially in few-shot learning settings)
+has attempted to have the agents implicitly infer tasks and quickly adapt to them.
+However, they have focused on relatively simple tasks with a single goal
+(\eg, multi-armed bandit, locomotion, navigation, \textit{etc}.).  
+
+\cutparagraphup
+We argue that real-world tasks often have a hierarchical structure and multiple goals, which require long horizon planning or reasoning ability~\citep{erol1996hierarchical,NTP,ghazanfari2017autonomous,sohn2018hierarchical}. Take, for example, the task of making a breakfast in Figure \ref{fig:intro}. 
+A meal can be served with different dishes and drinks (\eg, \textit{boiled egg} and \textit{coffee}), where each could be considered as a subtask.
+These can then be further decomposed into smaller substask until some base subtask (\eg, \textit{pickup egg}) is reached.
+Each subtask can provide the agent with reward; if only few subtasks provide reward, this is considered a \textit{sparse reward} problem.
+When the subtask dependencies are complex and reward is sparse, learning an optimal policy can require a large number of interactions with the environment.
+This is the problem scope we focus on in this work: learning to quickly infer and adapt to varying hierarchical tasks with multiple goals and complex subtask dependencies.
+
+\cutparagraphup
+To this end, we formulate and tackle a new few-shot RL problem called \textit{subtask graph inference} problem, where the task is defined as a factored MDP~\citep{boutilier1995exploiting, jonsson2006causal} with hierarchical structure represented by \textit{subtask graph}~\citep{sohn2018hierarchical} where the task is not known \emph{a priori}.
+The task consists of multiple subtasks, where each subtask gives reward when completed (see Figure 1). The complex dependencies between subtasks (\ie, preconditions) enforce agent to execute all the required subtasks \textit{before} it can execute a certain subtask. Intuitively, the agent can efficiently solve the task by leveraging the inductive bias of underlying task structure (Section~\ref{sec:sgi-problem}).
+
+
+
+
+\begin{figure}[!tp]
+\centering
+\includegraphics[draft=false,width=0.94\linewidth]{figs/Intro.pdf}
+\caption{
+    Overview of our method in the context of \textit{prepare breakfast} task.
+    This task can be broken down into subtasks (\eg, \textit{pickup mug}) that composes the underlying subtask graph $G$.
+    (\tb{Left}) To learn about the unknown task, the agent collects trajectories over $K$ episodes through a parameterized \textit{adaptation} policy $\smash{\pi^{\text{adapt}}_\theta}$ that {learns} to explore the environment.
+    (\tb{Center}) With each new trajectory, the agent attempts to infer the task's underlying \textit{ground-truth} subtask graph $G$ with \smash{$\widehat{G}$}. 
+    (\tb{Right}) A separate \textit{test} policy \smash{$\pi_{\widehat{G}}^{\text{test}}$} uses the inferred subtask graph \smash{$\widehat{G}$} to produce a trajectory that attempts to maximize the agent's reward $\sum{r_t}$ 
+    (\eg, the green trajectory that achieves the \textit{boil egg} subtask).
+    The more precise \smash{$\widehat{G}$}, the more reward the agent would receive,
+    which implicitly improves the \textit{adaptation} policy \smash{$\pi_{\theta}^{\text{adapt}}$} to better explore the environment and therefore better infer \smash{$\widehat{G}$} in return.
+}
+    \label{fig:intro}
+\end{figure}
+
+Inspired by the recent works on multi-task and few-shot RL, we propose a meta reinforcement learning approach that
+explicitly infers the latent structure of the task (\eg, subtask graph). The agent learns its adaptation policy to collect as much information about the environment as possible in order to
+rapidly and accurately infer the unknown task structure. After that, the agent's test policy is a contextual policy that takes the inferred subtask graph as an input and maximizes the expected return (See Figure~\ref{fig:intro}).
+We leverage inductive logic programming (ILP) technique to derive an efficient task inference method
+based on the principle of maximum likelihood.
+To facilitate learning, we adopt an intrinsic reward inspired by upper confidence bound (UCB) that encourages efficient exploration.
+We evaluate our approach on various environments ranging from simple grid-world \citep{sohn2018hierarchical}
+to StarCraft II \citep{vinyals2017starcraft}.
+In all cases, our method can accurately infer the latent subtask graph structure,
+and adapt more efficiently to unseen tasks than the baselines.
+
+The contribution of this work can be summarized as follows:
+\cutitemizeup
+\begin{itemize}[leftmargin=*]
+\tightlist \item We propose a new meta-RL problem with more general and richer form of tasks compared to the recent meta-RL approaches.
+    \item We propose an efficient task inference algorithm that leverages inductive logic programming, which \textit{accurately} infers the latent subtask graph from the agent's experience data.\item We implement a deep meta-RL agent that \textit{efficiently} infers the subtask graph for faster adaptation.
+    \item We compare our method with other meta-RL agents on various domains,
+        and show that our method adapts more efficiently to unseen tasks with complex subtask dependencies.
+\end{itemize}
+ \cutsectionup
+\section{Problem Definition}\label{sec:p}
+\cutsectiondown
+\subsection{Background: Few-shot Reinforcement Learning}
+\label{sec:metarl}
+A \emph{task} is defined by an MDP $\mc{M}_{G}=(\mc{S, A}, \mc{P}_{G}, \mc{R}_{G})$ parameterized by a task parameter $G$ with a set of states $\mc{S}$, a set of actions $\mc{A}$, transition dynamics $\mc{P}_{G}$, reward function $\mc{R}_{G}$.
+In the $K$-shot RL formulation \citep{duan2016rl,finn2017model},
+each \emph{trial} under a fixed task $\mc{M}_G$ consists of
+an \emph{adaptation phase} where the agent learns a task-specific behavior
+and a \emph{test phase} where the adapted behavior is evaluated. For example, RNN-based meta-learners~\citep{duan2016rl,wang2016learning}
+adapt to a task $\mathcal M_G$ by updating its RNN states (or fast-parameters) $\phi_t$,
+where the initialization and update rule of $\phi_t$ is parameterized by a \emph{slow-parameter} $\theta$:
+$\phi_0 = g(\theta), \phi_{t+1} = f(\phi_t; \theta).
+$ Gradient-based meta-learners~\citep{finn2017model,nichol2018first} instead
+aim to learn a good initialization of the model so that it can adapt to a new task with few gradient update steps.
+In the test phase, the agent's performance on the task $\mc{M}_G$ is measured in terms of the return:
+\begin{align}
+    \mc{R}_{\mc{M}_{G}}(\pi_{\phi_H}) = \mathbb{E}_{\pi_{\phi_H}, \mc{M}_{G} }\left[\textstyle\sum^{H'}_{t=1}{r_t}\right],\label{eq:loss}
+\end{align}
+where $\pi_{\phi_{H}}$ is the policy after $K$ episodes (or $H$ update steps) of adaptation, $H'$ is the horizon of test phase,
+and $r_t$ is the reward at time $t$ in the test phase.
+The goal is to find an optimal parameter $\theta$ that maximizes the expected return $\mathbb E_{G} [ \mc{R}_{\mc{M}_{G}}(\pi_{\phi_H}) ]$
+over a given distribution of tasks $p(G)$.
+
+
+\subsection{The Subtask Graph Inference Problem}\label{sec:sgi-problem}
+
+We formulate the \emph{subtask graph inference} problem, an instance of few-shot RL problem where a task is parameterized by \emph{subtask graph}~\citep{sohn2018hierarchical}. 
+The details of how a subtask graph parameterizes the MDP is described in Appendix~\ref{sec:appendix_task}.
+Our problem extends the subtask graph \emph{execution} problem in~\citep{sohn2018hierarchical} by removing the assumption that a subtask graph is given to the agent; 
+thus, the agent must infer the subtask graph in order to perform the complex task.
+Following few-shot RL settings, 
+the agent's goal is to quickly adapt to the given task (\ie, MDP) in the adaptation phase
+to maximize the return in the test phase (see Figure~\ref{fig:intro}).
+A task consists of $N$ subtasks and the subtask graph models a hierarchical dependency between subtasks.
+
+\cutparagraphup
+\tb{Subtask}: A subtask $\Phi^i$ can be defined by a tuple (\textit{completion set} $\smash{\CSet^i}\subset\mc{S}$, \textit{precondition} $\GC^i: \mc{S}\mapsto \{0, 1\}$, \textit{subtask reward function} $\GR^i: \mc{S}\rightarrow \mbb{R}$).
+A subtask $\Phi^i$ is \textit{complete} if the current state is contained in its completion set  (\ie, $\mb{s}_t\in\smash{\CSet^i}$),
+and the agent receives a reward $r_t \sim \GR^i$ upon the completion of subtask $\Phi^i$. 
+A subtask $\Phi^i$ is \textit{eligible} (\ie, subtask can be executed) if its precondition $\GC^i$ is satisfied (see Figure~\ref{fig:intro} for examples).
+A subtask graph is a tuple of precondition and subtask reward of all the subtasks: $G=(\GC{}, \GR{})$.
+Then, the task defined by the subtask graph is a factored MDP~\citep{boutilier1995exploiting, schuurmans2002direct}; \ie, the transition model is factored as $p(\mb{s}'|\mb{s}, a) = \prod_{i} p_{\GC^i}(s_i' | \mb{s}, a)$ and the reward function is factored as $R(\mb{s}, a)=\sum_{i}R_{\GR{}^i}(\mb{s}, a)$ (see Appendix for the detail).
+The main benefit of factored MDP is that it allows us to model many hierarchical tasks in a principled way with a compact representation such as dynamic Bayesian network~\citep{dean1989model, boutilier1995exploiting}.
+For each subtask $\Phi^i$, the agent can learn an option $\mc{O}^i$~\citep{sutton1999between} that \emph{executes} the subtask\footnote{As in~\citet{Andreas2017Modular, oh2017zero, sohn2018hierarchical},
+such options are pre-learned with curriculum learning; the policy is learned by maximizing the subtask reward, and the initiation set and termination condition are given as $\mc{I}^i=\{\mb{s}|\GC^i(\mb{s})=1\}$ and $\beta^i=\mbb{I}(x^i=1)$}.
+
+\cutparagraphup
+\tb{Environment}: The state input to the agent at time step $t$ consists of $\mb{s}_t = \{ \mb{x}_t,\mb{e}_{t},\text{step}_t,\text{epi}_t, \mb{obs}_{t} \}$.
+\cutitemizeup
+\begin{itemize}[leftmargin=*]
+\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
+\item{\tb{Completion}}: $\smash{\mb{x}_{t}\in\{0, 1\}^N }$ indicates whether each subtask is complete. \item{\tb{Eligibility}}: $\smash{\mb{e}_{t}\in\{0, 1\}^N }$ indicates whether each subtask is eligible (\ie, precondition is satisfied).
+\item{\tb{Time budget}}: $\smash{\text{step}_{t} \in \mathbb{R} }$ is the remaining time steps until episode termination.
+\item{\tb{Episode budget}}: $\smash{\text{epi}_{t} \in \mathbb{R} }$ is the remaining number of episodes in adaptation phase.
+\item{\tb{Observation}}: $\smash{\mb{obs}_t\in\mbb{R}^{\mc{H}\times \mc{W}\times \mc{C}} }$ is a (visual) observation at time $t$.
+\end{itemize}
+\vspace*{-6pt}
+At time step $t$, we denote the option taken by the agent as $\mb{o}_t$ and the binary variable that indicates whether episode is terminated as $d_t$.
+\cutparagraphup
+
+
+
+
+\iffalse
+
+\cutparagraphup
+\tb{Subtask}:
+THe factored MDP assumes that these state variables are conditional independent.
+(show formula)
+
+For a factored MDP $\mathcal M$,
+a \emph{subtask} $\Phi^i$ is defined by a state variable $S_i$.
+
+A subtask (\eg, \textit{pickup egg}) can be defined as a state variable $\mathcal S_i$ of a task (\ie, FMDP) $\mathcal M$.
+
+the terminal state set $\mc{T}^i\subset \mc{S}^i$ defines when the subtask is \emph{completed} (\eg, agent has picked up \textit{egg}).
+We assume that subtasks are shared across the tasks.
+
+\cutparagraphup
+\tb{Subtask graph}:
+Based on the subtasks and the corresponding options, subtask graph $G$ compactly represents FMDP by a tuple of precondition $\GC{}$ and subtask reward $\GR{}$. 
+The precondition $\GC{}^i$ defines the subtasks required to be completed before completing subtask $i$ in terms of logical expression whose variable is a completion variable $\mb{x}$. 
+For example in Figure~\ref{fig:intro}, the precondition of \textit{Boil egg} is \textit{Put egg in pot} and \textit{Put pot on stove}, because an egg can be boiled by turning on the stove when the egg is in the pot on the stove.
+The \textit{subtask reward} $\GR{}^i$ defines the distribution of reward upon completion of subtask $\phi^i$.
+
+\cutparagraphup
+\tb{State}: The state input to the agent at time step $t$ consists of $\mb{s}_t = \{ \mb{x}_t,\mb{e}_{t},\text{step}_t,\text{epi}_t, \mb{obs}_{t} \}$.
+\cutitemizeup
+\begin{itemize}[leftmargin=*]
+\setlength\itemsep{-0.1em}
+\item{\tb{Completion}}: $\smash{\mb{x}\in\{0, 1\}^N }$ indicates whether each subtask is complete. \item{\tb{Eligibility}}: $\smash{\mb{e}\in\{0, 1\}^N }$ indicates whether the precondition of each subtask met.
+\item{\tb{Time budget}}: $\smash{\text{step} \in \mathbb{R} }$ is the remaining time steps until episode termination.
+\item{\tb{Episode budget}}: $\smash{\text{epi} \in \mathbb{R} }$ is the remaining number of episodes in adaptation phase.
+\item{\tb{Observation}}: $\smash{\mb{obs}\in\mbb{R}^{\mc{H}\times \mc{W}\times \mc{C}} }$ is a (visual) observation input.
+\end{itemize}
+\vspace{-3pt}
+\fi
+ \section{Method}\label{sec:m}
+\cutsectiondown
+
+
+
+
+
+\begin{algorithm}[t]
+\caption{Adaptation policy optimization during meta-training }\label{alg:train}
+\begin{algorithmic}[1]
+\Require{ $p(G)$: distribution over subtask graph }
+\While{not done}
+    \State Sample batch of task parameters $\{G_i\}_{i=1}^{M}\sim p(G)$
+    \For{\textbf{all} $G_i$ in the batch}
+        \State  Rollout $K$ episodes $\tau=\{\mb{s}_t, \mb{o}_t,r_t, d_t\}_{t=1}^{H} \sim \pi^{\text{adapt}}_{\theta}$ in task $\mc{M}_{G_i}$ \Comment{adaptation phase}
+        \State Compute $r_t^{\text{UCB}}$ as in Eq.(\ref{eq:UCB-bonus})
+        \State $\widehat{G}_i = \text{ILP}( \tau )$ \Comment{subtask graph inference}
+        \State Sample $\tau'\sim \pi^{\text{exe}}_{\widehat{G}_i}$ in task $\mc{M}_{G_i}$ \Comment{test phase}
+    \EndFor
+    \State Update $\smash{\theta \gets \theta + \eta\nabla_{\theta}\sum_{i=1}^{M}{ \mc{R}^{\text{PG+UCB}}_{\mc{M}_{G_i}}\left( \pi^{\text{adapt}}_{\theta} \right) }}$ using $\smash{\mc{R}^{\text{PG+UCB}}_{\mc{M}}}$ in Eq.(\ref{eq:final-loss})
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+
+We propose a \emph{Meta-learner with Subtask Graph Inference} (\nti{})
+which infers the latent subtask graph $G$.
+Figure~\ref{fig:intro} overviews our approach. 
+Our main idea is to employ two policies: adaptation policy and test policy.
+During the adaptation phase,
+an \emph{adaptation policy} $\pi_{\theta}^{\text{adapt}}$ rolls out $K$ episodes of \emph{adaptation trajectories}.
+From the collected adaptation trajectories, the agent infers the subtask graph $\widehat{G}$ using inductive logic programming (ILP) technique. 
+A \emph{test policy} $\smash{\pi^\text{test}_{\widehat{G}}}$, conditioned on the inferred subtask graph $\smash{\widehat{G}}$, rolls out episodes and maximizes the return in the test phase.
+Note that the performance depends on the quality of the inferred subtask graph. The adaptation policy indirectly contributes to the performance by improving the quality of inference. Intuitively, if the adaptation policy completes more diverse subtasks during adaptation, the more ``training data'' is given to the ILP module, which results in more accurate inferred subtask graph.
+
+Algorithm~\ref{alg:train} summarizes our meta-training procedure. For meta-testing, see Algorithm~\ref{alg:rollout} in Appendix~\ref{sec:algo_rollout}.
+
+
+
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[draft=false,width=0.99\linewidth]{figs/logic_induction_ver2.pdf}
+    \vspace{-5pt}
+    \caption{
+        Our inductive logic programming module infers the precondition $\GC{}$ from adaptation trajectory.
+        For example, the decision tree of subtask \textit{E} (bottom row) estimates the latent precondition function $\smash{f_{G_\mb{c}^E}:\mb{x} \mapsto \mb{e}^{E}}$ by fitting its input-output data (i.e., agent's trajectory $\{\mb{x}_t, \mb{e}^{E}_t\}_{t=1}^H$).
+        The decision tree is constructed by choosing a variable (i.e., a component of $\mb{x}$) at each node that best splits the data. 
+        The learned decision trees of all the subtasks are represented as logic expressions, and then transformed and merged to form a subtask graph.
+    }
+    \label{fig:ilp}
+\end{figure}
+
+
+
+\subsection{Subtask Graph Inference}
+\label{sec:method_inference}
+\cutsubsectiondown
+
+Let $\tau_{H}=\{ \mb{s}_1, \mb{o}_1, r_1, d_1, \ldots, \mb{s}_H\}$
+be an adaptation trajectory of the adaptation policy $\pi^\text{adapt}_{\theta}$
+for $K$ episodes (or $H$ steps in total) in adaptation phase.
+The goal is to infer the subtask graph $G$ for this task,
+specified by preconditions $\GC{}$ and subtask rewards $\GR{}$.
+We find the maximum-likelihood estimate (MLE) of $G = (\GC{}, \GR{})$
+that maximizes the likelihood of the adaptation trajectory $\tau_H$: $\smash{\widehat{G}}^{\text{MLE}} = \argmax_{ \GC{}, \GR{} } p(\tau_{H}| \GC{}, \GR{} ).  \label{eq:objective}
+$ 
+
+The likelihood term can be expanded as
+\begin{align}
+    p(\tau_{H}|\GC{}, \GR{})  
+    &=p(\mb{s}_1|\GC{}) \prod_{t=1}^{H} \pi_{\theta}\left( \mb{o}_t|\tau_{t} \right) p(\mb{s}_{t+1}|\mb{s}_t,\mb{o}_t,\GC{}) p(r_t | \mb{s}_t,\mb{o}_t,\GR{}) p(d_t|\mb{s}_t,\mb{o}_t) \label{eq:ll1}
+    \\[-2pt]
+    &\propto p(\mb{s}_1|\GC{}) \prod_{t=1}^{H}{ p(\mb{s}_{t+1}|\mb{s}_t,\mb{o}_t,\GC{}) p(r_t | \mb{s}_t,\mb{o}_t,\GR{}) },\label{eq:ll2}
+\end{align}
+where we dropped the terms that are independent of $G$. From the definitions in Section~\ref{sec:sgi-problem}, precondition $\GC{}$ defines the mapping $\mb{x}\mapsto \mb{e}$, and the subtask reward $\GR{}$ determines the reward as $r_t\sim \GR{}^i$ if subtask $i$ is eligible (\ie, $\mb{e}_t^i=1$) and option $\mc{O}^i$ is executed at time $t$.
+Therefore, we have
+\begin{align}
+\widehat{G}^{\text{MLE}} = (\widehat{G}_\mb{c}^\text{MLE}, \widehat{G}_\mb{r}^\text{MLE}) = \left(\argmax_{\GC{}} \prod_{t=1}^{H}{ p(\mb{e}_{t}|\mb{x}_{t}, \GC{}) },\ \argmax_{\GR{}} \prod_{t=1}^{H}{ p(r_t|\mb{e}_t,\mb{o}_t, \GR{})}\right).\label{eq:graph-infer}
+\end{align}
+We note that no supervision from the ground-truth subtask graph $G$ is used.
+Below we explain how to compute the estimate of preconditions $\smash{\widehat{G}_\mb{c}^\text{MLE}}$ and subtask rewards $\smash{\widehat{G}_\mb{r}^\text{MLE}}$.
+
+\cutparagraphup
+\paragraph{Precondition inference via logic induction}
+Since the precondition function $f_{\GC{}}:\mb{x}\mapsto\mb{e}$ (see Section~\ref{sec:sgi-problem} for definition) is a deterministic mapping, 
+the probability term $p(\mb{e}_t|\mb{x}_t, \GC{})$ in Eq.(\ref{eq:graph-infer}) is $1$ if $\mb{e}_t = f_{\GC{}}(\mb{x}_{t})$ and $0$ otherwise.
+Therefore, we can rewrite $\widehat{G}_\mb{c}^\text{MLE}$ in Eq.(\ref{eq:graph-infer}) as:
+\begin{align}
+\widehat{G}_\mb{c}^\text{MLE}
+&= \argmax_{\GC{}} \prod_{t=1}^{H}{ \mbb{I}( \mb{e}_t = f_{\GC{}}(\mb{x}_{t}) ) },\label{eq:cond-infer2}
+\end{align}
+where $\mbb{I}(\cdot)$ is the indicator function. Since the eligibility $\mb{e}$ is factored, the precondition function $f_{\GC{}^i}$ for each subtask is inferred independently.
+We formulate the problem of finding a boolean function that satisfies all the indicator functions in Eq.(\ref{eq:cond-infer2})
+(\ie, $\smash{\prod_{t=1}^{H}{ \mbb{I}( \mb{e}_t = f_{\GC{}}(\mb{x}_{t}) ) }=1}$) as an \textit{inductive logic programming} (ILP) problem~\citep{Muggleton:1991:ILP}.
+Specifically, $\{\mb{x}_{t}\}^{H}_{t=1}$ forms binary vector inputs to programs,
+and $\{e^{i}_{t}\}^{H}_{t=1}$ forms Boolean-valued outputs of the $i$-th program that denotes the eligibility of the $i$-th subtask.
+We use the \textit{classification and regression tree} (CART) to infer the precondition function $f_{\GC{}}$ for each subtask based on Gini impurity~\citep{breiman1984classification}. Intuitively, the constructed decision tree is the simplest boolean function approximation for the given input-output pairs $\{\mb{x}_t, \mb{e}_t\}$.
+Then, we convert it to a logic expression (\ie, precondition) in sum-of-product (SOP) form to build the subtask graph.
+Figure~\ref{fig:ilp} summarizes the overall logic induction process.
+
+
+\cutparagraphup
+\cutparagraphup
+\paragraph{Subtask reward inference}
+
+To infer the subtask reward function $\widehat{G}_\mb{r}^{\text{MLE}}$ in Eq.(\ref{eq:graph-infer}),
+we model each component of subtask reward as a Gaussian distribution $G_\mb{r}^{i} \sim \mathcal{N}(\widehat{\mu}^{i}, \widehat{\sigma}^{i} )$.
+Then, $\widehat{\mu}^{i}_{\text{MLE}}$ becomes the empirical mean of the rewards received after taking the eligible option $\mc{O}^i$ in the trajectory $\tau_{H}$:
+\begin{align}
+    \widehat{G}_\mb{r}^{\text{MLE},i}
+    = \widehat{\mu}^{i}_{\text{MLE}}
+    = \mathbb E \left[ r_t|\mb{o}_t=\mc{O}^i, \mb{e}_t^i=1 \right]=\frac{ \sum^{H}_{t=1}{ r_t \mbb{I}(\mb{o}_t=\mc{O}^i, \mb{e}_t^i=1) } }{ \sum^{H}_{t=1}{ \mbb{I}(\mb{o}_t=\mc{O}^i, \mb{e}_t^i=1) } }.
+\end{align}
+
+\subsection{Test phase: Subtask Graph Execution Policy}
+\label{sec:method_test_phase}
+
+Once a subtask graph $\widehat{G}$ has been inferred, we can derive a \emph{subtask graph execution \textrm{(SGE)} policy}
+$\pi^\text{exe}_{\widehat{G}} (\mb{o} | \mb{x})$
+that aims to maximize the cumulative reward in the test phase.
+Note that this is precisely the problem setting used in~\citet{sohn2018hierarchical}.
+Therefore, we employ a graph reward propagation (GRProp) policy~\citep{sohn2018hierarchical}
+as our SGE policy. Intuitively, the GRProp policy approximates a subtask graph to a differentiable form
+such that we can compute the gradient of modified return with respect to the completion vector to measure how much each subtask is likely to increase the modified return.
+Due to space limitation, we give a detail of the GRProp policy in Appendix~\ref{sec:appendix_grprop}.
+
+
+
+
+
+\subsection{Learning: Optimization of the Adaptation Policy}\label{sec:opt}
+
+We now describe how to learn the adaptation policy $\pi_\theta^\text{adapt}$, or its parameters $\theta$.
+We can directly optimize the objective $\mathcal R_{\mc{M}_G}(\pi)$
+using policy gradient methods \citep{williams1992REINFORCE,Sutton:1999:PG},
+such as actor-critic method with generalized advantage estimation (GAE)~\citep{schulman2015high}.
+However, we find it challenging to train our model for two reasons:
+1) delayed and sparse reward (\ie, the return in the test phase is treated as if it were given as a one-time reward at the last step of adaptation phase),
+and 2) large task variance due to highly expressive power of subtask graph.
+To facilitate learning, we propose to give an intrinsic reward $r_t^{\text{UCB}}$ to agent in addition to the extrinsic environment reward, where $r_t^{\text{UCB}}$ is the upper confidence bound (UCB)~\citep{auer2002finite}-inspired exploration bonus term as follows:
+\begin{align}
+    r_t^{\text{UCB}}    = w_\text{UCB} \cdot \mathbb{I}(\mb{x}_t\text{ is novel}),\label{eq:UCB-bonus}      \quad
+    w_\text{UCB}        =\sum_{i=1}^{N}{ \smash{\frac{\log( n^i(0)+n^i(1) )}{ n^i(e_t^i) } } },
+\end{align}
+where $N$ is the number of subtasks, $e_t^i$ is the eligibility of subtask $i$ at time $t$, and $n^i(e)$ is the visitation count of $e^i$ (i.e., the eligibility of subtask $i$) during the adaptation phase until time $t$.
+The weight $w_\text{UCB}$ is designed to encourage the agent to make eligible and execute those subtasks that have infrequently been eligible, since such rare data points in general largely improve the inference by balancing the dataset that CART (i.e., our logic induction module) learns from.
+The conditioning term $\mbb{I}(\mb{x}_t\text{ is novel})$ encourages
+the adaptation policy to visit novel states with a previously unseen completion vector $\mb{x}_t$
+(\ie, different combination of completed subtasks),
+since the data points with same $\mb{x}_t$ input will be ignored in the ILP module as a duplication.
+We implement $\mbb{I}(\mb{x}_t\text{ is novel})$ using a hash table for computational efficiency.
+Then, the intrinsic objective is given as follows:
+\begin{align}
+    \mc{R}^{\text{UCB}}_{\mc{M}_G} \left( \pi^\text{adapt}_{\theta} \right)
+    = \mathbb{E}_{\pi_{\theta}^\text{adapt}, \mc{M}_{G} }\left[
+            \textstyle\sum^{H}_{t=1}{r^{\text{UCB}}_t}
+    \right],  \label{eq:UCB-loss}
+\end{align}
+where $H$ is the horizon of adaptation phase.
+Finally, we train the adaptation policy $\pi^\text{adapt}_{\theta}$ using an actor-critic method with GAE~\citep{schulman2015high}
+to maximize the following objective: \begin{align}
+    \mc{R}^{\text{PG+UCB}}_{\mc{M}_G} \left( \pi^\text{adapt}_{\theta} \right)
+    = \mc{R}_{\mc{M}_G} \left( \pi^{\text{GRProp}}_{\widehat{G}} \right) + \beta_{\text{UCB}} \mc{R}^{\text{UCB}}_{\mc{M}_G} \left( \pi^\text{adapt}_{\theta} \right),  \label{eq:final-loss}
+\end{align}
+where $\mc{R}_{\mc{M}_G} (\cdot)$ is the meta-learning objective in Eq.(\ref{eq:loss}), $\beta_{\text{UCB}}$ is the mixing hyper-parameter, and $\widehat{G}$ is the inferred subtask graph that depends on the adaptation policy $\pi^\text{adapt}_{\theta}$.
+The complete procedure for training our \nti{} agent with UCB reward is summarized in Algorithm~\ref{alg:train}.
+
+
+ \section{Related Work}\label{sec:r}
+\cutsectiondown
+
+\textbf{Meta Reinforcement Learning.}
+There are roughly two broad categories of meta-RL approaches: gradient-based meta-learners \citep{finn2017model,nichol2018first,Gupta:1802.07245,Finn2018PMAML,Kim:2018:BMAML}
+and RNN-based meta-learners \citep{duan2016rl,wang2016learning}.
+Gradient-based meta RL algorithms, such as MAML~\citep{finn2017model} and Reptile~\citep{nichol2018first},
+learn the agent's policy by taking policy gradient steps during an adaptation phase,
+where the meta-learner aims to learn a good initialization that enables rapid adaptation to an unseen task.
+RNN-based meta-RL methods~\citep{duan2016rl, wang2016learning} updates the hidden states of a RNN as a process of adaptation,
+where both of hidden state initialization and update rule are meta-learned.
+Other variants of adaptation models instead of RNNs such as temporal convolutions (SNAIL) \citep{Mishra2018SNAIL} also have been explored.
+Our approach is closer to the second category, but different from existing works
+as we directly and explicitly infer the task parameter.
+
+
+
+
+\cutparagraphup
+\textbf{Logic induction.}
+Inductive logic programming systems~\citep{Muggleton:1991:ILP} learn a set of rules
+from examples.
+\citep{NTP}
+These works differ from ours as they are open-loop LPI; the input data to LPI module is generated by other policy that does not care about ILP process.
+However, our agent learns a policy to collect data more efficiently (i.e., closed-loop ILP).
+There also have been efforts to combine neural networks and logic rules
+to deal with noisy and erroneous data and seek data efficiency,
+such as \citep{Hu2016ACL,Evans2017dILP,Dong2019NeuralLogic}.
+
+\cutparagraphup
+\textbf{Autonomous Construction of Task Structure.} Task planning approaches represented the task structure using Hierarchical Task Networks (HTNs)~\citep{tate1977generating}.
+HTN identifies subtasks for a given task and represent symbolic representations of their preconditions and effects, to reduce the search space of planning~\citep{hayes2016autonomously}.
+They aim to execute a single goal task, often with assumptions of simpler subtask dependency structures
+(\eg, without \textit{NOT} dependency~\citep{ghazanfari2017autonomous, liu2016GTSvisual})
+such that the task structure can be constructed from the successful trajectories.
+In contrast, we tackle a more general and challenging setting, where each subtask gives a reward (\ie, multi-goal setting)
+and the goal is to maximize the cumulative sum of reward within an episode.
+More recently, these task planning approaches were successfully applied to the few-shot visual imitation learning tasks by constructing recursive programs~\citep{NTP} or graph~\citep{huang2018neural}.
+Contrary to them, we employ an \emph{active} policy that seeks for experience useful in discovering the task structure in unknown and stochastic environments.
+ \section{Experiments}\label{sec:e}
+\cutsectiondown
+
+\newcommand{\Random}{{\small\textsf{{Random}}}\xspace}
+\newcommand{\RLSquare}{{\small\textsf{{RL$^2$}}}\xspace}
+\newcommand{\GRPropOracle}{{\small\textsf{{GRProp+Oracle}}}\xspace}
+\newcommand{\HRL}{{\small\textsf{{HRL}}}\xspace}
+\newcommand{\NSGIRND}{{\small\textsf{{\nti{}-Rand}}}\xspace}
+\newcommand{\NSGIMeta}{{\small\textsf{{\nti{}-Meta}}}\xspace}
+\newcommand{\NSGI}{{\small\textsf{{\nti{}}}}\xspace}
+\newcommand{\NSGIGRProp}{{\small\textsf{{\nti{}-GRProp}}}\xspace}
+
+In the experiment, we investigate the following research questions:
+(1) Does \nti{} correctly infer task parameters $G$?
+(2) Does adaptation policy $\smash{\pi_{\theta}^\text{adapt}}$ improve the efficiency of few-shot RL?
+(3) Does the use of UCB bonus facilitate training? (See Appendix~\ref{sec:appendix_ablation})
+(4) How well does \nti{} perform compared with other meta-RL algorithms?
+(5) Can \nti{} generalize to longer adaptation horizon, and unseen and more complex tasks?
+
+We evaluate our approach in comparison with the following baselines:
+\cutitemizeup
+\begin{itemize}[leftmargin=*]
+\tightlist \item \Random is a policy that executes a random eligible subtask that has not been completed.
+     \item \RLSquare is the meta-RL agent in~\citet{duan2016rl}, trained to maximize the return over $K$ episodes.
+    \item \HRL is the hierarchical RL agent in~\citet{sohn2018hierarchical} trained with the same actor-critic method as our approach during adaptation phase.
+        The network parameter is reset when the task changes.
+     \item \GRPropOracle is the GRProp policy~\citep{sohn2018hierarchical} provided with the ground-truth subtask graph as input.
+         This is roughly an upper bound of the performance of \NSGI-based approaches.
+     \item \NSGIRND (Ours) uses a random policy as an adaptation policy,
+         with the task inference module.
+     \item \NSGIMeta (Ours) uses a meta-learned policy (\ie, $\smash{\pi_\theta^\text{adapt}}$) as an adaptation policy,
+         with the task inference module.
+\end{itemize}
+For \RLSquare and \HRL, we use the same network architecture as our \nti{} adaptation policy.
+More details of training and network architecture can be found in Appendix~\ref{sec:appendix_implementation_details}.
+The domains on which we evaluate these approaches include
+two simple grid-world environments (\tb{Mining} and \tb{Playground})~\citep{sohn2018hierarchical}
+and a more challenging domain \tb{SC2LE}~\citep{vinyals2017starcraft} (StarCraft II).
+
+\smallskip
+
+\cutsubsectionup
+\subsection{Experiments on Mining and Playground Domains}
+\cutsubsectiondown
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[draft=false,width=0.58\linewidth, valign=b]{./figs/playground-example.png}\hfill
+    \includegraphics[draft=false,width=0.41\linewidth, valign=b]{./figs/SC2_pre-war.png}\caption{\textbf{Left}: A visual illustration of \textbf{Playground} domain and an example of underlying subtask graph.
+        The goal is to execute subtasks in the optimal order to maximize the reward within time budget.
+        The subtask graph describes subtasks with the corresponding rewards (e.g., transforming a chest gives 0.1 reward) and dependencies between subtasks through \texttt{AND} and \texttt{OR} nodes.
+        For instance, the agent must first \textit{transform chest} \texttt{AND} \textit{transform diamond} before executing \textit{pick up duck}.
+        \textbf{Right}: A \emph{warfare} scenario in \textbf{SC2LE} domain~\citep{vinyals2017starcraft}.
+        The agent must prepare for the upcoming warfare by training appropriate units,
+        through an appropriate order of subtasks (see Appendix for more details).
+    }
+    \label{fig:domain_examples}
+    \vspace{-7pt}
+\end{figure}
+
+
+
+
+
+
+
+\tb{Mining}~\citep{sohn2018hierarchical} is inspired by Minecraft (see Figure~\ref{fig:domain_examples})
+where the agent receives reward by picking up raw materials in the world or crafting items with raw materials.
+\tb{Playground}~\citep{sohn2018hierarchical} is a more flexible and challenging domain,
+where the environment is stochastic and subtask graphs are \emph{randomly} generated (\ie, precondition is an arbitrary logic expression).
+We follow the setting in~\citet{sohn2018hierarchical} for choosing train/evaluation sets.
+We measure the performance in terms of normalized reward $\widehat{R}=(R-R_\text{min})/(R_\text{max}-R_\text{min})$ averaged over 4 random seeds,
+where $R_\text{min}$ and $R_\text{max}$ correspond to the average reward of the \Random and the \GRPropOracle agent, respectively.
+
+\subsubsection{Training Performance}
+\begin{wrapfigure}{r}{4.2cm}    \vspace{-18pt}      \centering
+  \includegraphics[draft=false, width=0.99\linewidth]{figs/Playground_learning_curve_reward.pdf} \vspace{-20pt}
+  \caption{Learning curves on the \textbf{Playground} domain. We measure the normalized reward (y-axis) in a test phase,
+      after a certain number of training trials (x-axis).
+  }
+  \label{fig:learning-curve}
+\vskip -0.1in
+\end{wrapfigure}
+Figure~\ref{fig:learning-curve} shows the learning curves of \NSGIMeta and \RLSquare,
+trained on the \textbf{D1}-Train set of \textbf{Playground} domain. 
+We set the adaptation budget in each trial to $K = 10$ episodes.
+For \NSGIRND and \HRL (which are not meta-learners),
+we show the average performance after 10 episodes of adaptation.
+As training goes on, the performance of \NSGIMeta significantly improves over \NSGIRND with a large margin.
+It demonstrates that our meta adaptation policy learns to explore the environment more efficiently, inferring subtask graphs more accurately.  We also observe that the performance of \RLSquare agent improves over time, eventually outperforming the \HRL agent.
+This indicates that \RLSquare learns 1) a good initial policy parameter that captures the common knowledge generally applied to all the tasks and 2) an efficient adaptation scheme such that it can adapt to the given task more quickly than standard policy gradient update in \HRL.
+
+\subsubsection{Adaptation and Generalization Performance}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[draft=false, width=0.24\linewidth, valign=t]{figs/Playground_budget_curve_lv1_reward.pdf}
+    \includegraphics[draft=false, width=0.24\linewidth, valign=t]{figs/Playground_budget_curve_lv2_reward.pdf}
+    \includegraphics[draft=false, width=0.24\linewidth, valign=t]{figs/Playground_budget_curve_lv3_reward.pdf}\\
+    \includegraphics[draft=false, width=0.24\linewidth, valign=m]{figs/Playground_budget_curve_lv4_reward.pdf}
+    \includegraphics[draft=false, width=0.24\linewidth, valign=m]{figs/Mining_budget_curve_lv4_reward.pdf}
+    \hspace{7pt}
+    \includegraphics[draft=false, width=0.21\linewidth, valign=m]{figs/Playground_budget_curve_lv4_legend.pdf}
+    \caption{
+        Generalization performance on unseen tasks (\tb{D1}-Eval, \tb{D2, D3, D4}, and \tb{Mining}-Eval) with varying adaptation horizon. We trained agent with the fixed adaptation budget ($K=10$ for \textbf{Playground} and $K=25$ for \textbf{Mining}) denoted by the vertical dashed line, and tested with varying unseen adaptation budgets. We report the average normalized return during test phase, where \GRPropOracle is the upper bound (\ie, $\widehat{R}=1$) and Random is the lower bound (\ie, $\widehat{R}=0$). 
+        The shaded area in the plot indicates the range between $\widehat{R}+\sigma$ and $\widehat{R}-\sigma$ where $\sigma$ is the standard error of normalized return.
+    }
+    \label{fig:efficiency}
+\end{figure}
+
+\textbf{Adaptation efficiency.}
+In Figure~\ref{fig:efficiency},
+we measure the test performance (in terms of the normalized reward $\smash{\widehat{R}}$)
+by varying episode budget $K$ (\ie, how many episodes are used in adaptation phase),
+after 8000 trials of meta-training (Figure~\ref{fig:learning-curve}).
+Intuitively, it shows how quickly the agent can adapt to the given task.
+Our full algorithm \NSGIMeta consistently outperforms \NSGIRND across all the tasks,
+showing that our meta adaptation policy can efficiently explore informative states that are likely to result in more accurate subtask graph inference.
+Also, both of our \NSGI-based models perform better than \HRL and \RLSquare baselines in all the tasks,
+showing that explicitly inferring underlying task structure and executing the predicted subtask graph
+is more effective than learning slow-parameters and fast-parameters (\eg, RNN states)
+on those tasks involving complex subtask dependencies.
+
+
+
+
+
+\textbf{Generalization performance.}
+We test whether the agents can generalize over unseen task and longer adaptation horizon, as shown in Figure~\ref{fig:efficiency}.
+For \tb{Playground},
+we follow the setup of~\citep{sohn2018hierarchical}: we train the agent on \tb{D1}-Train with the adaptation budget of 10 episodes,
+and test on unseen graph distributions \tb{D1}-Eval and larger graphs \tb{D2-D4} (See Appendix~\ref{sec:appendix_plaground_mining} for more details about the tasks in Playground and Mining).
+We report the agent's performance as the normalized reward with up to 20 episodes of adaptation budget.
+For \tb{Mining}, the agent is trained on randomly generated graphs with 25 episodes budget and tested on 440 hand-designed graphs
+used in~\citep{sohn2018hierarchical}, with up to 50 episodes of adaptation budget.
+Both of our \NSGI-based models generalize well to unseen tasks and
+over different adaptation horizon lengths,
+continuingly improving the agent's performance.
+It demonstrates that the efficient exploration scheme that our meta adaptation policy can generalize to unseen tasks and longer adaptation horizon, and that our task execution policy, GRProp, generalizes well to unseen tasks
+as already shown in~\citep{sohn2018hierarchical}.
+However, \RLSquare fails to generalize to unseen task and longer adaptation horizon:
+on \tb{D2-D4} with adaptation horizons longer than the length the meta-learner was trained for,
+the performance of the \RLSquare agent is almost stationary
+or even decreases for very long-horizon case (\tb{D2, D3}, and \tb{Mining}),
+eventually being surpassed by the \HRL agent.
+This indicates (1) the adaptation scheme that \RLSquare learned does not generalize well to longer adaptation horizons,
+and (2) a common knowledge learned from the training tasks does not generalize well to unseen test tasks.
+
+
+
+
+
+\subsection{Experiments on StarCraft II Domain}
+\label{sec:experiments_sc2}
+\tb{SC2LE}~\citep{vinyals2017starcraft} is a challenging RL domain
+built upon the real-time strategy game StarCraft II.
+We focus on two particular types of scenarios: \textit{Defeat Enemy} and \textit{Build Unit}. Each type of the scenarios models the different aspect of challenges in the full game. The goal of \textit{Defeat Enemy} is to eliminate various enemy armies invading within 2,400 steps. We consider three different combinations of units with varying difficulty: \textit{Defeat Zerglings, Defeat Hydralisks, Defeat Hydralisks \& Ultralisks} (see Figure~\ref{fig:sc2_example} and demo videos at {\small\url{https://bit.ly/msgi-videos}}). The goal of \textit{Build Unit} scenario is to build a specific unit within 2,400 steps.
+To showcase the advantage of MSGI infering the underlying subtask graph, we set the target unit as \textit{Battlecruiser}, which is at the highest rank in the technology tree of \textit{Terran} race.
+In both scenarios, the agent needs to train the workers, collect resources,
+and construct buildings and produce units in correct sequential order to win the game.
+Each building or unit has a precondition as per the technology tree of the player's race
+(see Figure~\ref{fig:sc2_techtree} and Appendix~\ref{sec:appendix_sc2domain} for more details).
+\begin{figure}[!t]
+    \centering
+    \includegraphics[draft=false, width=0.248\linewidth, valign=b]{figs/SC2_build_battlecruiser_plot.pdf}
+    \includegraphics[draft=false, width=0.248\linewidth, valign=b]{figs/SC2_defeat_zerglings_plot.pdf}\includegraphics[draft=false, width=0.248\linewidth, valign=b]{figs/SC2_defeat_hydralisks_plot.pdf}\includegraphics[draft=false, width=0.248\linewidth, valign=b]{figs/SC2_warfare_plot.pdf}\vspace*{-5pt}
+    \caption{
+        Adaptation performance with different adaptation horizon on \textbf{SC2LE} domain.
+    }
+    \label{fig:sc2_result}
+\end{figure}
+
+\textbf{Agents.}
+Note that the precondition of each subtask is determined by the domain and remains fixed across the tasks.
+If we train the meta agents (\NSGIMeta and \RLSquare), the agents memorize the subtask dependencies (\ie, over-fitting) and does not learn any useful policy for efficient adaptation.
+Thus, we only evaluate \Random and \HRL as our baseline agents. Instead of \NSGIMeta, we used \NSGIGRProp. \NSGIGRProp uses the GRProp policy as an adaptation policy since GRProp is a good approximation algorithm that works well without meta-training as shown in~\citep{sohn2018hierarchical}. Since the environment does not provide any subtask-specific reward, we set the subtask reward using the UCB bonus term in Eq.~(\ref{eq:UCB-bonus}) to encourage efficient exploration (See Appendix for detail).
+
+\textbf{Subtask graph inference.}
+We quantitatively evaluate the inferred subtask graph in terms of the precision and recall of the inferred precondition function $f_{\widehat{\mb{c}}}:\mb{x}\mapsto \widehat{\mb{e}}$. Specifically, we compare the inference output $\widehat{\mb{e}}$ with the GT label $\mb{e}$ generated by the GT precondition function $f_{\mb{c}}:\mb{x}\mapsto \mb{e}$ for all possible binary assignments of input (i.e., completion vector $\mb{x}$).
+For all the tasks, our \NSGIGRProp agent almost perfectly infers the preconditions
+with more than 94\% precision and 96\% recall of all possible binary assignments,
+when averaged over all 163 preconditions in the game, with only 20 episodes of adaptation budget.
+We provide the detailed quantitative and qualitative results on the inferred subtask graph in supplemental material. 
+
+\textbf{Adaptation efficiency.}
+Figure~\ref{fig:sc2_result} shows the adaptation efficiency of \NSGIGRProp,  \HRL agents, and \Random policy on the four scenarios. 
+We report the average victory or success rate over 8 episodes.
+\NSGIGRProp consistently outperforms \HRL agents with a high victory rate,
+by (1) quickly figuring out the useful units and their prerequisite buildings and (2) focusing on executing these subtasks in a correct order.
+For example, our \NSGIGRProp learns from the inferred subtask graph that some buildings such as \textit{sensor tower} or \textit{engineering bay} are unnecessary for training units and avoids constructing them (see Appendix~\ref{sec:appendix_sc2result} for the inferred subtask graph).
+
+\iffalse
+\cutsubsectionup
+\subsection{Experiments on DMLab Domain}
+\cutsubsectiondown
+
+\tb{DMLab}~\citep{Beattie2016DeepMindLab} is a simulated 3D domain where visual observation.
+We evaluate our agent on \emph{keys-doors-puzzle} task scenarios from the DMLab30 suite,
+where the agent needs to collect keys and open a few doors that block the agent's path to reach the goal object.
+A door can be opened by using one key picked up earlier,
+so the agent is required to plan ahead to avoid ending up trapped by opening wrong doors.
+The agent receives a reward of 1.0 when it picks up a key or opens a door, and 50.0 when it reaches the goal.
+
+We consider two variant of the task:
+(i) \tb{KeyDoor-Static} where a door can be opened with a key with the same color (the default setting of DMLab30)
+and (ii) \tb{KeyDoor-Shuffled} where matching colors of key and door for each task is randomly shuffled.
+Therefore, the agent must be able to infer the underlying subtask dependencies at test time that can be never seen nor memorized during training.
+The details of subtask structure can be found in Appendix \ref{sec:appendix_dmlabdomain}.
+
+
+Figure \memo{XXX} shows the performance of evaluated methods.
+We report the average episode reward (normalized by the reward of an optimal policy),
+the average success rate of task (a mean over 10 episodes per task).
+The \Random agent has an average success rate of 10\% as it can be easily trapped by wasting keys to open wrong doors.
+We can see that only our \tb{NSGI} agent is able to solve the \tb{KeyDoor-Shuffled} environment,
+where other baselines such as \HRL fail to generalize on unseen tasks.
+We also depict examples of inferred graph by the \tb{NSGI} agents in the appendix \memo{(TODO)}.
+\fi
+
+ \section{Conclusion}\label{sec:conclusion}
+
+We introduced and addressed a few-shot RL problem with a complex subtask dependencies.
+We proposed to learn the adaptation policy that efficiently collects experiences in the environment,
+infer the underlying hierarchical task structure,
+and maximize the expected reward using the execution policy given the inferred subtask graph.
+The empirical results confirm that our agent can efficiently explore the environment during the adaptation phase that leads to better task inference
+and leverage the inferred task structure during the test phase.
+In this work, we assumed that the option is pre-learned and the environment provides the status of each subtask.
+In the future work, our approach may be extended to more challenging settings
+where the relevant subtask structure is fully learned from pure observations,
+and options to execute these subtasks are also automatically discovered.
+ 
+\subsubsection*{Acknowledgments}
+We would like to thank Wilka Carvalho for valuable feedback on the manuscript.
+This work was partly supported by Institute for Information \& communications Technology Promotion (IITP) grant funded by the Korea government (MSIT) (No. 2016-0-00563, \textit{Research on Adaptive Machine Learning Technology Development for Intelligent Autonomous Digital Companion}) and Korea Foundation for Advanced Studies.
+
+\bibliography{iclr2020_nsgi}
+\bibliographystyle{iclr2020_conference}
+
+\clearpage
+\appendix
+\begin{center}
+{\Large \textbf{ Appendix: Meta Reinforcement Learning with Autonomous Inference of Subtask Dependencies
+\\[10pt]
+}}
+\end{center}
+
+\medskip
+\section{Subtask graph and factored MDP}
+\label{sec:appendix_task}
+
+
+\subsection{Background: Factored Markov Decision Processes}\label{sec:FMDP}
+\cutsubsectiondown
+A factored MDP (FMDP)~\citep{boutilier1995exploiting,jonsson2006causal} is an MDP $\mc{M}=(\mc{S, A, P, R})$,
+where the state space $\mc{S}$ is defined by a set of discrete state variables $\mb{s} = \{s^1, \ldots, s^d\}$.
+Each state variable $s^i\in\mb{s}$ takes on a value in its domain $\mc{D}(s^i)$.
+The state set $\mc{S}$ is a (subset of) Cartesian product of the domain of all state variables $\times_{s^i\in\mb{s}}\mc{D}(s^i)$. 
+In FMDP, the state variables $s^i$ are conditionally independent, such that the transition probability can be factored as follows:
+\begin{align}
+p(\mb{s}_{t+1} | \mb{s}_{t}, a_t) = p(s^1_{t+1} | \mb{s}_{t}, a_t)p(s^2_{t+1} | \mb{s}_{t}, a_t)\ldots p(s^d_{t+1} | \mb{s}_{t}, a_t).\label{eq:fmdp-model}
+\end{align}
+Then, the model of FMDP can be compactly represented by the subtask graph~\citep{sohn2018hierarchical} or dynamic Bayesian network (DBN)~\citep{dean1989model, boutilier1995exploiting}. 
+They represent the transition of each state variable $p(s^i_{t+1}|\mb{s}_t, a_t)$ in either a Boolean expression (\ie, subtask graph) or a binary decision tree (\ie, DBN). For more intuitive explanation, see the \tb{subtask graph} paragraph in Section~\ref{sec:sgi-problem} and Figure~\ref{fig:intro}.
+
+\cite{jonsson2006causal, sohn2018hierarchical} suggested that the factored MDP can be extended to the option framework. Specifically, the option is defined based on the change in state variable (\eg, completion of subtask in \cite{sohn2018hierarchical}), and the option transition model and option reward function are assumed to be factored.
+Similar to Eq.~\ref{eq:fmdp-model}, the transition probability can be factored as follows:
+\begin{align}
+    p(\mb{s}' | \mb{s}, o) = \prod_i p(s_i' | \mb{s}, o),\qquad R(\mb{s}, o) = \sum_i R^i(\mb{s}, o).
+\end{align}
+In~\citep{sohn2018hierarchical}, the option $\mc{O}^i$ completes the subtask $\Phi^i$ by definition; thus, $p(s_i' | \mb{s}, o)=0$ and $R^i(\mb{s}, o)=0$ \emph{if} $o\neq\mc{O}^i$. By introducing the eligibility vector $\mb{e}$, the transition and reward functions are further expanded as follows:
+\begin{align}
+    p(x'_i|\mb{x}, o=\mc{O}^i)&=p(x'_i|e_i=1)p(e_i=1|\mb{x}),\\
+    R^i(\mb{x}, o=\mc{O}^i)&=\GR{}^i \mbb{I}(e_i=1),
+\end{align}
+where $p(x'_i|e_i=1)$ indicates that the subtask is completed $x'_i$ if the subtask is eligible $e_i=1$, $p(e_i|\mb{x})$ is the precondition $\GC{}$, and $\mbb{I}(e_i=1)$ indicates that the reward is given only if the subtask $i$ is eligible.
+
+\section{Details of task in subtask graph inference problem}
+\label{sec:appendix_task}
+For self-containedness, we repeat the details of how the task (i.e., MDP) is defined by the subtask graph $G$ from~\citep{sohn2018hierarchical}.
+We define each task as an MDP tuple $\mc{M}_{G}=(\mc{S, A}, \mc{P}_{G}, \mc{R}_{G}, \rho_{G},\gamma)$ where $\mc{S}$ is a set of states, $\mc{A}$ is a set of actions, $\mc{P}_{G}: \mc{S\times A\times S}\rightarrow [0,1]$ is a task-specific state transition function, $\mc{R}_{G}: \mc{S\times A}\rightarrow \mbb{R}$ is a task-specific reward function and $\rho_{G}: \mc{S}\rightarrow [0,1]$ is a task-specific initial distribution over states. 
+We describe the subtask graph $G$ and each component of MDP in the following paragraphs.
+\cutparagraphup
+\paragraph{Subtask and Subtask Graph} Formally, a subtask $\Phi^i$ is a tuple (\textit{completion set} $\smash{\CSet^i}\subset\mc{S}$, \textit{precondition} $\GC^i$, \textit{subtask reward} $\GR^i\in\mbb{R}$).
+The subtask $\Phi^i$ is \textit{eligible} (i.e., subtask can be executed) if the precondition $\GC^i$ is satisfied (see the \tb{State Distribution and Transition Function} paragraph below for detail).
+The subtask $\Phi^i$ is \textit{complete} if the current state is in the completion set  $\mb{s}_t\in\smash{\CSet^i}$, and the agent receives the reward $\mb{r}_t \sim p(\GR^i)$.
+Subtasks are shared across tasks. 
+The subtask graph is a tuple of precondition and subtask reward of $N$ subtasks: $G=(\GC{}, \GR{})$ (see Appendix~\ref{sec:appendix_task} for the detail). One example of subtask graph is given in Figure~\ref{fig:domain_examples}.
+A subtask graph $G$ is a tuple of the subtask reward $\GR{}\in\mbb{R}^{N}$, and the precondition $\GC{}$ of $N$ subtasks. 
+\cutparagraphup
+\paragraph{State} The state $\mb{s}_{t}$ consists of the observation $\mb{obs}_t\in\{0,1\}^{W\times H\times C}$, the completion vector $\mb{x}_t\in\{0,1\}^{N}$, the eligibility vector $\mb{e}_t\in\{0,1\}^{N}$, the time budget $step_t\in\mbb{R}$ and number of episode left during the adaptation $epi_t\in\mbb{R}$. An observation $\mb{obs}_t$ is represented as $H\times W\times C$ tensor, where $H$ and $W$ are the height and width of map respectively, and $C$ is the number of object types in the domain. The $(h,w,c)$-th element of observation tensor is $1$ if there is an object $c$ in $(h,w)$ on the map, and $0$ otherwise. The time budget indicates the number of remaining time-steps until the episode termination. The completion vector and eligibility vector provides additional information about $N$ subtasks. The details of completion vector and eligibility vector will be explained in the following paragraph.
+\cutparagraphup
+\paragraph{State Distribution and Transition Function} 
+\begin{wrapfigure}{r}{3cm}
+\centering
+  \vspace*{-15pt}
+  \includegraphics[draft=false,width=1.0\linewidth]{figs/Dependency_graph_transition.pdf}
+  \vspace*{-17pt}
+  \caption{Dependency between subtask graph and MDP}
+  \label{fig:dependency}
+  \vspace*{-15pt}
+\end{wrapfigure}
+Given the current state $(\mb{obs}_t, \mb{x}_t, \mb{e}_t)$, the next step state $(\mb{obs}_{t+1}, \mb{x}_{t+1}, \mb{e}_{t+1})$ is computed from the subtask graph $G$. Figure~\ref{fig:dependency} describes the dependency between subtask graph and MDP. In the beginning of episode, the completion vector $\mb{x}_t$ is initialized to a zero vector in the beginning of the episode $\mb{x}_0=[0,\ldots,0]$ and the observation $\mb{obs}_0$ is sampled from the task-specific initial state distribution $\rho_{G}$. Specifically, the observation is generated by randomly placing the agent and the $N$ objects corresponding to the $N$ subtasks defined in the subtask graph $G$. When the agent executes subtask $i$, the $i$-th element of completion vector is updated by the following update rule:
+\begin{align}
+    x^i_{t+1} &=\left\{ \begin{array}{rcl}
+1 & \mbox{if} & e_t^i=1 \\ 
+x^i_t & \mbox{otherwise} & 
+\end{array}\right..
+\end{align}
+The observation is updated such that agent moves on to the target object, and perform corresponding primitive action. The eligibility vector $\mb{e}_{t+1}$ is computed from the completion vector $\mb{x}_{t+1}$ and precondition $\GC{}$ as follows:
+\begin{align}
+  e_{t+1}^{i} &= \underset{j\in Child_i}{\text{OR}} \left( y^{j}_{AND}\right),\\
+  y^{i}_{AND} &= \underset{j\in Child_i}{\text{AND}} \left( \widehat{x}_{t+1}^{i,j}\right),\\
+  \widehat{x}_{t+1}^{i,j}&= x_{t+1}^jw^{i,j} + (1-x_{t+1}^j)(1-w^{i,j}),
+  \label{eq:xhat-sup}
+\end{align}
+where $w^{i, j}=0$ if there is a \texttt{NOT} connection between $i$-th node and $j$-th node, otherwise $w^{i,j}=1$, and $w^{i, j}$'s are defined by the $\GC{}$. Intuitively, $\widehat{x}_{t}^{i,j}=1$ when $j$-th node does not violate the precondition of $i$-th node. Executing each subtask costs different amount of time depending on the map configuration. Specifically, the time cost is given as the Manhattan distance between agent location and target object location in the grid-world plus one more step for performing a primitive action. 
+\cutparagraphup
+\paragraph{Task-specific Reward Function} The reward function is defined in terms of the subtask reward vector $\GR{}\in\mbb{R}^N$ and the eligibility vector $\mb{e}_t$, where the subtask reward vector $\GR{}$ is the component of subtask graph $G$ the and eligibility vector is computed from the completion vector $\mb{x}_t$ and subtask graph $G$ as Eq.~\ref{eq:xhat-sup}. Specifically, when agent executes subtask $i$, the amount of reward given to agent at time step $t$ is given as follows:
+\begin{align}
+    r_{t} &=\left\{ \begin{array}{rcl}
+G_{\mb{r}}^i & \mbox{if} & e_t^i=1 \\ 
+0 & \mbox{otherwise} & 
+\end{array}\right..
+\end{align}
+
+\cutparagraphup
+\paragraph{Learning option}
+The option framework can be naturally applied to the subtask graph-based tasks.
+Consider the (optimal) \textit{option} $\mc{O}^i=(\mc{I}^i, \pi_{\mb{o}}^i, \beta^i)$ for subtask $\Phi^i$. 
+Its initiation set is $\mc{I}^i=\{\mb{s}|\mb{e}^i=1\}$, where $\mb{s}$ is the state, $\mb{e}^i$ is the $i$-th component of eligibility vector $\mb{e}$, and $\mb{e}$ is an element of $\mb{s}$. 
+The termination condition is $\beta^i=\mbb{I}(\mb{x}^i_t=1)$, where $\mb{x}^i$ is the $i$-th component of completion vector $\mb{x}$. The policy $\pi_{\mb{o}}^i$ maximizes the subtask reward $\smash{\GR^i}$.
+Similar to~\citet{Andreas2017Modular, oh2017zero, sohn2018hierarchical}, the option for each subtask is pre-learned via curriculum learning; \ie, the agent learns options from the tasks consisting of single subtask by maximizing the subtask reward.
+\clearpage
+\section{Details of the Playground and Mining Domain}
+\label{sec:appendix_plaground_mining}
+For self-containedness, we provide the details of Playground and Mining~\citep{sohn2018hierarchical} domain. Table~\ref{tab:subtask_graph_config} summarizes the complexity of the subtask graph for each task sets in Playground and Mining domain.
+\begin{table}[!htp] 
+  \centering
+  \small
+      \begin{tabular}{|r|c|c|c|c|c|}
+      \hlineB{2}
+            \multicolumn{6}{|c|}{Subtask Graph Setting}\\ \hlineB{2}
+           &\multicolumn{4}{c|}{Playground}    &Mining\\ \hline
+         Task   &\tb{D1}    &\tb{D2}    &\tb{D3}    &\tb{D4}&\tb{Eval}\\ \hlineB{2}
+        Depth   &   4   &   4   &   5   &   6  & 4-10 \\
+        Subtask &   13  &   15  &   16  &   16  & 10-26 \\\hline
+      \end{tabular}
+      \caption{(Playground) The subtask graphs in \tb{D1} have the same graph structure as training set, but the graph was unseen. The subtask graphs in \tb{D2}, \tb{D3}, and \tb{D4} have (unseen) larger graph structures. (Mining) The subtask graphs in \tb{Eval} are unseen during training.}
+  \label{tab:subtask_graph_config}
+  \vspace{-10pt}
+\end{table}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.95\linewidth, valign=t]{figs/mining_example.jpg}\\
+\caption{An example observation and subtask graph of the Mining domain~\citep{sohn2018hierarchical}. The precondition of each subtask has semantic meaning based on the Minecraft game, which closely imitates the real-world tasks.}
+\label{fig:mining}
+\end{figure}
+
+\cutparagraphup
+\paragraph{Subtasks}
+The set of subtasks in \tb{Playground} and \tb{Mining} are implemented as $\mathcal{O}=\mathcal{A}_{int} \times \mathcal{X}$, where $\mathcal{A}_{int}$ is a set of interactions with objects, and $\mathcal{X}$ is a set of all types of interactive objects in the domain. To execute a subtask $(a_{int}, obj) \in \mathcal{A}_{int} \times \mathcal{X}$, the agent should move on to the target object $obj$ and take the primitive action $a_{int}$.
+
+\cutparagraphup
+\paragraph{Mining} The Mining~\citep{sohn2018hierarchical} is a domain inspired by Minecraft (see Figure~\ref{fig:mining}) for example task).
+The agent may pickup raw materials scattered in the world. The obtained raw materials may be used to craft different items on different craft stations. There are two forms of preconditions: 1) an item may be an ingredient for building other items (e.g. stick and stone are ingredients of stone pickaxe), and 2) an item may be a required tool to pick up some objects (e.g. agent need stone pickaxe to mine iron ore).
+To simplify the environment, it assumes that the agent can use the item multiple times after picking it once.
+The subtasks in the higher layer in task graph are designed to give larger reward. The pool of subtasks and preconditions are hand-coded similar to the crafting recipes in Minecraft, and used as a template to generate 640 random task graphs. Following~\citep{sohn2018hierarchical}, we used 200 for training and 440 for testing.
+
+\cutparagraphup
+\paragraph{Playground} The Playground~\citep{sohn2018hierarchical} domain is a more flexible domain (see Figure~\ref{fig:domain_examples}, left) which is designed to evaluate the strong generalization ability of agents on unseen task dependencies under delayed reward in a stochastic environment. More specifically, the task graph in Playground was randomly generated, hence its precondition can be any logical expression. Some of the objects randomly move, which makes the environment stochastic. The agent was trained on small task graphs that consists of 4 layers of task dependencies, while evaluated on much larger task graphs that consists of up to 6 layers of task dependencies (See Table~\ref{tab:subtask_graph_config}). Following~\citep{sohn2018hierarchical}, we randomly generated 500 graphs for training and 500 graphs for testing. The task in the playground domain is general such that it subsumes many other hierarchical RL domains such as Taxi~\citep{taxi}, Minecraft~\citep{oh2017zero} and XWORLD~\citep{yu2017deep}.
+
+\section{Algorithm in meta-testing}
+\label{sec:algo_rollout}
+The Algorithm~\ref{alg:rollout} describes the process of our \NSGI{} at meta-testing time for single trial.
+\begin{algorithm}[!h]
+\caption{ Process of single trial for a task $\mc{M}_{G}$ at meta-test time} \label{alg:rollout}
+\begin{algorithmic}[1]
+    \Require{ The current parameter $\theta$ }
+    \Require{ A task $\mathcal M_G$ parametrized by a task parameter $G$ (unknown to the agent) }
+    \State Roll out $K$ train episodes $\tau_H=\{\mb{s}_t, \mb{o}_t, r_t, d_t\}_{t=1}^{H} \sim \pi^{\text{adapt}}_{\theta}$ in task $\mc{M}_{G}$ \Comment{adaptation phase}
+    \State Infer a subtask graph: $\widehat{G} = (\GChat{}, \GRhat{})=\left(\text{ILP}( \tau_H ), \text{RI}( \tau_H ) \right)$ \Comment{task inference}
+    \State Roll out a test episode $\tau'=\{\mb{s}_t', \mb{o}_t',r'_t, d'_t\}_{t=1}^{H'}\sim \pi^{\text{exe}}_{\widehat{G}}$ in task $\mc{M}_{G}$ \Comment{test phase}
+    \State Measure the performance $R = \sum_{t}{ r'_t }$ for this task
+\end{algorithmic}
+\end{algorithm}
+
+\section{Details of the SC2LE Domain}
+\label{sec:appendix_sc2domain}
+
+\begin{figure}[!b]
+    \centering
+    \includegraphics[width=0.6\linewidth, valign=t]{figs/SC2_begin.jpg}\\
+    \includegraphics[width=0.6\linewidth, valign=t]{figs/SC2_crowded.jpg}
+    \includegraphics[width=0.6\linewidth, valign=t]{figs/SC2_war_mid.jpg}
+    \caption{(\tb{Top}) The agent starts the game initially with limited resources of 50 minerals, 0 gases, 3 foods,
+    11 SCVs collecting resources, 1 idle SCV and pre-built Refinery.
+    (\tb{Middle})
+    From the initial state, the agent needs to strategically collect resources and
+    build structures in order to be well prepared for the upcoming battle. 
+    (\tb{Bottom}) After 2,400 environment steps, the war breaks; all the buildings in the map are removed, and the enemy units appear. The agent's units should eliminate the enemy units within 240 environment steps during the war. }
+    \label{fig:sc2_example}
+\end{figure}
+
+
+The \tb{SC2LE} domain~\citep{vinyals2017starcraft} provides suite of mini-games focusing on specific aspects
+of the entire StarCraft II game.
+In this paper, we custom design two types of new, simple mini-games called \textit{Build Unit} and \textit{Defeat Zerg troops}. Specifically, we built \textit{Defeat Zerglings, Defeat Hydralisks, Defeat Hydralisks \& Ultralisks} and \textit{Build Battlecruiser} mini-games that compactly capture the most fundamental goal of the full game. 
+The \textit{Build Unit} mini-game requires the agent to figure-out the target unit and its precondition correctly, such that it can train the target unit within the given short time budget. The \textit{Defeat Zerg troops} mini-game mimics the full game more closely; the agent is required to train enough units to win a war against the opponent players. To make the task more challenging and interesting, we designed the reward to be given only at the end of episode depending on the success of the whole task.
+Similar to the standard \emph{Melee} game in StarCraft II, each episode is initialized with 50 \textit{mineral}, 0 \textit{gas}, 7 and 4 \textit{SCV}s that start gathering mineral and gas, respectively, 1 idle \textit{SCV}, 1 refinery, and 1 \textit{Command Center} (See Figure~\ref{fig:sc2_example}).   The episode is terminated after 2,400 environment steps (equivalent to 20 minutes in game time).
+In the game, the agent is initially given 50 \textit{mineral}, 0 \textit{gas}, 7 and 4 \textit{SCV}s that start gathering mineral and gas, respectively, 1 idle \textit{SCV}, 1 refinery, and 1 \textit{Command Center} (See Figure~\ref{fig:sc2_example}) and is allowed
+to prepare for the upcoming battle only for 2,400 environment steps (equivalent to 20 minutes in game time).
+Therefore, the agent must learn to collect resources and efficiently use them to build structures for training units.
+All the four custom mini-games share the same initial setup as specified in Figure~\ref{fig:sc2_example}.
+
+\tb{\textit{Defeat Zerg troops} scenario}: At the end of the war preparation, different combinations of enemy unit appears: \textit{Defeat Zerglings} and \textit{Defeat Hydralisks} has 20 zerglings and 15 hydralisks, respectively,
+and \textit{Defeat Hydralisks \& Ultralisks} contains a combination of total 5 hydralisks and 3 ultralisks. 
+When the war finally breaks out, the units trained by the agent will encounter the army of Zerg units
+in the map and combat until the time over (240 environment steps or 2 minutes in the game) or either side is defeated. Specifically, the agent may not take any action, and the units trained by the agent perform an \textit{auto attack} against the enemy units. Unlike the original full game that has ternary reward
+structure of $+1$ (win) / $0$ (draw) / $-1$ (loss), we use binary reward structure of $+1$ (win) and $-1$ (loss or draw).
+Notice that depending on the type of units the agent trained, a draw can happen.
+For instance, if the units trained by the agent are air units that cannot attack the ground units
+and the enemy units are the ground units that cannot attack the air units, then no combat will take place, so
+we consider this case as a loss.
+\tb{\textit{Build unit} scenario}: The agent receives the reward of $+1$ if the target unit is successfully trained within the time limit, and the episode terminates. When the episode terminates due to time limit, the agent receives the reward of $-1$. We gave 2,400 step budget for the \textit{Build Battlecruiser} scenario such that only highly efficient policy can finish the task within the time limit.
+
+The transition dynamics (\ie, build tech-tree) in \tb{SC2LE} domain has a hierarchical characteristic which can be inferred by our \NSGI agent (see Figure~\ref{fig:sc2_example}).
+We conducted the experiment on Terran race only, but our method can be applied to other races as well.
+
+\textbf{Subtask.}
+There are 85 subtasks: 15 subtasks of constructing each type of building (\textit{Supply depot, Barracks, Engineeringbay, Refinery, Factory, Missile turret, Sensor tower, Bunker, Ghost academy, Armory, Starport, Fusioncore, Barrack-techlab, Factory-techlab, Starport-techlab}), 17 subtasks of training each type of unit (\textit{SCV, Marine, Reaper, Marauder, Ghost, Widowmine, Hellion, Hellbat, Cyclone, Siegetank, Thor, Banshee, Liberator, Medivac, Viking, Raven, Battlecruiser}), one subtask of idle worker, 32 subtasks of selecting each type of building and unit, gathering mineral, gathering gas, and no-op. For gathering mineral, we set the subtask as (mineral$\geq val$) where $val \in \{50, 75, 100, 125, 150, 300, 400\}$. Similarly for gathering gas, we set the subtask as (gas$\geq val$) where $val \in \{25, 50, 75, 100, 125, 150, 200, 300\}$. For no-op subtask, the agent takes the no-op action for 8 times. 
+
+\textbf{Eligibility.}
+ The eligibility of the 15 building construction subtasks and 17 training unit subtasks is given by the environment as an \textit{available action} input. For the selection subtasks, we extracted the number of corresponding units using the provided API of the environment. Gathering mineral, gas, and no-op subtasks are always eligible.
+
+\textbf{Completion.}
+The completion of the 15 construction subtasks and 17 training subtasks is 1 if the corresponding building or unit is present on the map. For the selection subtasks, the completion is 1 if the target building or unit is selected. For gathering mineral and gas subtasks, the subtask is completed if the condition is satisfied (\ie, gas$\geq 50$). The no-op subtask is never completed.
+
+\textbf{Subtask reward.}
+In SC2LE domain, the agent does not receive any reward when completing a subtask. 
+The only reward given to agent is the binary reward $r_{H_{\text{epi}}}=\{+1, -1\}$ at the end of episode (\ie, $t=H_{\text{epi}}$).
+Therefore, the subtask reward inference method described in Eq.(\ref{eq:graph-infer}) may not be applied. In the adaptation phase, we used the same UCB-inspired exploration bonus, introduced in Section~\ref{sec:opt} with GRProp policy. In test phase, we simply used $+1.0$ subtask reward for all the unit production subtasks, and run our \NSGIGRProp agent in test phase.
+\section{More results on the SC2LE Domain}
+\label{sec:appendix_sc2result}
+
+\textbf{Accuracy of inferred subtask graph.}
+Figure~\ref{fig:sc2_result_recall} shows the accuracy of the subtask graph inferred by \NSGIGRProp agent (Section~\ref{sec:experiments_sc2}), 
+in terms of precision and recall over different adaption horizon. 
+
+
+\begin{figure}[!hbt]
+    \centering
+    \includegraphics[draft=false, width=0.25\linewidth, valign=b]{figs/SC2_defeat_zerglings_prec_recall.pdf}\quad
+    \includegraphics[draft=false, width=0.25\linewidth, valign=b]{figs/SC2_defeat_hydralisks_prec_recall.pdf}\quad
+    \includegraphics[draft=false, width=0.25\linewidth, valign=b]{figs/SC2_warfare_prec_recall.pdf}\vspace*{-5pt}
+    \caption{
+        Precision and recall of binary assignments on the inferred subtask graph's precondition.
+    }
+    \label{fig:sc2_result_recall}
+\end{figure}
+
+
+
+
+\textbf{Qualitative Examples.}
+Figure~\ref{fig:sc2_simplified_graph} shows a simplified form of the subtask graph inferred by our \NSGIGRProp agent
+after 20 episodes of adaptation.
+For better readability, we removed the preconditions of resources (food, mineral, gas);
+Figure~\ref{fig:sc2_full_graph} depicts the full subtask graph.
+Compared to the actual tech-tree of the game, we can see the dependency between buildings and units are correctly inferred.
+
+
+
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.6\linewidth, valign=t]{figs/SC2_techtree.png}
+    \caption{The actual tech-tree of Terran race in StarCraft II.
+    There exists a hierarchy in the task, which can be autonomously discovered by our \nti{} agent.}
+    \label{fig:sc2_techtree}
+    \vspace{-10pt}
+\end{figure}
+
+\begin{figure}[!p]
+    \centering
+    \includegraphics[draft=false, width=0.86\linewidth, valign=b]{figs/SC2_graph_simple.pdf}\vspace*{-5pt}
+    \caption{
+        A simplified version of subtask graph inferred by our \NSGIGRProp agent after 10 episodes of adaptation.
+    }
+    \label{fig:sc2_simplified_graph}
+\end{figure}
+
+\begin{figure}[!p]
+    \vspace{-5pt}
+    \centering
+    \includegraphics[width=0.99\linewidth, valign=t]{figs/SC2_graph_full.pdf}
+    \vspace{-5pt}
+    \caption{ The full subtask graph inferred by our \NSGI agent. }
+    \label{fig:sc2_full_graph}
+    \vspace{-10pt}
+\end{figure}
+
+
+\clearpage
+\section{Experiment on AI2-THOR Domain}
+\begin{figure}[!t]
+    \centering
+    \includegraphics[draft=false, width=0.3\linewidth, valign=c]{figs/AI2THOR_budget_curve.pdf}
+    \includegraphics[draft=false, width=0.3\linewidth, valign=c]{figs/AI2THOR_budget_legend.pdf}
+    \vspace*{-3pt}
+    \caption{
+        Adaptation performance of \NSGIGRProp, \Random, and \HRL agents with different adaptation horizon on \textbf{AI2-THOR} domain. The episode terminates after the agent executes 20 subtasks or when there is no subtask available to execute. Our \NSGIGRProp achieves around 2.5 total reward within an episode by executing roughly two \textit{serve} subtasks, while the baseline methods almost never get any reward.
+    }
+    \label{fig:thor_result}
+\end{figure}
+
+The \tb{AI2-THOR}~\citep{ai2thor} is an interactive 3D environment where the agent can both navigate and interact with the objects within the environment through variety of actions that can change the states of the object (\ie, the \emph{PickupObject} action changes the object's \emph{isPickedUp} state).
+Among the several scenes provided by the environment,
+we focus on the kitchen scene and evaluate agents on the task similar to the \emph{breakfast preparation} task described in the introduction:
+The agent is required to prepare the dishes by directly manipulating the objects given in the scene.
+See Figure~\ref{fig:thor_example} for an example task.
+
+There are two different types of objects in the scene: The first type is the plain object (\ie, \emph{Bread, Apple, Potato, Tomato, Egg, Lettuce, Cup, Mug, Plate, Pan, Bowl}) that agents can move around with, and the second type is the receptacle object (\ie, \emph{Pan, Plate, Bowl, Cabinet, Microwave, StoveBurner, CounterTop, DiningTable, SideTable, Toaster, CoffeeMachine, Fridge}) which can contain other objects depending on their sizes.
+With these objects and the subtasks defined, the agent is required to cook and serve foods through long sequence of subtasks. 
+For instance, the agent can prepare a \emph{fried egg} dish by (1) placing a \emph{Pan} object on \emph{StoveBurner}, (2) placing \emph{Egg} on \emph{Pan}, (3) slicing (or, cracking) \emph{Egg} to \emph{EggCracked}, (4) turning on the \emph{StoveKnob} to cook the cracked egg, and finally (5) serving the cooked \emph{Egg} on the \emph{Plate}.
+Rewards are given only when the agent successfully serves the cooked object on the appropriate receptacles.
+Similar to the \tb{SC2LE} domain (see Section 5.2), 
+the task structure in \tb{AI2-THOR} is fixed as well (\ie, \emph{Egg} cannot be cooked in the \emph{Fridge}), 
+and thus instead of training meta agents,
+we evaluate and compare \NSGIGRProp, \HRL, and \Random agents on the cooking tasks.
+The visualization of the subtask graph (\ie, underlying task structure) \emph{inferred} by \NSGIGRProp agent is available on the Figure~\ref{fig:thor_graph}.
+
+\textbf{Subtask.}
+There are total 148 subtasks: 17 subtasks for picking up all the possible objects in the scene (\emph{Tomato, Potato, Lettuce, Apple, Egg, Bread, TomatoSliced, PotatoSliced, LettuceSliced, AppleSliced, EggCracked, BreadSliced, Pan, Plate, Cup, Mug, Bowl}), 113 subtasks for putting down each pickupable objects into pre-defined putdownable receptacles, 6 subtasks for slicing the sliceable objects, 6 subtasks for cooking cookable objects or filling up liquid in the \emph{Mug} or \emph{Cup}, and 6 subtasks for serving the cooked or filled objects on the proper receptacles such as \emph{Plate}, \emph{Bowl}, and \emph{DiningTable}.
+
+\textbf{Completion.}
+The completion of the 17 pick up subtasks is 1 if the corresponding object is in the agent's hand or inventory. For all the put down subtasks, the completion is 1 if the corresponding object is in the target receptacle (\ie, \emph{TomatoSliced} on \emph{Plate}). For slice and cook subtasks, the completion is 1 if the corresponding object is sliced or cooked, respectively. The serve subtasks are complete if the corresponding objects are placed on the target receptacles (\ie, \emph{Cooked PotatoSliced} on \emph{Plate}). When the agent executes the \textit{serve} subtask, the served food is removed to simulate the user eating the served dish, such that the agent can execute the same \textit{serve} subtask at most once within the episode.
+
+\textbf{Eligibility.}
+The eligibility of the subtasks is computed based the corresponding subtask completion vector. The eligibility of the pickup subtasks is always set to 1, and the putdown subtasks are eligible if the corresponding object is picked up (\ie, \emph{Pickup Tomato} is complete). The slice subtasks are eligible if the sliceable objects are on any receptacle. The cook subtasks are eligible if the cookable objects are placed on the corresponding cooking station (\ie, \emph{Mug} is on the \emph{CoffeeMachine}). The eligibility of the serve subtasks is 1 if the corresponding objects are either cooked or sliced.
+
+
+\textbf{Subtask reward.}
+To make the task more challenging and realistic, we assigned a non-zero reward only to the six \textit{Serve} subtasks, that have the most complex precondition (\ie, sparse reward setting). Similar to other environments, we randomly set the subtask reward of each subtask from the predefined range when we sample a new task (\ie, trial). Table~\ref{tb:thor_subtask_reward} specifies the range of subtask reward for the six \textit{serve} subtasks; intuitively speaking, we set a higher subtask reward for the subtask that has more complex precondition.
+
+\begin{table*}[!hbt] 
+\centering
+\begin{tabular}{r|c|c}
+\toprule
+Subtask name                    & Min reward    & Max reward\\
+        \midrule
+\textit{Serve cooked potato}            & 0.6           & 1.2\\
+\textit{Serve cooked and sliced potato} & 1.0           & 2.0\\
+\textit{Serve cooked and sliced bread}  & 1.0           & 2.0\\
+\textit{Serve cooked and cracked egg}   & 1.0           & 2.0\\
+\textit{Serve coffee}                   & 0.6           & 1.2\\
+\textit{Serve water}                    & 0.4           & 1.0\\
+    \bottomrule
+  \end{tabular}
+\vspace{-2pt}
+\caption{The range from which the subtask reward of \textit{serve} subtask was sampled, in the \textbf{AI2-THOR} environment.}
+\label{tb:thor_subtask_reward}
+\end{table*}
+
+
+
+\textbf{Result.}
+On the \textbf{AI2-THOR} environment, we compared our \NSGIGRProp agent with two baseline agents: \Random and \HRL. Figure~\ref{fig:thor_result} summarizes the performance of each agent with varying adaptation budgets. We observed that both the \Random and \HRL agent almost never receives any non-zero reward during 20 episodes of adaptation, since the \textit{serve} subtasks have a complex precondition that is not easy to satisfy for random policy. In contrast, our \NSGIGRProp agent achieves around 2.4 total reward on average after 20 episodes of adaptation. As specified in Table~\ref{tb:thor_subtask_reward}, each \textit{serve} subtask gives around 1.0$\sim$1.5 reward, so it means \NSGIGRProp agent executes around two \textit{serve} subtasks within an episode. Also, considering that the minimum number of subtasks required for \textit{serve} subtask is around 6, being able to execute around two subtasks within only 20 steps means the agent does not waste its time for executing other subtasks that are irrelevant to the target \textit{serve} subtasks. The \HRL agent's performance does not improve during adaptation since it seldom observes any reward. On the other hand, our \NSGIGRProp agent can quickly find a way to execute the \textit{serve} subtasks by inferring the precondition of them; as shown in Figure~\ref{fig:thor_graph}, our ILP module can accurately and efficiently infer the precondition of subtasks in \textbf{AI2-THOR} environment after only 20 episodes of adaptation. 
+
+\begin{figure}[!htp]
+    \centering
+    \hfill
+    \includegraphics[width=0.45\linewidth, valign=b]{figs/Thor_potato_in_fridge.png}
+    \hfill
+    \includegraphics[width=0.45\linewidth, valign=b]{figs/Thor_slice_potato.png}
+    \hfill
+    \\[10pt]
+    \hfill
+    \begin{minipage}{0.45\linewidth}\centering
+    (a) Pick up \emph{Potato} from \emph{Fridge}.      
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\linewidth}\centering
+    (b) Slice \emph{Potato} to \emph{PotatoSliced}.    
+    \end{minipage}
+    \hfill
+    \\[15pt]
+    \hfill
+    \includegraphics[width=0.45\linewidth, valign=b]{figs/Thor_potato_on_pan.png}
+    \hfill
+    \includegraphics[width=0.45\linewidth, valign=b]{figs/Thor_serve_potato.png}
+    \hfill
+    \\[10pt]
+    \hfill
+    \begin{minipage}{0.45\linewidth}\centering
+    (c) Place \emph{PotatoSliced} on \emph{Pan} and cook.
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\linewidth}\centering
+    (d) Serve \emph{Cooked PotatoSliced} on \emph{Plate}.
+    \end{minipage}
+    \hfill
+    \\[15pt]
+    \caption{(a) - (d) demonstrates an example task of preparing fried potato in the \textbf{AI2-THOR} domain.
+    The \textit{serve PotatoSliced on Plate} subtask requires slicing the potato (\eg, (b)) and frying the sliced potato on the pan (\eg, (c)) before serving the dish. The agent receives a reward after finishing the final subtask (\eg, (d)) of serving the dish on the plate.
+    }
+    \label{fig:thor_example}
+    \vspace{-10pt}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[draft=false, width=0.99\linewidth, valign=b]{figs/Thor_subtask_graph.pdf}
+    \vspace*{-9pt}
+    \caption{
+        The subtask graph inferred by our \NSGIGRProp agent in the \textbf{AI2-THOR} environment after 20 episodes.
+    }
+    \label{fig:thor_graph}
+    \vspace{-13pt}
+\end{figure}
+
+
+
+
+
+
+
+\iffalse
+\section{Details of the Task}
+\sungryull{Clean up this part (remove overlaps with the NeurIPS 2018 paper)}
+
+We define each task as an MDP tuple $\mc{M}_{G}=(\mc{S, A}, \mc{P}_{G}, \mc{R}_{G}, \rho_{G},\gamma)$ where $\mc{S}$ is a set of states, $\mc{A}$ is a set of actions, $\mc{P}_{G}: \mc{S\times A\times S}\rightarrow [0,1]$ is a task-specific state transition function, $\mc{R}_{G}: \mc{S\times A}\rightarrow \mbb{R}$ is a task-specific reward function and $\rho_{G}: \mc{S}\rightarrow [0,1]$ is a task-specific initial distribution over states. In the experiment, we used $\gamma=1$.
+We describe the subtask graph $G$ and each component of MDP in the following paragraphs.
+
+\cutparagraphup
+\paragraph{Subtask graph and subtask}
+The subtask graph consists of $N$ subtasks that is a subset of pre-learned options $\mathcal{O}$, the subtask reward $\GR{}$, and the set of precondition of each subtask $\GC{}$. The set of subtasks is $\mathcal{O}=\mathcal{A}_{int} \times \mathcal{X}$, where $\mathcal{A}_{int}$ is a set of primitive actions to interact with objects, and $\mathcal{X}$ is a set of all types of interactive objects in the domain. To execute a subtask $(a_{int}, obj) \in \mathcal{A}_{int} \times \mathcal{X}$, the agent should move on to the target object $obj$ and take the primitive action $a_{int}$. 
+\cutparagraphup
+\paragraph{State} The state $\mb{s}_{t}$ consists of the observation $\mb{obs}_t$, the completion vector $\mb{x}_t$, the eligibility vector $\mb{e}_t$, the time budget $\text{step}_t$, and the episode budget $\text{epi}_t$. An observation $\mb{obs}_t$ is represented as $H\times W\times C$ tensor, where $H$ and $W$ are the height and width of map respectively, and $C$ is the number of object types in the domain. The $(h,w,c)$-th element of observation tensor is $1$ if there is an object $c$ in $(h,w)$ on the map, and $0$ otherwise. The time budget $\text{step}_t$ indicates the number of remaining time-steps until the episode termination. The episode budget $\text{epi}_t$ indicates the number of remaining episodes until the adaptation phase terminates. The completion vector and eligibility vector provide additional information about $N$ subtasks. The eligibility vector $\mb{e}_t$ is computed from completion vector $\mb{x}_t$ and the precondition function $f_{\GC{}}$ as $\mb{e}_t= f_{\GC{}}( \mb{x}_t )$, where the precondition function $f_{\GC{}}$ is defined by subtask graph $G$. The details of completion vector and eligibility vector will be explained in \tb{Transition dynamics and reward} paragraph below.
+\cutparagraphup
+\paragraph{Initial state distribution} In the beginning of episode, the initial time budget $\text{step}_t$ is sampled from a pre-specified range $N_{step}$ for each subtask graph (See section~\ref{sec:task_graph_gen} for detail), the completion vector $\mb{x}_t$ is initialized to a zero vector in the beginning of the episode $\mb{x}_0=[0,\ldots,0]$ and the observation $\mb{obs}_0$ is sampled from the task-specific initial state distribution $\rho_{G}$. Specifically, the observation is generated by randomly placing the agent and the $N$ objects corresponding to the $N$ subtasks defined in the subtask graph $G$.
+\cutparagraphup
+\paragraph{Transition dynamics and reward} Given the current state $(\mb{obs}_t, \mb{x}_t, \mb{e}_t, \text{step}_{t}, \text{epi}_{t})$ and option taken $\mb{o}_t$, the next step state $(\mb{obs}_{t+1}, \mb{x}_{t+1}, \mb{e}_{t+1}, \text{step}_{t+1}, \text{epi}_{t+1})$ is computed from the subtask graph $G$. When the agent executes subtask $i$, the $i$-th element of completion vector is updated by the following update rule:
+\begin{align}
+    x^i_{t+1} &=\left\{ \begin{array}{rcl}
+1 & \mbox{if} & e_t^i=1 \\ 
+x^i_t & \mbox{otherwise} & 
+\end{array}\right..
+\end{align}
+The agent receives the reward randomly sampled from a distribution with the mean value of $\GR{}^i$. For both \tb{Playground} and \tb{Mining} domain, we used uniform distribution from $0.8*\GR{}^i$ to $1.2*\GR{}^i$.
+The observation is updated such that agent moves on to the target object, and perform corresnponding primitive action (See Section~\ref{sec:env} for the full list of subtasks and corresponding primitive actions on Mining and Playground domain). The precondition function $f_{\GC{}}$ computes eligibility vector $\mb{e}_{t+1}$ from the completion vector $\mb{x}_{t+1}$ and subtask graph $G$ as follows:
+\begin{align}
+  e_{t+1}^{i} &= \underset{j\in Child_i}{\text{OR}} \left( y^{j}_{AND}\right),\label{eq:or}\\
+  y^{i}_{AND} &= \underset{j\in Child_i}{\text{AND}} \left( \hat{x}_{t+1}^{i,j}\right),\label{eq:and}\\
+  \hat{x}_{t+1}^{i,j}&= x_{t+1}^jw^{i,j} + (1-x_{t+1}^j)(1-w^{i,j}),\label{eq:tp}
+\end{align}
+where $w^{i, j}=0$ if there is a \texttt{NOT} connection between $i$-th node and $j$-th node, otherwise $w^{i,j}=1$. Intuitively, $\hat{x}_{t}^{i,j}=1$ when $j$-th node does not violate the precondition of $i$-th node. Executing each subtask costs different amount of time depending on the map configuration. Specifically, the time cost is given as the Manhattan distance between agent location and target object location in the grid-world plus one more step for performing a primitive action. 
+\fi
+
+
+\iffalse
+\section{Details of Environment}\label{sec:env}
+
+\subsection{Mining}
+There are 15 types of objects: \textit{Mountain}, \textit{Water}, \textit{Work space}, \textit{Furnace}, \textit{Tree}, \textit{Stone}, \textit{Grass}, \textit{Pig}, \textit{Coal}, \textit{Iron}, \textit{Silver}, \textit{Gold}, \textit{Diamond}, \textit{Jeweler's shop}, and \textit{Lumber shop}. The agent can take 10 primitive actions: \textit{up}, \textit{down}, \textit{left}, \textit{right}, \textit{pickup}, \textit{use1}, \textit{use2}, \textit{use3}, \textit{use4}, \textit{use5} and agent cannot moves on to the \textit{Mountain} and \textit{Water} cell. \textit{Pickup} removes the object under the agent, and \textit{use}'s do not change the observation. There are 26 subtasks in the Mining domain:
+\begin{itemize}
+\item Get wood/stone/string/pork/coal/iron/silver/gold/diamond: The agent should go to \textit{Tree}/\textit{Stone}/\textit{Grass}/\textit{Pig}/\textit{Coal}/\textit{Iron}/\textit{Silver}/\textit{Gold}/\textit{Diamond} respectively, and take \textit{pickup} action.
+\item Make firewood/stick/arrow/bow: The agent should go to \textit{Lumber shop} and take \textit{use1}/\textit{use2}/\textit{use3}/\textit{use4} action respectively.
+\item Light furnace: The agent should go to \textit{Furnace} and take \textit{use1} action.
+\item Smelt iron/silver/gold: The agent should go to \textit{Furnace} and take \textit{use2}/\textit{use3}/\textit{use4} action respectively.
+\item Make stone-pickaxe/iron-pickaxe/silverware/goldware/bracelet: The agent should go to \textit{Work space} and take \textit{use1}/\textit{use2}/\textit{use3}/\textit{use4}/\textit{use5} action respectively.
+\item Make earrings/ring/necklace: The agent should go to \textit{Jeweler's shop} and take \textit{use1}/\textit{use2}/\textit{use3} action respectively.
+\end{itemize}
+The icons used in Mining domain were downloaded from \texttt{www.icons8.com} and \texttt{www.flaticon.com}. The \textit{Diamond} and \textit{Furnace} icons were made by Freepik from \texttt{www.flaticon.com}.
+
+\subsection{Playground}
+There are 10 types of objects: \textit{Cow}, \textit{Milk}, \textit{Duck}, \textit{Egg}, \textit{Diamond}, \textit{Heart}, \textit{Box}, \textit{Meat}, \textit{Block}, and \textit{Ice}. The \textit{Cow} and \textit{Duck} move by 1 pixel in random direction with the probability of 0.1 and 0.2, respectively. The agent can take 6 primitive actions: \textit{up}, \textit{down}, \textit{left}, \textit{right}, \textit{pickup}, \textit{transform} and agent cannot moves on to the \textit{block} cell. \textit{Pickup} removes the object under the agent, and \textit{transform} changes the object under the agent to \textit{Ice}. The subtask graph was randomly generated without any hand-coded template (see Section~\ref{sec:task_graph_gen} for details). 
+
+\section{Details of Subtask Graph Generation} \label{sec:task_graph_gen}
+\subsection{Mining Domain}
+ \begin{figure}[!htp]\vspace{-6pt}
+    \centering
+   \includegraphics[width=0.95\linewidth]{figs/full_graph_mining.pdf}
+   \caption{ The entire graph of Mining domain. Based on this graph, we generated 640 subtask graphs by removing the subtask node that has no parent node.}
+   \label{fig:full_graph_mining}
+\end{figure}
+The precondition of each subtask in Mining domain was defined as Figure~\ref{fig:full_graph_mining}. Based on this graph, we generated all possible sub-graphs of it by removing the subtask node that has no parent node, while always keeping subtasks A, B, D, E, F, G, H, I, K, L. The reward of each subtask was randomly scaled by a factor of $0.8\sim 1.2$.
+\subsection{Playground Domain}
+\begin{table*}[!hbt] 
+\centering
+\begin{tabular}{r|c|l}
+  \hline
+      & $N_T$       & number of tasks in each layer \\ 
+Nodes & $N_D$       & number of distractors in each layer \\
+      & $N_A$       & number of \texttt{AND} node in each layer \\
+      & $r$       & reward of subtasks in each layer \\
+  \hline
+      & $N_{ac}^{+}$& number of children of \texttt{AND} node in each layer \\ 
+      & $N_{ac}^{-}$& number of children of \texttt{AND} node with \texttt{NOT} connection in each layer \\
+Edges & $N_{dp}$      & number of parents with \texttt{NOT} connection of distractors in each layer \\
+      & $N_{oc}$      & number of children of \texttt{OR} node in each layer \\
+  \hline
+Episode & $N_{step}$    & number of step given for each episode \\
+    \hline
+\end{tabular}
+\vspace{-2pt}
+\caption{Parameters for generating task including subtask graph parameter and episode length.}
+\label{tb:graph_param_types}
+\end{table*}
+For training and test sample generation, the subtask graph structure was defined in terms of the parameters in table~\ref{tb:graph_param_types}. To cover wide range of subtask graphs, we randomly sampled the parameters $N_A, N_O, N_{ac}^{+}, N_{ac}^{-}, N_{dc}$, and $N_{oc}$ from the range specified in the table~\ref{tb:graph_param}, while $N_T$ and $N_D$ was manually set. We prevented the graph from including the duplicated \texttt{AND} nodes with the same children node(s). We carefully set the range of each parameter such that at least 500 different subtask graphs can be generated with the given parameter ranges. The table~\ref{tb:graph_param} summarizes parameters used to generate training and evaluation subtask graphs for the Playground domain.
+
+\begin{table*}[!hbt] 
+\centering
+\begin{tabular}{r|c|l}
+  \hline
+      & $N_T$       & \{6,4,2,1\}\\ 
+      & $N_D$       & \{2,1,0,0\}\\
+      & $N_A$       & \{3,3,2\}-\{5,4,2\}\\
+Train & $N_{ac}^{+}$& \{1,1,1\}-\{3,3,3\}\\ 
+(=\tb{D1})& $N_{ac}^{-}$& \{0,0,0\}-\{2,2,1\}\\
+      & $N_{dp}$    &\{0,0,0\}-\{3,3,0\}\\
+      & $N_{oc}$    &\{1,1,1\}-\{2,2,2\}\\
+      & $r$       &\{0.1,0.3,0.7,1.8\}-\{0.2,0.4,0.9,2.0\}\\
+      & $N_{step}$  &48-72\\
+  \hline
+      & $N_T$       & \{7,5,2,1\}\\ 
+      & $N_D$       & \{2,2,0,0\}\\
+      & $N_A$       & \{4,3,2\}-\{5,4,2\}\\
+\tb{D2}& $N_{ac}^{+}$& \{1,1,1\}-\{3,3,3\}\\ 
+      & $N_{ac}^{-}$& \{0,0,0\}-\{2,2,1\}\\
+      & $N_{dp}$      &\{0,0,0,0\}-\{3,3,0,0\}\\
+      & $N_{oc}$      &\{1,1,1\}-\{2,2,2\}\\
+      & $r$       &\{0.1,0.3,0.7,1.8\}-\{0.2,0.4,0.9,2.0\}\\
+      & $N_{step}$  &52-78\\
+  \hline
+      & $N_T$       & \{5,4,4,2,1\}\\ 
+      & $N_D$       & \{1,1,1,0,0\}\\
+      & $N_A$       & \{3,3,3,2\}-\{5,4,4,2\}\\
+\tb{D3}& $N_{ac}^{+}$& \{1,1,1,1\}-\{3,3,3,3\}\\ 
+      & $N_{ac}^{-}$& \{0,0,0,0\}-\{2,2,1,1\}\\
+      & $N_{dp}$      &\{0,0,0,0,0\}-\{3,3,3,0,0\}\\
+      & $N_{oc}$      &\{1,1,1,1\}-\{2,2,2,2\}\\
+      & $r$       &\{0.1,0.3,0.6,1.0,2.0\}-\{0.2,0.4,0.7,1.2,2.2\}\\
+      & $N_{step}$  &56-84\\
+  \hline
+      & $N_T$       & \{4,3,3,3,2,1\}\\ 
+      & $N_D$       & \{0,0,0,0,0,0\}\\
+      & $N_A$       & \{3,3,3,3,2\}-\{5,4,4,4,2\}\\
+\tb{D4}& $N_{ac}^{+}$& \{1,1,1,1,1\}-\{3,3,3,3,3\}\\ 
+      & $N_{ac}^{-}$& \{0,0,0,0,0\}-\{2,2,1,1,0\}\\
+      & $N_{dp}$      &\{0,0,0,0,0,0\}-\{0,0,0,0,0,0\}\\
+      & $N_{oc}$      &\{1,1,1,1,1\}-\{2,2,2,2,2\}\\
+      & $r$       &\{0.1,0.3,0.6,1.0,1.4,2.4\}-\{0.2,0.4,0.7,1.2,1.6,2.6\}\\
+      & $N_{step}$  &56-84\\
+  \hline
+  \end{tabular}
+\vspace{-2pt}
+\caption{Subtask graph parameters for training set and tasks \tb{D1}$\sim$\tb{D4}.}
+\label{tb:graph_param}
+\end{table*}
+\fi
+
+
+
+\FloatBarrier
+
+
+\begin{figure}[!thp]
+    \centering
+    \includegraphics[width=0.3\linewidth, valign=c]{figs/Playground_ablation.pdf}
+    \includegraphics[width=0.3\linewidth, valign=c]{figs/Mining_ablation.pdf}
+    \includegraphics[width=0.25\linewidth, valign=c]{figs/ablation_legend.pdf}
+    \caption{Comparison of meta-training \NSGIMeta agent that was trained with UCB bonus and extrinsic reward, and \NSGIMeta without UCB agent that was trained with extrinsic reward only in the \tb{Playground} and \tb{Mining} domain. In both domains, adding UCB bonus improves the meta-training performance of our \NSGIMeta agent.
+    }
+    \label{fig:appendix-ablation}
+\end{figure}
+
+
+\section{More results on Mining and Playground}
+
+\subsection{Ablation study on the intrinsic reward}
+\label{sec:appendix_ablation}
+We conducted an ablation study comparing our \NSGIMeta with and without UCB bonus. We will refer our method with UCB bonus as \NSGIMeta, and our method without UCB bonus as \NSGIMeta \texttt{without UCB}.
+Figure~\ref{fig:appendix-ablation} shows that UCB bonus facilitates the meta-training of our \NSGIMeta agents in both \tb{Playground} and \tb{Mining} domains.
+
+
+\begin{figure}[!p]
+    \centering
+    \includegraphics[width=0.53\linewidth, valign=b]{figs/Mining_qual_GT_graph.png}
+    \hfill
+    \includegraphics[width=0.43\linewidth, valign=b]{figs/Mining_qual_MSGI_graph.png}
+    \\[10pt]
+    \hfill (a) A ground-truth subtask graph.      \hfill
+    (b) A subtask graph inferred by \NSGIMeta.    \hfill
+    \\[15pt]
+    \includegraphics[width=0.7\linewidth, valign=m]{figs/Mining_qual_random_graph.png}
+    \\[10pt]
+    (c) A subtask graph inferred by \NSGIRND.
+    \vspace*{15pt}
+    \caption{A qualitative example of subtask graph inference, in the \tb{Mining} domain. 
+    }
+    \label{fig:qualitative-result}
+    \vspace{-10pt}
+\end{figure}
+
+\subsection{Qualitative result on the subtask graph inference} 
+\label{sec:appendix_mining_graph_qualitative}
+Figure~\ref{fig:qualitative-result} illustrates a qualitative example
+of the inferred subtask graphs inferred by \NSGIMeta and \NSGIRND agents on the \tb{Mining}-Eval set.
+The adaptation budget was $K=50$ episodes and episode length was $T=80$ steps.
+Both of \NSGIMeta and \NSGIRND correctly inferred
+most of subtasks in the lower hierarchy (\eg, \textit{Get stone}, \textit{Cut wood}, \textit{Get string}) of the subtask graph.
+However, only \NSGIMeta was successful in inferring the preconditions of
+subtasks in the highest hierarchy (\eg, \textit{Smelt gold}, \textit{Make goldware}, and \textit{Craft necklace});
+\NSGIRND never had an experience where their preconditions are all satisfied, and thus failed to learn the preconditions of these task.
+It demonstrates that \NSGIMeta with a meta-learned adaptation policy
+is able to collect more comprehensive experience for accurate subtask graph inference.
+\subsection{Quantitative analysis of the adaptation policy} 
+\label{sec:appendix_adaptation_poilicy_behavior}
+\begin{wraptable}{r}{5.9cm}
+\vspace{-14pt}
+  \centering
+  \small
+  \setlength\tabcolsep{4.5pt} \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+                    &\multicolumn{5}{c|}{ Coverage (\%) }\\ \hline
+        Method      &\tb{D1}&\tb{D2}&\tb{D3}&\tb{D4}&\tb{Eval}\\ \hlineB{2}
+        \NSGIMeta   &\tb{89}&\tb{87}&\tb{81}&\tb{75}&\tb{90}   \\ \hline
+        \NSGIRND    &  83  &  77  &  68  &  58  &  85    \\
+      \hline
+      \end{tabular}
+  \label{tab:depth}
+  \vspace{-12pt}
+\end{wraptable}
+We measured the portion of subtasks being eligible or completed at least once (i.e., coverage) during adaptation to measure how exploratory \NSGIMeta and random policy are. We report the averaged coverage over the evaluation graph set and 8 random seeds. The table shows that \NSGIMeta can make more diverse subtasks complete and eligible than the random policy thanks to more accurate subtask graph inference.
+\clearpage
+\section{Details of GRProp policy}
+\label{sec:appendix_grprop}
+
+For self-containedness, we provide the description of GRProp policy from \citet{sohn2018hierarchical}. We also make a few modifications on $\wt{\text{OR}} \left( \mb{x} \right)$ and $\wt{\text{AND}} \left( \mb{x} \right)$ in Eqs.~\ref{eq:soft-or} and~\ref{eq:soft-and}.
+
+Intuitively, GRProp policy modifies the subtask graph to a differentiable form such that we can compute the gradient of modified return with respect to the subtask completion vector in order to measure how much each subtask is likely to increase the modified return.
+ Let $\mb{x}_t$ be a completion vector and $\GR{}$ be a subtask reward vector (see Section~\ref{sec:p} for definitions). Then, the sum of reward until time-step $t$ is given as:
+ \begin{align}
+    U_t &= \GR{}^{\top} \mb{x}_{t}. \label{eq:cr}
+ \end{align}
+We first modify the reward formulation such that it gives a half of subtask reward for satisfying the preconditions and the rest for executing the subtask to encourage the agent to satisfy the precondition of a subtask with a large reward:
+ \begin{align}
+    \widehat{U}_t &= \GR{}^{\top} (\mb{x}_{t}+\mb{e}_t)/2. \label{eq:cr2}
+ \end{align}
+Let $y_{AND}^j$ be the output of $j$-th \texttt{AND} node. The eligibility vector $\mathbf{e}_t$ can be computed from the subtask graph $G$ and $\mb{x}_t$ as follows:
+\begin{align}
+  e_{t}^{i} = \underset{j\in Child_i}{\text{OR}} \left( y^{j}_{AND}\right),\quad
+  y^{j}_{AND} = \underset{k\in Child_j}{\text{AND}} \left( \widehat{x}_{t}^{j,k}\right),\quad
+  \widehat{x}_{t}^{j,k}= x_t^k w^{j,k} + \text{NOT}(x_t^k)(1-w^{j,k}),
+  \label{eq:xhat}
+\end{align}
+where $w^{j, k}=0$ if there is a \texttt{NOT} connection between $j$-th node and $k$-th node, otherwise $w^{j,k}=1$. Intuitively, $\widehat{x}_{t}^{j,k}=1$ when $k$-th node does not violate the precondition of $j$-th node.
+The logical AND, OR, and NOT operations in Eq.~\ref{eq:xhat} are substituted by the smoothed counterparts as follows:
+  \begin{align}
+ p^{i}&= \lambda_{\text{or}} \wt{e}^{i} + \left( 1 - \lambda_{\text{or}}\right) x^i,\label{eq:soft-progress}\\
+ \wt{e}^{i} &= \underset{j\in Child_i}{\wt{\text{OR}}} \left( \wt{y}^{j}_{AND}\right),\\
+ \wt{y}^{j}_{AND} &= \underset{k\in Child_j}{\wt{\text{AND}}} \left( \hat{x}^{j,k}\right),\\
+ \hat{x}^{j,k}&= w^{j,k} p^k + (1-w^{j,k}) \wt{\text{NOT}} \left(p^k \right),
+\end{align}
+where $\mb{x}\in\mbb{R}^{d}$ is the input completion vector,
+\begin{align}
+\wt{\text{OR}} \left( \mb{x} \right) &= \softmax(w_{\text{or}}\mb{x})\cdot \mb{x}, \label{eq:soft-or}\\
+\wt{\text{AND}} \left( \mb{x} \right) &= \frac{\softplus(\mb{x}, w_{\text{and}})}{\softplus(||\mb{x}||, w_{\text{and}})} ,\label{eq:soft-and}\\
+\wt{\text{NOT}} \left( \mb{x} \right) &= -w_{\text{not}} \mb{x},
+\end{align}
+$||\mb{x}||=d$, $\softplus(\mb{x}, \beta)=\frac{1}{\beta} \log(1+\exp(\beta \mb{x}))$ is a soft-plus function, and $\lambda_{\text{or}}=0.6, w_{\text{or}}=2, w_{\text{and}}=3, w_{\text{not}}=2$ are the hyper-parameters of GRProp. 
+Note that we slightly modified the implementation of $\wt{\text{OR}}$ and $\wt{\text{AND}}$ from sigmoid and hyper-tangent functions in~\citep{sohn2018hierarchical} to softmax and softplus functions for better performance. With the smoothed operations, the sum of smoothed and modified reward is given as:
+\begin{align}
+    \widetilde{U}_t &= \GR{}^\top \mb{p}, \label{eq:cr4}
+\end{align}
+where $\mb{p}=[p^1,\ldots,p^d]$ and $p^i$ is computed from Eq.~\ref{eq:soft-progress}.
+Finally, the graph reward propagation policy is a softmax policy,  
+\begin{align}
+ \pi(\mb{o}_{t}|G,\mb{x}_t) =  \text{Softmax}\left(  T\nabla_{\mb{x}_{t}} \widetilde{U}_{t} \right)
+ =\text{Softmax}\left( T\GR{}^\top (\lambda_{\text{or}}\nabla_{\mb{x}_{t}} \wt{\mb{e}}_{t}+ (1-\lambda_{\text{or}}) ) \right),
+\end{align}
+where we used the softmax temperature $T=40$ for \tb{Playground} and \tb{Mining} domain,
+and linearly annealed the temperature from $T=1$ to $T=40$ during adaptation phase for \tb{SC2LE} domain.
+Intuitively speaking, we act more confidently (\ie, higher temperature $T$) as we collect more data since the inferred subtask graph will become more accurate.
+
+
+\clearpage
+\section{Implementation Details}
+\label{sec:appendix_implementation_details}
+
+\subsection{Details of \nti{} architecture}
+\label{sec:appendix_nti_architecture}
+
+Figure~\ref{fig:method_repeat} illustrates the architecture of our \nti{} model.
+Our adaptation policy takes the agent's trajectory $\tau_t=\{\mb{s}_t,\mb{o}_t,\mb{r}_t,\mb{d}_t\}$ at time step $t$ as input,
+where $\mb{s}=\{ \text{obs}, \mb{x}, \mb{e}, \text{step}, \text{epi} \}$.
+We used convolutional neural network (CNN) and gated rectifier unit (GRU) to encode both the temporal and spatial information of observation input $\text{obs}$. 
+For other inputs, we simply concatenated all of them along the dimension after normalization, and encoded with GRU and fully-connected (FC) layers. Finally, the flat embedding and observation embedding are concatenated with separate heads for the value and policy output respectively (See supplemental material for more detail).
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figs/Training-and-testing-phase.pdf}
+    \caption{ (Left) Our \nti{} model and (Right) the architecture of adaptation policy $\pi_{\theta}^{\text{adapt}}$.}
+    \label{fig:method_repeat}
+\end{figure}
+
+Our \nti{} architecture encodes the observation input using CNN module. Specifically, the observation embedding is computed by Conv1(16x1x1-1/0)-Conv2(32x3x3-1/0)-Conv3(64x3x3-1/1)-Conv4(32x3x3-1/1)-Flatten-FC(512)-GRU(512). Other inputs are all concatenated into a single vector, and fed to GRU(512). In turn, we extracted two flat embeddings using two separate FC(512) heads for policy and value outputs. For each output, the observation and flat embeddings and concatenated into single vector, and fed to FC(512)-FC($d$) for policy output and FC(512)-FC(1) for value output, where $d$ is the policy dimension. We used ReLU activation function in all the layers.
+\subsection{Details of Training \tb{\nti{}-Meta}}
+\label{sec:appendix_training_ntimeta}
+
+
+
+
+Algorithm~\ref{alg:train} describes the pseudo-code for training our \NSGIMeta model with and without UCB bonus term. In adaptation phase, we ran a batch of 48 parallel environments. In test phase, we measured the average performance over 4 episodes with 8 parallel workers (\ie, average over 32 episodes). We used actor-critic method with GAE~\citep{schulman2015high} as follows:
+\begin{align}
+\nabla_{\theta} \mathcal{L}&= \mathbb{E}_{G\sim \mathcal{G}_{train}}\left[\mathbb{E}_{s \sim \pi_{\theta}} \left[ -\nabla_{\theta}\log\pi_{\theta}\sum^{\infty}_{l=0} \left(\prod_{n=0}^{l-1}{(\gamma\lambda)^{k_n}}\right) \delta_{t+l} \right] \right],\label{eq:multi-gradient}\\
+\delta_t &= r_t + \gamma^{k_t} V^{\pi}_{\theta}(\mb{s}_{t+1})  - V^{\pi}_{\theta}(\mb{s}_{t})\label{eq:deltat},
+\end{align}
+where we used the learning rate $\eta=0.002$, $\gamma=1$, and $\lambda=0.9$. We used RMSProp optimizer with the smoothing parameter of 0.99 and epsilon of 1e-5. We trained our \NSGIMeta agent for 8000 trials, where the agent is updated after every trial. We used the best hyper-parameters chosen from the sets specified in Table~\ref{tb:hyper_param_range} for all the agents.
+We also used the entropy regularization with annealed parameter $\beta_{\text{ent}}$.
+We started from $\beta_{\text{ent}}=0.05$ and linearly decreased it after 1200 trials until it reaches $\beta_{\text{ent}}=0$ at 3200 trials.
+During training, we update the critic network to minimize $\mathbb{E}\large[ \left(R_t - V^{\pi}_{\theta}(\mb{s}_{t}) \right)^2 \large]$, where $R_t$ is the cumulative reward at time $t$ with the weight of 0.03. We clipped the magnitude of gradient to be no larger than 1.
+
+
+\renewcommand{\arraystretch}{1.25}
+
+\begin{table*}[!hbt] 
+\centering
+\begin{tabular}{r|c|l|l|l}
+\toprule
+Hyperparameter  & Notation      & \multicolumn{3}{c}{Methods}\\
+                &               & \NSGIMeta & \RLSquare & \HRL \\  
+        \midrule
+Learning Rate (LR)& $\eta    $          &  2e-3     &1e-3   &1e-3\\
+LR multiplier   &                       &  0.999    &0.999  &0.999\\
+GAE             & $\lambda   $          &  0.9      &0.9    &0.9\\
+Critic          & $\beta_{\text{critic}}$& 0.12     &0.005  &0.12\\
+Entropy         & $\beta_{\text{ent}}  $ & 0.1      &1.0    &0.03\\
+UCB             & $\beta_{\text{UCB}}  $ & 1.0      &-      &-\\
+Architecture& ($d_{\text{flat}}$, $d_{\text{gru}}$) &(512, 512)&(512, 512)&(512, 512)\\
+    \bottomrule
+  \end{tabular}
+\vspace{-2pt}
+\caption{Summary of hyper-parameters used for \NSGIMeta, RL$^2$, and HRL agents.}
+\label{tb:hyper_param}
+\end{table*}
+
+
+\begin{table*}[!hbt] 
+\centering
+\begin{tabular}{r|c|l}
+    \toprule
+    Hyperparameter & Notation      & Values
+    \\
+    \bottomrule
+Learning rate (LR)      & $\eta    $   & \{1.0, 2.5, 5.0\}$\times$\{e-5, e-4, e-3\}\\
+LR multiplier&                & \{0.96, 0.98, 0.99, 0.993, 0.996, 0.999, 1.0\}\\
+GAE     & $\lambda   $   & \{0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.98, 1.0\}\\
+Critic  & $\beta_{\text{critic}}     $   & \{0.005, 0.01, 0.03, 0.06, 0.12, 0.25\}\\
+Entropy & $\beta_{\text{ent}}  $   & \{0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0\}\\
+UCB & $\beta_{\text{UCB}}  $   & \{1.0, 3.0\}\\
+Architecture& ($d_{\text{flat}}$, $d_{\text{gru}}$) & \{(128, 128), (256, 256), (512, 512)\}\\
+    \bottomrule
+  \end{tabular}
+\vspace{-2pt}
+\caption{The range of hyper-parameters we searched over. We did beam-search to find the best parameter with the priority of $\eta, \lambda, \beta, \beta_{\text{ent}}, (d_{\text{flat}}, d_{\text{gru}})$, LR-decay.}
+\label{tb:hyper_param_range}
+\end{table*}
+
+
+\subsection{Details of training RL$^2$ and HRL}
+\label{sec:appendix_training_rlhrl}
+
+For training \RLSquare and \HRL, we used the same architecture and algorithm with \NSGIMeta.
+For \RLSquare, we used the same hyper-parameters except the learning rate $\eta=0.001$ and the critic loss weight of 0.005.
+For \HRL, we used the learning rate $\eta=0.001$ and the critic loss weight of 0.12. We used the best hyper-parameters chosen from the sets specified in Table~\ref{tb:hyper_param_range} for all the agents.
+ 
+\end{document}

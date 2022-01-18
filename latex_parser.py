@@ -13,7 +13,7 @@ logger.info("===================================================================
 logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
-directory = "Latex2"
+directory = "Latex"
 texfiles = []
 template_list = [
     "Introduction", 
@@ -37,8 +37,6 @@ for filename in os.listdir(directory):
         texfiles.append(f)
 
 # Load File into Soup
-#
-# TODO file input muss robuster werden
 #
 logger.info("Load LaTex File into Soup")
 # Create Dictionary to store soup objects
@@ -74,18 +72,26 @@ section_dict = {
     25 : []  
 }
 
+def load_items_into_soup():
+    for i,item in enumerate(texfiles):
+        try:
+            #logger.debug(f"Load {item} into soup.")
+            soup = TexSoup(open(item), tolerance=1)
+
+        except Exception as e:
+            logger.debug(f"Doc #{i}: {item} could not be loaded.")
+            logger.debug("Error occured: "+ str(e))
+
 # Iterate through all TexFiles and place them in dict
 def parse_for_section_headings():
     for i,item in enumerate(texfiles):
         try:
             #logger.debug(f"Load {item} into soup.")
-            soup = TexSoup(open(item))
+            soup = TexSoup(open(item), tolerance=1)
 
             section_list = list(soup.find_all('section'))
             #logger.info(section_list)
 
-            # TODO 10 Sections die am öftesten vorkommen
-            # TODO Ausgabe anders formatieren
             # Iterate through all Section Headings and compare to template list
             for i, x in enumerate(section_list):
                 clean_string = re.sub('[^A-Za-z0-9 ]+', '', x.string)
@@ -107,9 +113,7 @@ def compare_with_template():
             section_list = list(soup.find_all('section'))
             #logger.info(section_list)
 
-            # TODO Ausgabe erweiteren - Reihenfolge ausgeben 
             # TODO Input Template auslagern
-            # TODO Statistik über Paper erstellen welche Sections vorkommen
 
             # Iterate through all Section Headings and compare to template list
             for j, x in enumerate(section_list):
@@ -184,18 +188,28 @@ def compare_with_template():
     # print(section_dict)
 
 
+################################################################################
+################################################################################
+
+
+# load_items_into_soup()
+
+
 ########################################
-# parse_for_section_headings()
+
+parse_for_section_headings()
 
 # Write Sections to JSON File
-# json_data = json.dumps(section_dict, indent = 4)
-# with open("JSON/section_headings.json", "w") as outfile:
-#     outfile.write(json_data)
+json_data = json.dumps(section_dict, indent = 4)
+with open("JSON/section_headings_v2.json", "w") as outfile:
+    outfile.write(json_data)
 
+########################################
 
-compare_with_template()
+# compare_with_template()
 
-
+################################################################################
+################################################################################
 
 # Find Elements in LaTex File --------------------
 # Load complete Document into "alls"
