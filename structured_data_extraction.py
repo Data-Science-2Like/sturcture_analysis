@@ -48,30 +48,56 @@ def load_items_into_soup():
 
 def iter_through_doc_set():
     # loop until D is empty
+    logger.debug("Size of Corpus : {}".format(len(D)))
     while(D):
         sections = []
-        for item in D:
-            section_list = list(item.find_all('section'))
-            D.remove(item)
+        item = D[0]
+        section_list = list(item.find_all('section'))
+        D.remove(item)
         for item in section_list:
             clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
             clean_string = clean_string.lower()   
             # TODO tokenize, lemmatize strings
             sections.append(clean_string)
-
+        logger.debug("New Sections: {}".format(sections))
+        append = False
+        
         if not R:
             R.append(sections)
+            logger.debug("(1st) New Rule added: {}".format(sections))
         else:
+            # R = [[r1],[r2], ...]
             for lists in R:
-                for items in lists:
-                    pass
+                intersect = set(lists).intersection(set(sections))
+                print(intersect)
+                if 
+                
+                # # r1 = [I, R, M, E]
+                # for items in lists:
+                #     # l1 = [I, D, M, E]
+                #     for items2 in sections:
+                        # if items == items2:
+                        #     print("Same : ", items)
+                        #     logger.debug("Same section heading: "+ items)
+                        #     break
+                        # else:
+                        #     logger.debug("Append = True")
+                        #     append = True
+                    
+            if append == True:
+                R.append(sections)
+                logger.debug("New Rule added: {}".format(sections))
+                append = False
+            else:
+                logger.debug("No New Rule added.")
 
 
 
 
 
 
-    print(R)
+    logger.debug("Size of Rule Set : {}".format(len(R)))
+    logger.debug("Complete Rule Set: {}".format(R))
 
 
         
