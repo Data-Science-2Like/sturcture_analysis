@@ -1,0 +1,228 @@
+[
+    [
+        "INTRODUCTION",
+        "CONTEXTUAL CONSTRAINED CLINICAL TRIAL C3T MODEL",
+        "C3T WITH LIMITED BUDGET",
+        "DISCUSSION",
+        "EXPERIMENTS",
+        "CONCLUSION",
+        "PRELIMINARIES",
+        "PROOF OF THEOREM 1",
+        "PROOF OF THEOREM 2",
+        "WorstCase Reget Bound For Total Efficacy of C3TBudgetE",
+        "DESCRIPTION OF C3TBudgetE",
+        "DESCRIPTION OF BASELINE ALGORITHMS"
+    ],
+    [
+        "Proof of crefeq15aa",
+        "Expansions of EP rates in multipartite processes",
+        "Proof that  if A is a community then dfracdAdt SX  XAt ge 0",
+        "Proof of crefeq30a",
+        "EP bounds from the inclusionexclusion principle"
+    ],
+    [
+        "Introduction and Summary",
+        "Structural Models",
+        "Probabilistic Conditionals",
+        "Axiomatizations",
+        "Complexity",
+        "Probabilistic Programs",
+        "Conclusion",
+        "Acknowledgments"
+    ],
+    [
+        "Appendix"
+    ],
+    [
+        "Business Processes and Planning",
+        "Background dwa",
+        "dba Process  Skills  Optimized Process",
+        "Challenge Problems",
+        "Looking Forward Path to Deployment"
+    ],
+    [
+        "bf Scientific Background",
+        "bf Materials and Methods",
+        "bf Experimental Results",
+        "bf Conclusion"
+    ],
+    [
+        "Motivation",
+        "Outline",
+        "List of Publications",
+        "Introduction",
+        "Related Work",
+        "Method",
+        "Experiment",
+        "Results and Discussion",
+        "Conclusion",
+        "Introduction",
+        "Related work",
+        "Method",
+        "Constrained Sampling",
+        "Experiment",
+        "Results and Discussion",
+        "Conclusion and Future Work",
+        "Introduction",
+        "Related Work",
+        "Learning Transformations of Musical Material",
+        "Learning Interval Representations from Polyphonic Music Sequences",
+        "Learning Sequences of Intervals and Repetition Structure",
+        "Information Theory and Structure Analysis",
+        "Learning Transformations and Invariances in Music"
+    ],
+    [
+        "Motivation",
+        "Background",
+        "Thesis organization",
+        "labelsecRadarModel Radar system and data analysis",
+        "Preprocessing labelsecpreprocessing",
+        "Feature extraction and classificationlabelsecfeatureExtr",
+        "Application of the Radon transform",
+        "Power Burst Curve PBClabelsecPBC",
+        "Human motion state representationlabelsec3hsr",
+        "Experimental results labelsecexperimentalResults",
+        "Conclusion",
+        "Further work"
+    ],
+    [
+        "Results",
+        "Methods"
+    ],
+    [
+        "uppercaseIntroduction",
+        "uppercaseRelated Work",
+        "uppercaseMethods",
+        "uppercaseResults",
+        "uppercaseDiscussion",
+        "uppercaseConclusion"
+    ],
+    [
+        "Sampling phase",
+        "Investigation phase",
+        "Results",
+        "Device variability",
+        "Conclusion",
+        "The score function as a classifier",
+        "Mathematical analysis of ablation study results"
+    ],
+    [
+        "0pt",
+        "Introduction",
+        "Social Recommender System",
+        "Proposed Soft Recommender System",
+        "Experiments",
+        "Results",
+        "Conclusion"
+    ],
+    [
+        "Multitask network models",
+        "Noncooperative learning under streaming data",
+        "Multitask learning framework",
+        "Regularized multitask estimation",
+        "Multitask estimation under subspace constraints",
+        "Clustered multitask estimation",
+        "Conclusion"
+    ],
+    [
+        "Background",
+        "Problem Definition",
+        "Framework for Generating Semantic Adversarial Example",
+        "Experiments",
+        "Related Work",
+        "Conclusion and Discussion",
+        "Proof of the First Zonklar Equation",
+        "",
+        "Introduction"
+    ],
+    [
+        "INTRODUCTION",
+        "Definitions and Notations",
+        "Formulation of the Problem",
+        "CMTFA Nondominant Case",
+        "Dominant Case",
+        "Numerical results",
+        "Building a Gaussian Tree",
+        "Conclusion"
+    ],
+    [
+        "Introduction and Motivation",
+        "The Modified Hebbian Learning Algorithm",
+        "The Networks",
+        "Setup",
+        "The Experiments And Results",
+        "Discussion and Conclusion",
+        "References",
+        "Appendix A  Details Of The Pooling Map"
+    ],
+    [
+        "Context and background",
+        "Motivation",
+        "Research Directions and Perspectives",
+        "Acknowledgements"
+    ],
+    [
+        "Motivation",
+        "Related work",
+        "General Reuse",
+        "Algorithmspecific Reuse",
+        "Insights and proof of concepts for increasing data reuse",
+        "Conclusion",
+        "Acknowledgement"
+    ],
+    [
+        "Preliminaries",
+        "Monoidal Grammars",
+        "Incremental Monoidal Grammars",
+        "mathbbRgeq 0Monoidal Grammars from Language Models",
+        "Future Work"
+    ],
+    [
+        "INTRODUCTION",
+        "RELATED WORK",
+        "DEEP DIFFUSION PROCESS",
+        "EXPERIMENTS",
+        "CONCLUSION",
+        "ACKNOWLEDGEMENTS"
+    ],
+    [
+        "Motivation",
+        "Background",
+        "Our Approach",
+        "Experimentation",
+        "Conclusion and Future Work"
+    ],
+    [
+        "Background",
+        "FreeHand Sketch Datasets",
+        "Tasks and Methodology Taxonomy",
+        "TorchSketch The First Library for FreeHand Sketch",
+        "Discussion",
+        "Conclusion",
+        "Introduction"
+    ],
+    [
+        "The Elsevier article class",
+        "Front matter",
+        "Bibliography styles"
+    ],
+    [
+        "EmoCNN",
+        "Lovheims cube",
+        "Future Work"
+    ],
+    [
+        "Related work",
+        "MultiWarping GAN",
+        "Experiments",
+        "Conclusion",
+        "Introduction"
+    ],
+    [
+        "INTRODUCTION",
+        "RELATED WORK",
+        "VISUALSEMANTIC GRAPH ATTENTION NETWORK",
+        "EXPERIMENTS AND RESULTS",
+        "CONCLUSION"
+    ]
+]
