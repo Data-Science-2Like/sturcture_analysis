@@ -1,0 +1,1038 @@
+\documentclass{article}
+
+\usepackage[final]{neurips_2019}
+
+
+
+\usepackage{amsmath,amsfonts,bm,stmaryrd}
+
+\newcommand{\figleft}{{\em (Left)}}
+\newcommand{\figcenter}{{\em (Center)}}
+\newcommand{\figright}{{\em (Right)}}
+\newcommand{\figtop}{{\em (Top)}}
+\newcommand{\figbottom}{{\em (Bottom)}}
+\newcommand{\captiona}{{\em (a)}}
+\newcommand{\captionb}{{\em (b)}}
+\newcommand{\captionc}{{\em (c)}}
+\newcommand{\captiond}{{\em (d)}}
+
+\newcommand{\newterm}[1]{{\bf #1}}
+
+
+\def\figref#1{figure~\ref{#1}}
+\def\Figref#1{Figure~\ref{#1}}
+\def\twofigref#1#2{figures \ref{#1} and \ref{#2}}
+\def\quadfigref#1#2#3#4{figures \ref{#1}, \ref{#2}, \ref{#3} and \ref{#4}}
+\def\secref#1{section~\ref{#1}}
+\def\Secref#1{Section~\ref{#1}}
+\def\twosecrefs#1#2{sections \ref{#1} and \ref{#2}}
+\def\secrefs#1#2#3{sections \ref{#1}, \ref{#2} and \ref{#3}}
+\def\eqref#1{equation~\ref{#1}}
+\def\Eqref#1{Equation~\ref{#1}}
+\def\plaineqref#1{\ref{#1}}
+\def\chapref#1{chapter~\ref{#1}}
+\def\Chapref#1{Chapter~\ref{#1}}
+\def\rangechapref#1#2{chapters\ref{#1}--\ref{#2}}
+\def\algref#1{algorithm~\ref{#1}}
+\def\Algref#1{Algorithm~\ref{#1}}
+\def\twoalgref#1#2{algorithms \ref{#1} and \ref{#2}}
+\def\Twoalgref#1#2{Algorithms \ref{#1} and \ref{#2}}
+\def\partref#1{part~\ref{#1}}
+\def\Partref#1{Part~\ref{#1}}
+\def\twopartref#1#2{parts \ref{#1} and \ref{#2}}
+
+\def\ceil#1{\lceil #1 \rceil}
+\def\floor#1{\lfloor #1 \rfloor}
+\def\1{\bm{1}}
+\newcommand{\train}{\mathcal{D}}
+\newcommand{\valid}{\mathcal{D_{\mathrm{valid}}}}
+\newcommand{\test}{\mathcal{D_{\mathrm{test}}}}
+
+\def\eps{{\epsilon}}
+
+
+\def\reta{{\textnormal{$\eta$}}}
+\def\ra{{\textnormal{a}}}
+\def\rb{{\textnormal{b}}}
+\def\rc{{\textnormal{c}}}
+\def\rd{{\textnormal{d}}}
+\def\re{{\textnormal{e}}}
+\def\rf{{\textnormal{f}}}
+\def\rg{{\textnormal{g}}}
+\def\rh{{\textnormal{h}}}
+\def\ri{{\textnormal{i}}}
+\def\rj{{\textnormal{j}}}
+\def\rk{{\textnormal{k}}}
+\def\rl{{\textnormal{l}}}
+\def\rn{{\textnormal{n}}}
+\def\ro{{\textnormal{o}}}
+\def\rp{{\textnormal{p}}}
+\def\rq{{\textnormal{q}}}
+\def\rr{{\textnormal{r}}}
+\def\rs{{\textnormal{s}}}
+\def\rt{{\textnormal{t}}}
+\def\ru{{\textnormal{u}}}
+\def\rv{{\textnormal{v}}}
+\def\rw{{\textnormal{w}}}
+\def\rx{{\textnormal{x}}}
+\def\ry{{\textnormal{y}}}
+\def\rz{{\textnormal{z}}}
+
+\def\rvepsilon{{\mathbf{\epsilon}}}
+\def\rvtheta{{\mathbf{\theta}}}
+\def\rva{{\mathbf{a}}}
+\def\rvb{{\mathbf{b}}}
+\def\rvc{{\mathbf{c}}}
+\def\rvd{{\mathbf{d}}}
+\def\rve{{\mathbf{e}}}
+\def\rvf{{\mathbf{f}}}
+\def\rvg{{\mathbf{g}}}
+\def\rvh{{\mathbf{h}}}
+\def\rvu{{\mathbf{i}}}
+\def\rvj{{\mathbf{j}}}
+\def\rvk{{\mathbf{k}}}
+\def\rvl{{\mathbf{l}}}
+\def\rvm{{\mathbf{m}}}
+\def\rvn{{\mathbf{n}}}
+\def\rvo{{\mathbf{o}}}
+\def\rvp{{\mathbf{p}}}
+\def\rvq{{\mathbf{q}}}
+\def\rvr{{\mathbf{r}}}
+\def\rvs{{\mathbf{s}}}
+\def\rvt{{\mathbf{t}}}
+\def\rvu{{\mathbf{u}}}
+\def\rvv{{\mathbf{v}}}
+\def\rvw{{\mathbf{w}}}
+\def\rvx{{\mathbf{x}}}
+\def\rvy{{\mathbf{y}}}
+\def\rvz{{\mathbf{z}}}
+
+\def\erva{{\textnormal{a}}}
+\def\ervb{{\textnormal{b}}}
+\def\ervc{{\textnormal{c}}}
+\def\ervd{{\textnormal{d}}}
+\def\erve{{\textnormal{e}}}
+\def\ervf{{\textnormal{f}}}
+\def\ervg{{\textnormal{g}}}
+\def\ervh{{\textnormal{h}}}
+\def\ervi{{\textnormal{i}}}
+\def\ervj{{\textnormal{j}}}
+\def\ervk{{\textnormal{k}}}
+\def\ervl{{\textnormal{l}}}
+\def\ervm{{\textnormal{m}}}
+\def\ervn{{\textnormal{n}}}
+\def\ervo{{\textnormal{o}}}
+\def\ervp{{\textnormal{p}}}
+\def\ervq{{\textnormal{q}}}
+\def\ervr{{\textnormal{r}}}
+\def\ervs{{\textnormal{s}}}
+\def\ervt{{\textnormal{t}}}
+\def\ervu{{\textnormal{u}}}
+\def\ervv{{\textnormal{v}}}
+\def\ervw{{\textnormal{w}}}
+\def\ervx{{\textnormal{x}}}
+\def\ervy{{\textnormal{y}}}
+\def\ervz{{\textnormal{z}}}
+
+\def\rmA{{\mathbf{A}}}
+\def\rmB{{\mathbf{B}}}
+\def\rmC{{\mathbf{C}}}
+\def\rmD{{\mathbf{D}}}
+\def\rmE{{\mathbf{E}}}
+\def\rmF{{\mathbf{F}}}
+\def\rmG{{\mathbf{G}}}
+\def\rmH{{\mathbf{H}}}
+\def\rmI{{\mathbf{I}}}
+\def\rmJ{{\mathbf{J}}}
+\def\rmK{{\mathbf{K}}}
+\def\rmL{{\mathbf{L}}}
+\def\rmM{{\mathbf{M}}}
+\def\rmN{{\mathbf{N}}}
+\def\rmO{{\mathbf{O}}}
+\def\rmP{{\mathbf{P}}}
+\def\rmQ{{\mathbf{Q}}}
+\def\rmR{{\mathbf{R}}}
+\def\rmS{{\mathbf{S}}}
+\def\rmT{{\mathbf{T}}}
+\def\rmU{{\mathbf{U}}}
+\def\rmV{{\mathbf{V}}}
+\def\rmW{{\mathbf{W}}}
+\def\rmX{{\mathbf{X}}}
+\def\rmY{{\mathbf{Y}}}
+\def\rmZ{{\mathbf{Z}}}
+
+\def\ermA{{\textnormal{A}}}
+\def\ermB{{\textnormal{B}}}
+\def\ermC{{\textnormal{C}}}
+\def\ermD{{\textnormal{D}}}
+\def\ermE{{\textnormal{E}}}
+\def\ermF{{\textnormal{F}}}
+\def\ermG{{\textnormal{G}}}
+\def\ermH{{\textnormal{H}}}
+\def\ermI{{\textnormal{I}}}
+\def\ermJ{{\textnormal{J}}}
+\def\ermK{{\textnormal{K}}}
+\def\ermL{{\textnormal{L}}}
+\def\ermM{{\textnormal{M}}}
+\def\ermN{{\textnormal{N}}}
+\def\ermO{{\textnormal{O}}}
+\def\ermP{{\textnormal{P}}}
+\def\ermQ{{\textnormal{Q}}}
+\def\ermR{{\textnormal{R}}}
+\def\ermS{{\textnormal{S}}}
+\def\ermT{{\textnormal{T}}}
+\def\ermU{{\textnormal{U}}}
+\def\ermV{{\textnormal{V}}}
+\def\ermW{{\textnormal{W}}}
+\def\ermX{{\textnormal{X}}}
+\def\ermY{{\textnormal{Y}}}
+\def\ermZ{{\textnormal{Z}}}
+
+\def\vzero{{\bm{0}}}
+\def\vone{{\bm{1}}}
+\def\vmu{{\bm{\mu}}}
+\def\vtheta{{\bm{\theta}}}
+\def\va{{\bm{a}}}
+\def\vb{{\bm{b}}}
+\def\vc{{\bm{c}}}
+\def\vd{{\bm{d}}}
+\def\ve{{\bm{e}}}
+\def\vf{{\bm{f}}}
+\def\vg{{\bm{g}}}
+\def\vh{{\bm{h}}}
+\def\vi{{\bm{i}}}
+\def\vj{{\bm{j}}}
+\def\vk{{\bm{k}}}
+\def\vl{{\bm{l}}}
+\def\vm{{\bm{m}}}
+\def\vn{{\bm{n}}}
+\def\vo{{\bm{o}}}
+\def\vp{{\bm{p}}}
+\def\vq{{\bm{q}}}
+\def\vr{{\bm{r}}}
+\def\vs{{\bm{s}}}
+\def\vt{{\bm{t}}}
+\def\vu{{\bm{u}}}
+\def\vv{{\bm{v}}}
+\def\vw{{\bm{w}}}
+\def\vx{{\bm{x}}}
+\def\vy{{\bm{y}}}
+\def\vz{{\bm{z}}}
+
+\def\evalpha{{\alpha}}
+\def\evbeta{{\beta}}
+\def\evepsilon{{\epsilon}}
+\def\evlambda{{\lambda}}
+\def\evomega{{\omega}}
+\def\evmu{{\mu}}
+\def\evpsi{{\psi}}
+\def\evsigma{{\sigma}}
+\def\evtheta{{\theta}}
+\def\eva{{a}}
+\def\evb{{b}}
+\def\evc{{c}}
+\def\evd{{d}}
+\def\eve{{e}}
+\def\evf{{f}}
+\def\evg{{g}}
+\def\evh{{h}}
+\def\evi{{i}}
+\def\evj{{j}}
+\def\evk{{k}}
+\def\evl{{l}}
+\def\evm{{m}}
+\def\evn{{n}}
+\def\evo{{o}}
+\def\evp{{p}}
+\def\evq{{q}}
+\def\evr{{r}}
+\def\evs{{s}}
+\def\evt{{t}}
+\def\evu{{u}}
+\def\evv{{v}}
+\def\evw{{w}}
+\def\evx{{x}}
+\def\evy{{y}}
+\def\evz{{z}}
+
+\def\mA{{\bm{A}}}
+\def\mB{{\bm{B}}}
+\def\mC{{\bm{C}}}
+\def\mD{{\bm{D}}}
+\def\mE{{\bm{E}}}
+\def\mF{{\bm{F}}}
+\def\mG{{\bm{G}}}
+\def\mH{{\bm{H}}}
+\def\mI{{\bm{I}}}
+\def\mJ{{\bm{J}}}
+\def\mK{{\bm{K}}}
+\def\mL{{\bm{L}}}
+\def\mM{{\bm{M}}}
+\def\mN{{\bm{N}}}
+\def\mO{{\bm{O}}}
+\def\mP{{\bm{P}}}
+\def\mQ{{\bm{Q}}}
+\def\mR{{\bm{R}}}
+\def\mS{{\bm{S}}}
+\def\mT{{\bm{T}}}
+\def\mU{{\bm{U}}}
+\def\mV{{\bm{V}}}
+\def\mW{{\bm{W}}}
+\def\mX{{\bm{X}}}
+\def\mY{{\bm{Y}}}
+\def\mZ{{\bm{Z}}}
+\def\mBeta{{\bm{\beta}}}
+\def\mPhi{{\bm{\Phi}}}
+\def\mLambda{{\bm{\Lambda}}}
+\def\mSigma{{\bm{\Sigma}}}
+
+\DeclareMathAlphabet{\mathsfit}{\encodingdefault}{\sfdefault}{m}{sl}
+\SetMathAlphabet{\mathsfit}{bold}{\encodingdefault}{\sfdefault}{bx}{n}
+\newcommand{\tens}[1]{\bm{\mathsfit{#1}}}
+\def\tA{{\tens{A}}}
+\def\tB{{\tens{B}}}
+\def\tC{{\tens{C}}}
+\def\tD{{\tens{D}}}
+\def\tE{{\tens{E}}}
+\def\tF{{\tens{F}}}
+\def\tG{{\tens{G}}}
+\def\tH{{\tens{H}}}
+\def\tI{{\tens{I}}}
+\def\tJ{{\tens{J}}}
+\def\tK{{\tens{K}}}
+\def\tL{{\tens{L}}}
+\def\tM{{\tens{M}}}
+\def\tN{{\tens{N}}}
+\def\tO{{\tens{O}}}
+\def\tP{{\tens{P}}}
+\def\tQ{{\tens{Q}}}
+\def\tR{{\tens{R}}}
+\def\tS{{\tens{S}}}
+\def\tT{{\tens{T}}}
+\def\tU{{\tens{U}}}
+\def\tV{{\tens{V}}}
+\def\tW{{\tens{W}}}
+\def\tX{{\tens{X}}}
+\def\tY{{\tens{Y}}}
+\def\tZ{{\tens{Z}}}
+
+
+\def\gA{{\mathcal{A}}}
+\def\gB{{\mathcal{B}}}
+\def\gC{{\mathcal{C}}}
+\def\gD{{\mathcal{D}}}
+\def\gE{{\mathcal{E}}}
+\def\gF{{\mathcal{F}}}
+\def\gG{{\mathcal{G}}}
+\def\gH{{\mathcal{H}}}
+\def\gI{{\mathcal{I}}}
+\def\gJ{{\mathcal{J}}}
+\def\gK{{\mathcal{K}}}
+\def\gL{{\mathcal{L}}}
+\def\gM{{\mathcal{M}}}
+\def\gN{{\mathcal{N}}}
+\def\gO{{\mathcal{O}}}
+\def\gP{{\mathcal{P}}}
+\def\gQ{{\mathcal{Q}}}
+\def\gR{{\mathcal{R}}}
+\def\gS{{\mathcal{S}}}
+\def\gT{{\mathcal{T}}}
+\def\gU{{\mathcal{U}}}
+\def\gV{{\mathcal{V}}}
+\def\gW{{\mathcal{W}}}
+\def\gX{{\mathcal{X}}}
+\def\gY{{\mathcal{Y}}}
+\def\gZ{{\mathcal{Z}}}
+
+\def\sA{{\mathbb{A}}}
+\def\sB{{\mathbb{B}}}
+\def\sC{{\mathbb{C}}}
+\def\sD{{\mathbb{D}}}
+\def\sF{{\mathbb{F}}}
+\def\sG{{\mathbb{G}}}
+\def\sH{{\mathbb{H}}}
+\def\sI{{\mathbb{I}}}
+\def\sJ{{\mathbb{J}}}
+\def\sK{{\mathbb{K}}}
+\def\sL{{\mathbb{L}}}
+\def\sM{{\mathbb{M}}}
+\def\sN{{\mathbb{N}}}
+\def\sO{{\mathbb{O}}}
+\def\sP{{\mathbb{P}}}
+\def\sQ{{\mathbb{Q}}}
+\def\sR{{\mathbb{R}}}
+\def\sS{{\mathbb{S}}}
+\def\sT{{\mathbb{T}}}
+\def\sU{{\mathbb{U}}}
+\def\sV{{\mathbb{V}}}
+\def\sW{{\mathbb{W}}}
+\def\sX{{\mathbb{X}}}
+\def\sY{{\mathbb{Y}}}
+\def\sZ{{\mathbb{Z}}}
+
+\def\emLambda{{\Lambda}}
+\def\emA{{A}}
+\def\emB{{B}}
+\def\emC{{C}}
+\def\emD{{D}}
+\def\emE{{E}}
+\def\emF{{F}}
+\def\emG{{G}}
+\def\emH{{H}}
+\def\emI{{I}}
+\def\emJ{{J}}
+\def\emK{{K}}
+\def\emL{{L}}
+\def\emM{{M}}
+\def\emN{{N}}
+\def\emO{{O}}
+\def\emP{{P}}
+\def\emQ{{Q}}
+\def\emR{{R}}
+\def\emS{{S}}
+\def\emT{{T}}
+\def\emU{{U}}
+\def\emV{{V}}
+\def\emW{{W}}
+\def\emX{{X}}
+\def\emY{{Y}}
+\def\emZ{{Z}}
+\def\emSigma{{\Sigma}}
+
+\newcommand{\etens}[1]{\mathsfit{#1}}
+\def\etLambda{{\etens{\Lambda}}}
+\def\etA{{\etens{A}}}
+\def\etB{{\etens{B}}}
+\def\etC{{\etens{C}}}
+\def\etD{{\etens{D}}}
+\def\etE{{\etens{E}}}
+\def\etF{{\etens{F}}}
+\def\etG{{\etens{G}}}
+\def\etH{{\etens{H}}}
+\def\etI{{\etens{I}}}
+\def\etJ{{\etens{J}}}
+\def\etK{{\etens{K}}}
+\def\etL{{\etens{L}}}
+\def\etM{{\etens{M}}}
+\def\etN{{\etens{N}}}
+\def\etO{{\etens{O}}}
+\def\etP{{\etens{P}}}
+\def\etQ{{\etens{Q}}}
+\def\etR{{\etens{R}}}
+\def\etS{{\etens{S}}}
+\def\etT{{\etens{T}}}
+\def\etU{{\etens{U}}}
+\def\etV{{\etens{V}}}
+\def\etW{{\etens{W}}}
+\def\etX{{\etens{X}}}
+\def\etY{{\etens{Y}}}
+\def\etZ{{\etens{Z}}}
+
+\newcommand{\pdata}{p_{\rm{data}}}
+\newcommand{\ptrain}{\hat{p}_{\rm{data}}}
+\newcommand{\Ptrain}{\hat{P}_{\rm{data}}}
+\newcommand{\pmodel}{p_{\rm{model}}}
+\newcommand{\Pmodel}{P_{\rm{model}}}
+\newcommand{\ptildemodel}{\tilde{p}_{\rm{model}}}
+\newcommand{\pencode}{p_{\rm{encoder}}}
+\newcommand{\pdecode}{p_{\rm{decoder}}}
+\newcommand{\precons}{p_{\rm{reconstruct}}}
+
+\newcommand{\laplace}{\mathrm{Laplace}} 
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Ls}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\emp}{\tilde{p}}
+\newcommand{\lr}{\alpha}
+\newcommand{\reg}{\lambda}
+\newcommand{\rect}{\mathrm{rectifier}}
+\newcommand{\softmax}{\mathrm{softmax}}
+\newcommand{\sigmoid}{\sigma}
+\newcommand{\softplus}{\zeta}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\standarderror}{\mathrm{SE}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\normlzero}{L^0}
+\newcommand{\normlone}{L^1}
+\newcommand{\normltwo}{L^2}
+\newcommand{\normlp}{L^p}
+\newcommand{\normmax}{L^\infty}
+
+\newcommand{\parents}{Pa} 
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Tr}{Tr}
+\let\ab\allowbreak
+ 
+\usepackage[utf8]{inputenc} \usepackage[T1]{fontenc}    \usepackage{url}            \usepackage{booktabs}       \usepackage{amsfonts}       \usepackage{nicefrac}       \usepackage{microtype}      
+
+\usepackage[ruled,vlined,noresetcount]{algorithm2e}
+\usepackage{color,xcolor}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+\usepackage{hhline}
+\usepackage{multirow}
+\usepackage{subcaption} 
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{bm}
+\usepackage{nicefrac}
+\usepackage{microtype}
+
+\usepackage{changepage}
+\usepackage{extramarks}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{setspace}
+\usepackage{soul}
+\usepackage{xspace}
+
+\usepackage[pagebackref=true,breaklinks=true,colorlinks,citecolor=gray]{hyperref}
+\newcommand\nnfootnote[1]{\begin{NoHyper}
+  \renewcommand\thefootnote{}\footnote{#1}\addtocounter{footnote}{-1}\end{NoHyper}
+}
+\usepackage{url}
+
+\usepackage{enumerate}
+\usepackage{todonotes} \usepackage{enumitem}  
+
+\usepackage{titlesec}
+
+\usepackage{makecell}
+
+\usepackage{pifont} 
+
+
+
+
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\newcommand{\xpar}[1]{\noindent\textbf{#1}\ \ }
+\newcommand{\vpar}[1]{\vspace{3mm}\noindent\textbf{#1}\ \ }
+
+\newcommand{\sect}[1]{Section~\ref{#1}}
+\newcommand{\sects}[1]{Sections~\ref{#1}}
+\newcommand{\eqn}[1]{Equation~\ref{#1}}
+\newcommand{\eqns}[1]{Equations~\ref{#1}}
+\newcommand{\fig}[1]{Figure~\ref{#1}}
+\newcommand{\figs}[1]{Figures~\ref{#1}}
+\newcommand{\tbl}[1]{Table~\ref{#1}}
+\newcommand{\tbls}[1]{Tables~\ref{#1}}
+
+\newcommand{\ignorethis}[1]{}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\fcseven}{$\mbox{fc}_7$}
+
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+
+\def\naive{na\"{\i}ve\xspace}
+\def\Naive{Na\"{\i}ve\xspace}
+
+\newcommand{\cmark}{\ding{51}}\newcommand{\xmark}{\ding{55}}
+
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+
+\def\iid{\emph{i.i.d}\onedot}
+\def\eg{e.g\onedot} \def\Eg{E.g\onedot}
+\def\ie{i.e\onedot} \def\Ie{I.e\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{etc\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{et al\onedot}
+\makeatother
+
+\definecolor{MyDarkBlue}{rgb}{0,0.08,1}
+\definecolor{MyDarkGreen}{rgb}{0.02,0.6,0.02}
+\definecolor{MyDarkRed}{rgb}{0.8,0.02,0.02}
+\definecolor{MyDarkOrange}{rgb}{0.40,0.2,0.02}
+\definecolor{MyPurple}{RGB}{111,0,255}
+\definecolor{MyRed}{rgb}{1.0,0.0,0.0}
+\definecolor{MyGold}{rgb}{0.75,0.6,0.12}
+\definecolor{MyDarkgray}{rgb}{0.66, 0.66, 0.66}
+
+\newcommand{\jw}[1]{\textcolor{MyDarkGreen}{[Jiajun: #1]}}
+\newcommand{\jiayuan}[1]{\textcolor{MyDarkBlue}{[Jiayuan: #1]}}
+\newcommand{\gc}[1]{\textcolor{MyDarkRed}{[Chuang: #1]}}
+\newcommand{\chihan}[1]{\textcolor{MyRed}{[Chi: #1]}}
+\newcommand{\ddl}[1]{\textcolor{MyDarkOrange}{[#1]}}
+
+\newcommand{\modelfull}{visual concept-metaconcept learner\xspace}
+\newcommand{\model}{VCML\xspace}
+\newcommand{\myparagraph}[1]{\vspace{-10pt}\paragraph{#1}}
+
+\newcommand{\revisioncolor}{}
+
+\titlespacing\section{8pt}{8pt plus 0pt minus 2pt}{4pt plus 0pt minus 1pt}
+\titlespacing\subsection{6pt}{6pt plus 0pt minus 1pt}{3pt plus 0pt minus 0pt}
+ 
+\title{Visual Concept-Metaconcept Learning} 
+
+\author{Chi Han$^*$\\
+MIT CSAIL and IIIS, Tsinghua University\\
+\And
+Jiayuan Mao$^*$\\
+MIT CSAIL\\
+\And
+Chuang Gan\\
+MIT-IBM Watson AI Lab\\
+\And
+Joshua B. Tenenbaum\\
+MIT BCS, CBMM, CSAIL\\
+\And
+Jiajun Wu\\
+MIT CSAIL\\
+}
+
+\begin{document}
+
+\maketitle
+\nnfootnote{First two authors contributed equally. Work was done when Chi Han was a visiting student at MIT CSAIL.}
+\nnfootnote{Project Page: \url{http://vcml.csail.mit.edu}.}
+
+\vspace{-2.5em}
+\begin{abstract}
+\vspace{-0.3em}
+Humans reason with concepts and metaconcepts: we recognize {\it red} and {\it green} from visual input; we also understand that they {\it describe the same property of objects} (\ie, the color). In this paper, we propose the \modelfull (\model) for joint learning of concepts and metaconcepts from images and associated question-answer pairs. The key is to exploit the bidirectional connection between visual concepts and metaconcepts. Visual representations provide grounding cues for predicting relations between unseen pairs of concepts. Knowing that red and green {\it describe the same property of objects}, we generalize to the fact that cube and sphere also {\it describe the same property of objects}, since they both categorize the shape of objects. Meanwhile, knowledge about metaconcepts empowers visual concept learning from limited, noisy, and even biased data. 
+From just a few examples of {\it purple cubes} we can understand a new color {\it purple}, which resembles the hue of the cubes instead of the shape of them.
+Evaluation on both synthetic and real-world datasets validates our claims.
+
+
+
+\end{abstract}
+\section{Introduction}
+
+Learning to group objects into concepts is an essential human cognitive process, supporting compositional reasoning over scenes and sentences. To facilitate learning, we have developed metaconcepts to describe the abstract relations between concepts~\citep{Speer2017Conceptnet,McRae2005Semantic}. Learning both concepts and metaconcepts involves categorization at various levels, from concrete visual attributes such as {\it red} and {\it cube}, to abstract relations between concepts, such as {\it synonym} and {\it hypernym}. In this paper, we focus on the problem of learning visual concepts and metaconcepts with a linguistic interface, from looking at images and reading paired questions and answers.
+
+\fig{fig:teaser}a gives examples of concept learning and metaconcept learning in the context of answering visual reasoning questions and purely textual questions about metaconcepts. We learn to distinguish {\it red} objects from {\it green} ones by their hues, by looking at visual reasoning (type I) examples. We also learn metaconcepts, \eg, red and green {\it describe the same property of objects}, by reading metaconcept (type II) questions and answers.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{_raw/new_fig/teaser.pdf}
+    \vspace{-1.5em}
+    \caption{Our model learns concepts and metaconcepts from images and two types of questions. The learned knowledge 
+helps visual concept learning
+    (generalizing to unseen visual concept compositions, or to concepts with limited visual data) and metaconcept generalization (generalizing to relations between unseen pairs of concepts.) 
+}
+    \vspace{-1em}
+    \label{fig:teaser}
+\end{figure} 
+Concept learning and metaconcept learning help each other. \fig{fig:teaser}b illustrates the idea. First, metaconcepts enable concept learning from limited, noisy, and even biased examples, with generalization to novel compositions of attributes at test time. Assuming only a few examples of red cubes with the label {\it red}, the visual grounding of the word {\it red} is ambiguous: it may refer to the hue red or cube-shaped objects. We can resolve such ambiguities knowing that red and green {\it describe the same property of objects}. During test (\fig{fig:teaser}b-I), we can then generalize to red cylinders. Second, concept learning provides visual cues for predicting relations between unseen pairs of concepts. After learning that red and green {\it describe the same property of objects}, one may hypothesize a generalization of the notion ``same property'' to {\it cube} and {\it sphere}, since they both categorize objects by their shapes (in comparison to red and green both categorizing the hue, sees \fig{fig:teaser}b-II).
+
+
+
+Based on this observation, we propose the \modelfull (\model, see \fig{fig:framework}) for joint learning of visual concepts ({\it red} and {\it cube}) and metaconcepts (\eg, red and green {\it describe the same property of objects}). \model consists of three modules: a visual perception module extracting an object-based representation of the input image, a semantic parser translating the natural language question into a symbolic program, and a neuro-symbolic program executor executing the program based on the visual representation to answer the question. \model bridges the learning of visual concepts and metaconcepts with a latent vector space. Concepts are associated with vector embeddings, whereas metaconcepts are neural operators that predict relations between concepts. 
+
+Both concept embeddings and metaconcept operators are learned by looking at images and reading question-answer pairs.  Our training data are composed of two parts: 1) questions about the visual grounding of concepts (\eg, {\it is there any red cube?}), and 2) questions about the abstract relations between concepts (\eg, {\it do red and green describe the same property of objects?}). 
+
+
+\model generalizes well in two ways, by learning from the two types of questions. It can successfully categorize objects with new combinations of visual attributes, or objects with attributes with limited training data (\fig{fig:teaser}b, type I); it can also predict relations between unseen pairs of concepts (\fig{fig:teaser}b, type II). We present a systematic evaluation on both synthetic and real-world images, with a focus on learning efficiency and strong generalization.
+
+
+
+
+
+
+\section{Related Work}
+Learning visual concepts from language or other forms of symbols, such as class labels or tags, serves as a prerequisite for a broad set of downstream visual-linguistic applications, including cross-modal retrieval \citep{Kiros2014Unifying}, caption generation \citep{Karpathy2015Deep}, and visual-question answering \citep{Malinowski2015Ask}. Existing literature has been focused on improving visual concept learning by introducing new representations \citep{Wu2017Neural}, new forms of supervisions \citep{Johnson2016DenseCap,Ganju2017What}, new training algorithms \citep{Faghri2018VSE,Shi2018Learning}, structured and geometric embedding spaces \citep{Ren2016Joint,Vendrov2015Order}, and extra knowledge base \citep{Thoma2017Towards}.
+
+Our model learns visual concepts by reasoning over question-answer pairs. Prior works on visual reasoning have proposed to use end-to-end neural networks for jointly learning visual concepts and reasoning \citep{Malinowski2015Ask,Yang2016Stacked,Xu2016Ask,Andreas2016Learning,Gan2017Vqs,Mascharka2018Transparency,Hudson2018Compositional,Hu2018Explainable}, whereas some recent papers \citep{Yi2018NSVQA,Mao2019NeuroSymbolic,yi2019clevrer} attempt to disentangle visual concept learning and reasoning. The disentanglement brings better data efficiency and generalization.
+
+In this paper, we study the new challenge of incorporating metaconcepts, \ie, relational concepts about concepts, into visual concept learning. Beyond just learning from questions regarding visual scenes (\eg, is there any red cubes?), our model learns from questions about metaconcepts (\eg, do red and yellow describe the same property of objects?). Both concepts and metaconcepts are learned with a unified neuro-symbolic reasoning process. Our evaluation focuses on revealing bidirectional connections between visual concept learning and metaconcept learning. Specifically, we study both visual compositional generalization and metaconcept generalization (\ie, relational knowledge generalization).
+
+Visual compositional generalization focuses on exploiting the compositional nature of visual categories. For example, the compositional concept {\it red cube} can be factorized into two concepts: {\it red} and {\it cube}. Such compositionality suggests the ability to generalize to unseen combination of concepts: \eg, from {\it red cube} and {\it yellow sphere} to {\it red sphere}. Many approaches towards compositional visual concept learning have been proposed, including compositional embeddings \citep{Misra2017Red}, neural operators \citep{Nagarajan2018Attributes}, and neural module networks \citep{Purushwalkam2019Task}. In this paper, we go one step further towards compositional visual concept learning by introducing metaconcepts, which empower learning from biased data. As an example, by looking at only examples of {\it red cubes}, our model can recover the visual concept {\it red} accurately, as a category of chromatic color, and generalizes to unseen compositions such as {\it red sphere}.
+
+Generalizing from known relations between concepts to unseen pairs of concepts can be cast as an instance of relational knowledge base completion. The existing literature has focused on learning vector embeddings from known knowledge \citep{Socher2013Reasoning,Bordes2013Translating,Wang2014Knowledge}, recovering logic rules between metaconcepts \citep{Yang2017Differentiable}, and learning from corpora \citep{Lin2017Neural}. In this paper, we propose a visually-grounded metaconcept generalization framework. This allows our model, for example, to generalize from {\it red and yellow describe the same property of objects} to {\it green and yellow also describe the same property of objects} by observing that both {\it red} and {\it green} classify objects by their hues based on vision. \section{Visual Concept-Metaconcept Learning}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{_raw/new_fig/framework.pdf}
+    \caption{The Visual Concept-Metaconcept Learner. The model comprises three modules: (a) a perception module for extracting object-based visual representations, (b) a semantic parsing module for recovering latent programs from natural language, and (c) a neuro-symbolic reasoning module that executes the program to answer the question.}
+    \label{fig:framework}
+    \vspace{-1em}
+\end{figure} 
+We present the \modelfull (\model), a unified framework for learning visual concepts and metaconcepts by reasoning over questions and answers about scenes. It answers both visual reasoning questions (\eg, is there any red object?) and text-only metaconcept questions (\eg, do red and green describe the same property of objects?) with a unified neuro-symbolic framework. \model comprises three modules (\fig{fig:framework}):
+
+\begin{itemize}[leftmargin=*]
+    \item A {\it perception} module (\fig{fig:framework}a) for extracting an object-based representation of the scene, where each object is represented as a vector embedding of a fixed dimension.
+    \item A {\it semantic parsing} module (\fig{fig:framework}b) for translating the input question into a symbolic executable program. Each program consists of hierarchical primitive functional modules for reasoning. Concepts are represented as vector embeddings in a latent vector space, whereas metaconcepts are small neural networks predicting relations between concepts. The concept embeddings are associated with the visual representations of objects.
+    \item A {\it neuro-symbolic reasoning} module (\fig{fig:framework}c) for executing the program to answer the question, based on the scene representation, concept embeddings, and metaconcept operators. During training, it also receives the groundtruth answer as the supervision and back-propagates the training signals.
+\end{itemize} 
+
+
+\subsection{Motivating Examples}
+In \fig{fig:framework}, we illustrate \model by walking through two motivating examples of visual reasoning and metaconcept reasoning.
+
+\myparagraph{Visual reasoning.} Given the input image, the perception module generates object proposals for two objects and extracts vector representations for them individually. Meanwhile, the question {\it is there any red object} will be translated by a semantic parsing module into a two-step program: {\tt Exist(Filter(red))}. The neuro-symbolic reasoning module executes the program. It first computes the similarities between the concept embedding {\it red} and object embeddings to classify both objects. Then, it answers the question by checking whether a red object has been filtered out.
+
+\myparagraph{Metaconcept questions.} Metaconcept questions are text-only. Each of the metaconcept questions queries a metaconcept relation between a pair of concepts. Specifically, consider the question {\it do red and green describe the same property of objects}. We denote two concepts are related by a {\it same\_kind} metaconcept if they describe the same property of objects. To answer this question, we first run the semantic parsing module to translate it into a symbolic program: {\tt MetaVerify(red, green, same\_kind)}. The neuro-symbolic reasoning module answers the question by inspecting the latent embeddings of two concepts ({\it red} and {\it green}) with the metaconcept operator of {\it same\_kind}.
+
+\subsection{Model Details}
+
+\begin{table}[t!]
+    \centering
+    \caption{Our extension of the visual-reasoning DSL \citep{Johnson2017CLEVR,Hudson2019GQA}, including one new primitive function for metaconcepts.}
+    \vspace{5pt}
+    \begin{tabular}{ll}
+    \toprule
+        {MetaVerify} & \\  \midrule
+        {\bf Signature} & Concept, Concept, MetaConcept $\longrightarrow$ Bool  \\
+        {\bf Semantics} & Returns whether two input concepts have the specified metaconcept relation. \\
+        {\bf Example} & {MetaVerify}(Sphere, Ball, Synonym) $\longrightarrow$ {True}\\
+\bottomrule
+    \vspace{-2em}
+    \end{tabular}
+    \label{tab:dslext}
+\end{table}
+ \paragraph{Perception module.}
+Given the input image, \model builds an object-based representation of the scene. This is done by using a Mask R-CNN \citep{He2017Mask} to generate object proposals, followed by a ResNet-34 \citep{He2015Deep} to extract region-based feature representations of individual objects.
+
+
+
+
+\myparagraph{Semantic parsing module.}
+The semantic parsing module takes the question as input and recovers a latent program. The program has a hierarchical structure of primitive operations such as filtering out a set of objects with a specific concept, or evaluating whether two concepts are {\it same\_kind}.
+
+The domain-specific language (DSL) of the semantic parser extends the DSL used by prior works on visual reasoning \citep{Johnson2017CLEVR,Hudson2019GQA} by introducing new functional modules for metaconcepts (see \tbl{tab:dslext}).
+
+\myparagraph{Concept embeddings.}
+
+
+The concept embedding space lies at the core of this model. It is a joint vector embedding space of object representations and visual concepts. Metaconcepts operators are small neural networks built on top of it. \fig{fig:embedding-space} gives a graphical illustration of the embedding space.
+
+We build the concept embedding space drawing inspirations from the order-embedding framework \citep{Ivan2015OE} and its extensions \citep{lai2017POE, vilnis2018BoxEmbedding}.
+By explicitly defining a partial order or entailment probabilities between vector embeddings, these models are capable of learning a well structured embedding space which captures certain kinds of relations among the concept embeddings.
+
+
+
+In \model, we have designed another probabilistic order embedding in a high-dimensional space $\mathbb{R}^N$. Each object and each visual concept (\eg, {\it red}) is associated with an embedding vector $\rvx \in \mathbb{R}^N$. This vector defines a half-space $V(\rvx) = \{\rvy \in \mathbb{R}^N \mid (\rvy - \rvx)^T \rvx > 0\}$. We assume a standard normal distribution $\mathcal{N}(\mathbf{0}, \mathbf{I})$ distrbuted over the whole space. We further define a denotational probability for each entity {\it a}, which can be either an object or a concept, with the associated embedding vector $\rvx_a$ as the measure of $V_a = V(\rvx_a)$ over this distribution:
+\[
+    \Pr(a)  = \textnormal{Vol}_{\mathcal{N}(\mathbf{0}, \mathbf{I})} ( V_a )
+            = \int_{\rvz \in V_a} {\frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2} {\left\Vert \rvz \right\Vert}_2^2}d\rvz}
+            = \frac{1}{2} [1-\text{erf} (\frac{{\left\Vert \rvx \right\Vert}_2}{\sqrt{2}})]
+\]
+Similarly, the joint probability of two entites {\it a, b} can be computed as the measure of the intersection of their half-spaces:
+\[
+    \Pr(a, b)   = \textnormal{Vol}_{\mathcal{N}(\mathbf{0}, \mathbf{I})}(V_a\cap V_b)
+                = \int_{\rvz \in V_a \cap V_b} {\frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2} {\left\Vert \rvz \right\Vert}_2^2}d\rvz}
+\]
+We can therefore define the entailment probability between two entities as
+\[
+    \Pr(b \mid a) 
+    = \frac{\Pr(a,b)}{\Pr(a)} 
+    = \frac {\textnormal{Vol}_{\mathcal{N}(\mathbf{0}, \mathbf{I})}(V_b \cap V_a)} {\textnormal{Vol}_{\mathcal{N}(\mathbf{0}, \mathbf{I})}(V_a)}
+\]
+This entailment probability can then be used to give (asymmetric) similarity scores between objects and concepts. For example, to classify whether an object {\it o} is {\it red}, we compute
+$\Pr(\text{object}\ o\ \text{is}\ red) = \Pr(red \mid o)$ .
+
+
+
+
+
+
+
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=\textwidth]{_raw/new_fig/embedding.pdf}
+    \caption{A graphical illustration of our concept-metaconcept embedding space.
+Each concept or object is embedded as a high-dimensional vector, which is associated with a half-space supported by this vector. Each metaconcept is associated with a multi-layer perceptron as a classifier.
+    The programs are executed based on the scene representation, concept embeddings and metaconcept operators.}
+    \label{fig:embedding-space}
+    \vspace{-1em}
+\end{figure} 
+\myparagraph{Metaconcept operators}
+For simplicity, we only consider metaconcepts defined over a pair of concepts, such as {\it synonym} and {\it same\_kind}. Each metaconcept is associated with a multi-layer perceptron (\eg, $f_\text{synonym}$ for the metaconcept {\it synonym}). To classify whether two concepts (\eg, {\it red} and {\it cube}) are related by a metaconcept (\eg, {\it synonym}), we first compute several denotational entailment probabilities between them. Mathematical, we define two helper functions $g_1$ and $g_2$:
+\[
+    g_1(a,b) = \textnormal{logit} (\Pr(a \mid b)),\quad
+    g_2(a,b) = \ln{\frac{\Pr(a, b)}{\Pr(a)\Pr(b)}}~,
+\]
+where $\textnormal{logit}(\cdot)$ is the logit function. These values are then fed into the perceptron to predict the relation
+\[
+    \text{MetaVerify}(\mathit{red}, cube, synonym) = f_{synonym}(g_1(red, cube), g_1(cube, red), g_2(red, cube))~.
+\]
+
+
+
+
+
+
+
+\paragraph{Neuro-symbolic reasoning module.}
+\model executes the program recovered by the semantic parsing module with a neuro-symbolic reasoning module \citep{Mao2019NeuroSymbolic}. It contains a set of deterministic functional modules and does not require any training. The high-level idea is to relax the boolean values during execution into soft scores ranging from 0 to 1. Illustrated in \fig{fig:framework}, given a scene of two objects, the result of a {\tt Filter(red)} operation is a vector of length two, where the $i$-th element denotes the probability whether the $i$-th object is red. The {\tt Exist($\cdot$)} operation takes the max value of the input vector as the answer to the question. The neuro-symbolic execution allows us to disentangle visual concept learning and metaconcept learning from reasoning. The derived answer to the question is fully differentiable with respect to the concept-metaconcept representations.
+
+\subsection{Training}
+There are five modules to be learned in \model: the object proposal generator, object representations, the semantic parser, concept embeddings, and metaconcept operators. Since we focus on the concept-metaconcept learning problem, we assume the access to a pre-trained object proposal generator and a semantic parser. The ResNet-34 model for extracting object features is pretrained on ImageNet \citep{Deng2009Imagenet}, and gets finetuned during training. Unless otherwise stated, the concepts and metaconcepts are learned with an Adam optimizer \citep{Kingma2015Adam} based on learning signals back-propagated from the neuro-symbolic reasoning module. We use a learning rate of 0.001 and a batch size of 10.
+
+
+
+\newcommand{\mysubsection}[1]{\vspace{-0.3em}\subsection{#1}\vspace{-0.3em}}
+\newcommand{\mysubsubsection}[1]{\vspace{-0.3em}\subsubsection{#1}\vspace{-0.3em}}
+\renewcommand{\myparagraph}[1]{\vspace{-5pt}\paragraph{#1}}
+
+\section{Experiments}
+
+
+The experiment section is organized as follows. In \sect{sec:exp:dataset} and \sect{sec:exp:baseline}, we introduce datasets we used and the baselines we compare our model with, respectively. And then we evaluate the generalization performance of various models from two perspectives. First, in \sect{sec:exp:meta2concept}, we show that incorporating metaconcept learning improves the data efficiency of concept learning. It also suggests solutions to compositional generalization of visual concepts. Second, in \sect{sec:exp:concept2meta}, we show how concept grounding can help the prediction of metaconcept relations between unseen pairs of concepts.
+
+All results in this paper are the average of four different runs, and $\pm$ in results denotes standard deviation.
+
+
+\mysubsection{Dataset}
+\label{sec:exp:dataset}
+We evaluate different models on both synthetic (CLEVR \citep{Johnson2017CLEVR}) and natural image (GQA \citep{Hudson2019GQA}, CUB \citep{CUB_200_2011}) datasets. To have a fine-grained control over question splits, we use programs to generate synthetic questions and answers, based on the ground-truth annotations of visual concepts.
+
+The CLEVR dataset \citep{Johnson2017CLEVR} is a diagnostic dataset for visual reasoning. It contains synthetic images of objects with different sizes, colors, materials, and shapes. There are a total of 22 visual concepts in CLEVR (including concepts and their synonyms). We use a subset of 70K images from the CLEVR training split for learning visual concepts and metaconcepts. 15K images from the validation split are used during test.
+
+The GQA dataset \citep{Hudson2019GQA} contains visual reasoning questions for natural images. Each image is associated with a scene graph annotating the visual concepts in the scene. It contains a diverse set of 2K visual concepts. We truncate the long-tail distribution of concepts by selecting a subset of 584 most frequent concepts. We use 75K images for training and another 10K images for test. In GQA, we use the ground-truth bounding boxes provided in the dataset. Attribute labels are not used for training our model or any baselines.
+
+The CUB dataset \citep{CUB_200_2011} contains around 12K images of 200 bird species. Each image contains one bird, with classification and body part attribute annotations (for the {\it meronym} metaconcept). We use a subset of 8K images for training and another 1K images for test.
+
+
+
+In addition to the visual reasoning questions, we extend the datasets to include metaconcept questions. These questions are generated according to external knowledge bases. For CLEVR, we use the original ontology. For GQA, we use the {\it synsets} and {\it same\_kind} relations from the WordNet \citep{Miller1995Wordnet}. For CUB, we extend the ontology with 166 bird taxa of higher categories (families, genera, \etc ), and use the hypernym relations from the eBird Taxonomy \citep{Sullivan2009eBird} to build a hierarchy of all the taxonomic concepts. We also use the attribute annotations in CUB.
+
+\vspace{-0.3em}
+\subsection{Baseline}
+\label{sec:exp:baseline}
+\vspace{-0.3em}
+We compare \model with the following baselines: general visual reasoning frameworks (GRU-CNN and MAC), concept learning frameworks (NS-CL), and language-only frameworks (GRU and BERT).
+
+\myparagraph{GRU-CNN.} The GRU-CNN baseline is a simple baseline for visual question answering \citep{Zhou2015Simple}. It consists of a ResNet-34~\citep{He2015Deep} encoder for images and a GRU \citep{Cho2014Learning} encoder for questions. To answer a question, image features and question features are concatenated, followed by a softmax classifier to predict the answer. For text-only questions, we use only question features.
+\myparagraph{MAC.} We replicate the result of the MAC network \citep{Hudson2018Compositional} for visual reasoning, which is a dual attention-based model. For text-only questions, the MAC network takes a blank image as the input.
+\myparagraph{NS-CL.} The NS-CL framework is proposed by \cite{Mao2019NeuroSymbolic} for learning visual concepts from visual reasoning. Similar to \model, it works on object-based representations for scenes and program-like representations for questions. We extend it to support functional modules of metaconcepts. They are implemented as a two-layer feed forward neural network that takes concept embeddings as input.
+\myparagraph{GRU (language only).} We include a language-only baseline that uses a GRU \citep{Cho2014Learning} to encode the question and a softmax layer to predict the answer. We use pre-trained GloVe \citep{pennington2014glove} word embeddings as concept embeddings. We fix word embeddings during training, and only train GRU weights on the language modeling task on training questions.
+\myparagraph{BERT.} We also include BERT \citep{Jacob2018bert} as a language-only baseline. Two variants of BERT are considered here. Variant I encodes the natural language question with BERT and uses an extra single-layer perceptron to predict the answer.  Vartiant II works with a pre-trained semantic parser as the one in \model. To predict metaconcept relations, it encodes concept words or phrases into embedding vectors, concatenates them, and applies a single-layer perceptron to answer the question. During training, the parameters of the BERT encoders are always fixed.
+
+
+\mysubsection{Metaconcepts Help Concept Learning}
+\label{sec:exp:meta2concept}
+
+Metaconcepts help concept learning by providing extra supervision at an abstract level. Three types of generalization tests are studied in this paper. First, we show that the metaconcept {\it synonym} enables the model to learn a novel concept without any visual examples (\ie, zero-shot learning). Second, we demonstrate how the metaconcept {\it same\_kind} supports learning from biased visual data. Third, we evaluate the performance of few-shot learning with the support of the metaconcept {\it hypernym}. Finally, we provide extra results to demonstrate that metaconcepts can improve the overall data-efficiency of visual concept learning.
+For more examples on the data split, please refer to the supplementary material.
+
+\mysubsubsection{\textit{synonym} Supports Zero-Shot Learning of Novel Concepts}
+\label{subsubsec:zeroshot}
+
+\begin{figure*}[t]
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\captionof{table}{The metaconcept {\it synonym} provides abstract-level supervision for concepts. This enables zero-shot learning of novel concepts.}
+\label{tab:zeroshot}
+\setlength{\tabcolsep}{3pt}
+\scalebox{0.8}{
+\begin{tabular}{lcccc}
+\toprule
+                & GRU-CNN           &  MAC              & NS-CL             & \model                    \\
+\cmidrule{2-5}
+\textbf{CLEVR}  & $50.0_{\pm0.0}$   & $68.7_{\pm3.8}$   & $80.2_{\pm3.1}$   & $\mathbf{94.1_{\pm4.6}}$  \\
+\textbf{GQA}    & $50.0_{\pm0.0}$   & $49.5_{\pm0.2}$   & $49.3_{\pm0.6}$   & $\mathbf{50.5_{\pm0.1}}$  \\
+\bottomrule
+\end{tabular}
+}
+
+
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+
+
+\centering
+\captionof{table}{The metaconcept 
+{\it same\_kind} helps the model learn from biased data and generalize to novel combinations of visual attributes. 
+}
+\label{tab:debias}
+\scalebox{0.77}{
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccccc}
+\toprule
+                    & GRU-CNN           & MAC               & NS-CL                     & \model                    \\
+\cmidrule{2-5}
+
+
+\textbf{CLEVR-200}  & $50.0_{\pm0.0}$   & $94.2_{\pm3.3}$   & $98.5_{\pm0.3}$           & $\mathbf{98.9_{\pm0.2}}$  \\
+\textbf{CLEVR-20}   & $50.0_{\pm0.0}$   & $79.7_{\pm2.6}$   & $\mathbf{95.7_{\pm0.0}}$  & $95.1_{\pm1.6}$  \\
+
+\bottomrule
+\end{tabular}
+}
+
+
+
+
+
+\end{minipage}
+\hfill
+\vspace{5pt}
+\begin{minipage}[t]{0.48\textwidth}
+\vspace{5pt}
+\centering
+\captionof{table}{The metaconcept {\it hypernym} enables few-shot learning of new concepts.}
+\label{tab:fewshot}
+\setlength{\tabcolsep}{3pt}
+\scalebox{0.8}{
+\begin{tabular}{lcccc}
+\toprule
+                & GRU-CNN           &  MAC              & NS-CL             & \model                        \\
+\cmidrule{2-5}
+\textbf{CUB}    & $50.0_{\pm0.0}$   & $70.8_{\pm3.4}$   & $80.0_{\pm2.3}$   & $\mathbf{80.2_{\pm1.7}}$               \\
+\bottomrule
+\end{tabular}
+} \end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \centering
+\vspace{5pt}
+\setlength{\tabcolsep}{3pt}
+\captionof{table}{Application of \model on Referential Expression task on CLEVR dataset}
+\label{tbl:retrieval}
+\vspace{-5pt}
+\scalebox{0.8}{
+\begin{tabular}{lcccc}
+\toprule
+                & \#Train   &  w/.                      &  w/o.             \\ 
+\cmidrule{1-4}
+\multirow{2}{*}{Ref. Expr.}
+                & 10K       & $\mathbf{74.9_{\pm0.1}}$  & $73.8_{\pm1.7}$   \\
+                & 1K        & $\mathbf{59.7_{\pm0.2}}$  & $51.6_{\pm2.6}$    \\
+
+\bottomrule
+\end{tabular}
+} \end{minipage}
+\vspace{-1em}
+\end{figure*}
+
+
+The metaconcept {\it synonym} provides abstract-level supervision for concept learning. With the visual grounding of the concept {\it cube} and the fact that {\it cube} is a synonym of {\it block}, we can easily generalize to recognize {\it blocks}. To evaluate this, we hold out a set of concepts ${\mathcal C}_{\textit{test}}^{\textit{syn}}$ that are synonyms of other concepts. The training dataset contains synonym metaconcept questions about ${\mathcal C}_{\textit{test}}^{\textit{syn}}$ concepts but no visual reasoning questions about them. In contrast, all test questions are visual reasoning questions involving ${\mathcal C}_{\textit{test}}^{\textit{syn}}$.
+
+\paragraph{Dataset.} For the CLEVR dataset, we hold out three concepts out of 22 concepts. For the GQA dataset, we hold out 30 concepts.
+
+\myparagraph{Results.}
+Quantitative results are summarized in \tbl{tab:zeroshot}. Our model significantly outperforms all baselines that are metaconcept-agnostic on the synthetic dataset CLEVR. It also outperforms all other methods on the real-world dataset GQA, but the advantage is smaller. We attribute this result to the complex visual features and the vast number of objects in the real world scenes, which degrade the performance of concept learning. As an ablation, we test the trained model on a validation set which has the same data distribution as the training set. The train-validation gap on GQA (training: 83.1\%; validation: 52.3\%) is one-magnitude-order larger than the gap on CLEVR (training: 99.4\%; validation: 99.4\%).
+
+
+\mysubsubsection{\textit{same\_kind} Supports Learning from Biased Data}
+
+The metaconcept {\it same\_kind} supports visual concept learning from biased data. Here, we focus on biased visual attribute composition in the training set. For example, from just a few examples of {\it purple cubes}, the model should learn a new color {\it purple}, which resembles the hue of the cubes instead of the shape of them.
+
+
+
+\myparagraph{Dataset.}
+We replicate the setting of CLEVR-CoGenT \citep{Johnson2017CLEVR}, and create two splits of the CLEVR dataset: in split A, all cubes are gray, yellow, brown, or yellow, whereas in split B, cubes are red, green, purple or cyan. In training, we use all the images in split A, together with a few images from split B (which are 200 images from split B in the CLEVR-200 group, and 20 in the CLEVR-20 group, shown in \tbl{tab:debias}). During training, we use metaconcept questions to indicate that cube categorizes shapes of objects rather than colors. The held out images that in split B are used for test.
+
+\myparagraph{Results.}
+\tbl{tab:debias} shows the results. \model and NS-CL successfully learn visual concepts from biased data through the concept-metaconcept integration. We also evaluate all trained models on a validation set which has the same data distribution as the training set. We found that most models perform equally well on this validation set (for example, MAC gets 99.1\% accuracy in the validation set, while both NSCL and VCML get 99.7\%). The contrast between the validation accuracies and test accuracies supports that only a better concept-metaconcept integration contributes to the visual concept learning in such biased settings. Please refer to the supplementary material for more details.
+
+
+\mysubsubsection{\textit{hypernym} Supports Few-Shot Learning Concepts}
+
+The abstract-level supervision provided by the metaconcept {\it hypernym} supports learning visual concepts from limited data. After having learned the visual concept {\it Sterna}, and the fact that {\it Sterna} is a {\it hypernym} of {\it Arctic Tern}, we can narrow down the possible visual grounding of {\it Arctic Tern}. This helps the model to learn the concept {\it Arctic Tern} with fewer data.
+
+
+\myparagraph{Dataset.}
+We select 91 out of all 366 taxonomic concepts in CUB dataset \citep{CUB_200_2011} as $\mathcal{C}_\textit{test}^\textit{hyp}$. In the training set, there are only 5 images per concept for the concepts in $\mathcal{C}_\textit{test}^\textit{hyp}$. In contrast, each of the other concepts are associated with around 40 images during training. We evaluate different models with visual reasoning questions about concepts in $\mathcal{C}_\textit{test}^\textit{hyp}$, based on the held-out images. All visual reasoning questions are generated based on the class labels of images.
+
+
+\myparagraph{Results.}
+The results in \tbl{tab:fewshot} show that our model outperforms both GRU-CNN and MAC. NS-CL \citep{Mao2019NeuroSymbolic}, augmented with metaconcept operators, also achieves a comparable performance as \model. To further validate the effectiveness of extra metaconcept knowledge, we also test the performance of different models when the metaconcept questions are absent. Almost all models show degraded performance to various degrees (for example, MAC gets a test accuracy of 60.4\%, NS-CL gets 79.6\%, and \model gets 78.5\%).
+
+\mysubsubsection{Application of concept embeddings to downstream task}
+We supplement extra results on the CLEVR referential expression task. This task is to select out a specific object from a scene given a description (\eg, the red cube). We compare VCML with and without metaconcept information using Recall@1 for referential expressions. 
+
+\myparagraph{Results.}
+\tbl{tbl:retrieval} suggests that the metaconcept information significantly improves visual concept learning in low-resource settings, using only 10K or even 1K visually grounded questions. We found that as the number of visually-grounded questions increases, the gap between training with and without metaconcept questions gets smaller. We conjecture that this is an indication of the model relying more on visual information instead of metaconcept knowledge when there is larger visual reasoning dataset.
+
+\mysubsection{Concepts Help Metaconcept Generalization}
+\label{sec:exp:concept2meta}
+
+Concept learning provides visual cues for predicting the relations between unseen pairs of concepts. We quantitatively evaluate different models by their accuracy of predicting metaconcept relations between unseen pairs. 
+Four representative metaconcepts are studied here: {\it synonym}, {\it same\_kind}, {\it hypernym} and {\it meronym}.
+
+\begin{table}[t!]
+\centering
+\caption{Metaconcept generalization evaluation on the CLEVR, GQA and CUB dataset. (Two variants of BERT are shown here; see \sect{sec:exp:baseline} for details.)
+}
+\vspace{5pt}
+\label{tab:metaconcept}
+\newcommand{\grulang}{GRU (Lang. Only)}
+\scalebox{0.75}{
+\begin{tabular}{clcccccc}
+
+\toprule
+&           &Q.Type & \grulang          & GRU-CNN           & BERT (Variant I ; Variant II)             & NS-CL             &    \model                 \\ 
+\midrule
+\multirow{2}{*}{\bf CLEVR}
+&Synonym    & 50.0  & $66.3_{\pm1.4}$   & $60.9_{\pm10.6}$  & $76.2_{\pm10.2}$ ; $80.2_{\pm16.1}$   & $\mathbf{100.0_{\pm0.0}}$ & $\mathbf{100.0_{\pm0.0}}$  \\
+&Same-kind  & 50.0  & $64.7_{\pm5.1}$   & $61.5_{\pm6.6}$   & $75.4_{\pm5.4}$ ; $80.1_{\pm10.0}$    & $92.3_{\pm4.9}$   & $\mathbf{99.3_{\pm1.0}}$  \\
+\cmidrule{2-8}
+\multirow{2}{*}{\bf GQA}
+&Synonym    & 50.0  & $80.8_{\pm1.0}$   & $76.2_{\pm0.8}$   & $76.2_{\pm2.4}$ ; $83.1_{\pm1.5}$     & $81.2_{\pm2.8}$   & $\mathbf{91.1_{\pm1.7}}$  \\
+&Same-kind  & 50.0  & $56.3_{\pm2.3}$   & $57.3_{\pm5.3}$   & $59.5_{\pm2.7}$ ; $68.2_{\pm4.0}$     & $66.8_{\pm4.1}$   & $\mathbf{69.1_{\pm1.7}}$  \\
+\cmidrule{2-8}
+\multirow{2}{*}{\bf CUB}
+&Hypernym   & 50.0  & $74.3_{\pm5.2}$   & $76.7_{\pm8.8}$   & $75.6_{\pm1.2}$ ; $61.7_{\pm10.3}$    & $80.1_{\pm7.3}$   & $\mathbf{94.8_{\pm1.3}}$  \\
+&Meronym    & 50.0  & $80.1_{\pm5.9}$   & $78.1_{\pm4.8}$   & $63.1_{\pm3.2}$ ; $72.9_{\pm9.9}$     & $\mathbf{97.7_{\pm1.1}}$   & $92.5_{\pm1.0}$ \\
+
+\bottomrule
+\end{tabular}
+}
+
+
+
+
+
+
+
+
+
+
+\end{table}
+\begin{figure}[t!]
+    \vspace{-1em}
+    \centering
+    \includegraphics[width=\textwidth]{_raw/new_fig/metaconcept.pdf}
+    \caption{Data split used for metaconcept generalization tests. The models are required to leverage the visual analogy between concepts to predict metaconcepts about unseen pairs of concepts (shown in blue). More details for other metaconcepts can be found in the supplementary material.}
+    \label{fig:data-metaconcept}
+    \vspace{-1em}
+\end{figure} 
+\myparagraph{Dataset.}
+\fig{fig:data-metaconcept} shows the training-test split for the metaconcept generalization test. For each metaconcept, a subset of concepts $\mathcal{C}_\mathit{test}^{[\text{metaconcept}]\mathit{\_gen}}$ are selected as test concepts . The rest concepts form the training concept set $\mathcal{C}_\mathit{train}^{[\text{metaconcept}]\mathit{\_gen}}$. Duing training, only metaconcept questions with both queried concepts in $\mathcal{C}_\mathit{train}^{[\text{metaconcept}]\mathit{\_gen}}$ are used. Metaconcept questions with both concepts in $\mathcal{C}_\mathit{test}^{[\text{metaconcept}]\mathit{\_gen}}$ are used for test.
+Models should leverage the visual grounding of concepts to predict the metaconcept relation between unseen pairs.
+
+
+\myparagraph{Results.}
+
+The results for metaconcept generalization on the three datasets are summarized in \tbl{tab:metaconcept}. The question type baseline (shown as Q. Type) is the best-guess baseline for all metaconcepts. Overall, \model achieves the best metaconcept generalization, and only shows inferior performance to NS-CL on the \textit{meronym} metaconcept. Note that the NS-CL baseline used here is our re-implementation that augments the original version with similar metaconcept operators as \model.
+
+
+
+
+\section{Conclusion}
+
+In this paper, we propose the \modelfull (\model) for bridging visual concept learning and metaconcept learning (\ie, relational concepts about concepts). The model learns concepts and metaconcepts with a unified neuro-symbolic reasoning procedure and a linguistic interface. We demonstrate that connecting visual concepts and abstract relational metaconcepts bootstraps the learning of both. Concept grounding provides visual cues for predicting relations between unseen pairs of concepts, while the metaconcepts, in return, facilitate the learning of concepts from limited, noisy, and even biased data. Systematic evaluation on the CLEVR, CUB, and GQA datasets shows that \model outperforms metaconcept-agnostic visual concept learning baselines as well as visual reasoning baselines. \paragraph{Acknowledgement.}
+We thank Jon Gauthier for helpful discussions and suggestions. This work was supported in part by the Center for Brains, Minds and Machines (CBMM, NSF STC award CCF-1231216), ONR MURI N00014-16-1-2007, MIT-IBM Watson AI Lab, and Facebook. 
+{
+\small
+\bibliographystyle{plainnat}
+\bibliography{reference,metaconcept}
+}
+
+
+
+\end{document}

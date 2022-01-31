@@ -3,6 +3,7 @@ import logging
 import os
 import datetime
 import re
+import csv
 import json
 
 # Set up logging
@@ -13,7 +14,7 @@ logger.info("===================================================================
 logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
-directory = "Latex_small"
+directory = "Latex"
 texfiles = []
 
 
@@ -47,6 +48,49 @@ def load_items_into_soup():
             logger.debug(f"Doc #{i}: {item} could not be loaded.")
             logger.debug("Error occured: "+ str(e))
 
+def load_into_csv_file():
+    filename = "CSV/sections_headings_v2.csv"
+
+    with open(filename, 'w') as csvfile:
+        # Creating csv writer object
+        csvwriter = csv.writer(csvfile)
+        token_list = ["0pt", "8pt", "Abstract", "startsectionsection1z", "Credits", "cntformat", "1"]
+
+        for i,item in enumerate(texfiles):
+            try:
+                new_section_list = []
+                # Logging if file can't load
+                logger.debug(f"Load {i}: {item} into soup.")
+                # Parsing TeXfile to soup, tolerance=1 for better section detection [errors with math mode]
+                soup = TexSoup(open(item), tolerance=1)
+                # Find all sections and add to list
+                section_list = list(soup.find_all('section'))
+                new_section_list.append(item)
+
+                # Iterate through sections to get rid of errors 
+                for item in section_list:
+                    clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
+                    # In case of "uppercaseIntroduction"
+                    if "uppercase" in clean_string:
+                        clean_string = clean_string.split("uppercase")[1]
+                    # Go through token_list, bc parser falsely sets them as sections    
+                    if [ele for ele in token_list if(ele in clean_string)]:
+                        continue
+
+                    new_section_list.append(clean_string)
+                
+                # writing the fields
+                logger.debug(f"Append | {new_section_list}  | to File.")
+                csvwriter.writerow(new_section_list)
+
+            except Exception as e:
+                logger.debug(f"Doc #{i}: {item} could not be loaded.")
+                logger.debug("Error occured: "+ str(e))
+            
+
+
+
+        
 
 def find_nonsense_paper():
     for i, item in enumerate(D):
@@ -56,11 +100,10 @@ def find_nonsense_paper():
         for item in section_list:
             clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
             new_section_list.append(clean_string)
-        try:
+        if new_section_list:
             if not new_section_list[0] == "Introduction":
                 nonsense_list.append(new_section_list)
-        except Exception as e:
-            print(e) 
+
         logger.debug(new_section_list)
         # try:
         #     if new_section_list[1] == "Introduction":
@@ -123,12 +166,13 @@ def iter_through_doc_set():
 
 
 # Main function calls ===================================================
-load_items_into_soup()
+#load_items_into_soup()
+load_into_csv_file()
 #iter_through_doc_set()
-find_nonsense_paper()
+#find_nonsense_paper()
 
 
 # Write Sections to JSON File
-json_data = json.dumps(nonsense_list, indent = 4)
-with open("JSON/nonesense_headings.json", "w") as outfile:
-    outfile.write(json_data)
+# json_data = json.dumps(nonsense_list, indent = 4)
+# with open("JSON/nonesense_headings.json", "w") as outfile:
+#    outfile.write(json_data)
