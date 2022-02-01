@@ -3,7 +3,7 @@ import json
 import matplotlib.pyplot as plt
 import statistics
 
-filename = "CSV/sections_headings.csv"
+filename = "CSV/sections_headings_16k.csv"
 
 # Read out csv file
 with open(filename, 'r') as csvfile:
@@ -85,7 +85,7 @@ plt.xlabel("Number of Sections")
 plt.ylabel("Number of Papers")
 plt.figtext(0.35, 0.95, f"Number of Papers: {amount_paper} |", ha="center", va="center", fontsize=8)
 plt.figtext(0.6, 0.95, f"Section Headings Mean: {round(section_heading_mean, 3)}", ha="center", va="center", fontsize=8)
-plt.savefig('CSV/histogram_count_sections.png')
+plt.savefig('CSV/histogram_count_sections_16k.png')
 plt.show()
 
 
@@ -95,5 +95,5 @@ print("Durschnittliche Anzahl Headings :" , section_heading_mean)
 print("Anzahl Headings im Paper :" , num_of_headings)
 
 json_data = json.dumps(num_of_headings, indent = 4)
-with open("JSON/stat_count_pos_head.json", "w") as outfile:
+with open("JSON/stat_count_pos_head_16k.json", "w") as outfile:
     outfile.write(json_data)
