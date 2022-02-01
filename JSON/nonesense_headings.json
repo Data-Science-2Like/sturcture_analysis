@@ -41,6 +41,12 @@
         "Looking Forward Path to Deployment"
     ],
     [
+        "Copyright",
+        "Formatting Requirements in Brief",
+        "What Files to Submit",
+        "Using LaTeX to Format Your Paper"
+    ],
+    [
         "bf Scientific Background",
         "bf Materials and Methods",
         "bf Experimental Results",
@@ -70,20 +76,6 @@
         "Learning Sequences of Intervals and Repetition Structure",
         "Information Theory and Structure Analysis",
         "Learning Transformations and Invariances in Music"
-    ],
-    [
-        "Motivation",
-        "Background",
-        "Thesis organization",
-        "labelsecRadarModel Radar system and data analysis",
-        "Preprocessing labelsecpreprocessing",
-        "Feature extraction and classificationlabelsecfeatureExtr",
-        "Application of the Radon transform",
-        "Power Burst Curve PBClabelsecPBC",
-        "Human motion state representationlabelsec3hsr",
-        "Experimental results labelsecexperimentalResults",
-        "Conclusion",
-        "Further work"
     ],
     [
         "Results",
@@ -134,6 +126,16 @@
         "Proof of the First Zonklar Equation",
         "",
         "Introduction"
+    ],
+    [
+        "Relevance",
+        "Prerequisites",
+        "Problem Statement and Solution",
+        "Application 1 Algorithmic Approximation",
+        "Application 2 Inversion of an Unknown Function",
+        "What We Have Learned",
+        "Acknowledgment",
+        "Authors"
     ],
     [
         "INTRODUCTION",
@@ -198,6 +200,15 @@
         "Tasks and Methodology Taxonomy",
         "TorchSketch The First Library for FreeHand Sketch",
         "Discussion",
+        "Conclusion",
+        "Introduction"
+    ],
+    [
+        "Attack Demonstration ",
+        "Preliminaries",
+        "Attack Design",
+        "Implementation and Evaluation",
+        "Related Works",
         "Conclusion",
         "Introduction"
     ],
