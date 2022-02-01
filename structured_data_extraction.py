@@ -14,7 +14,7 @@ logger.info("===================================================================
 logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
-directory = "Latex"
+directory = "Latex_big"
 texfiles = []
 
 
@@ -49,12 +49,12 @@ def load_items_into_soup():
             logger.debug("Error occured: "+ str(e))
 
 def load_into_csv_file():
-    filename = "CSV/sections_headings_v2.csv"
+    filename = "CSV/sections_headings_16k.csv"
 
     with open(filename, 'w') as csvfile:
         # Creating csv writer object
         csvwriter = csv.writer(csvfile)
-        token_list = ["0pt", "8pt", "Abstract", "startsectionsection1z", "Credits", "cntformat", "1"]
+        token_list = ["0pt", "8pt", "Abstract", "startsectionsection1z", "Credits", "cntformat", "1", "2", "3"]
 
         for i,item in enumerate(texfiles):
             try:
