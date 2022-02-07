@@ -1,0 +1,324 @@
+
+
+
+
+
+
+
+
+
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{diagbox}
+\ifCLASSOPTIONcompsoc
+\usepackage[nocompress]{cite}
+\else
+\usepackage{cite}
+\fi
+
+
+
+\ifCLASSINFOpdf
+\usepackage{graphicx, subcaption}
+\else
+\fi
+
+
+
+
+
+
+
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{argmax} \DeclareMathOperator*{\argmin}{argmin}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+
+
+
+
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\graphicspath{ {./manuscript/figures/} }
+
+
+\begin{document}
+\title{Privacy-Preserving Boosting in the Local Setting}
+
+
+\author{
+        Sen Wang, and J. Morris Chang, Senior Member, IEEE
+\thanks{}}
+
+
+
+
+
+\iffalse
+\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Computer Society Journals}
+\fi
+
+
+
+
+
+
+
+
+
+
+
+
+\IEEEtitleabstractindextext{\begin{abstract}
+In machine learning, boosting is one of the most popular methods that designed to combine multiple base learners to a superior one. The well-known Boosted Decision Tree classifier, has been widely adopted in many areas. In the big data era, the data held by individual and entities, like personal images, browsing history and census information, are more likely to contain sensitive information. The privacy concern raises when such data leaves the hand of the owners and be further explored or mined. Such privacy issue demands that the machine learning algorithm should be privacy aware. Recently, Local Differential Privacy is proposed as an effective privacy protection approach, which offers a strong guarantee to the data owners, as the data is perturbed before any further usage, and the true values never leave the hands of the owners. Thus the machine learning algorithm with the private data instances is of great value and importance. In this paper, we are interested in developing the privacy-preserving boosting algorithm that a data user is allowed to build a classifier without knowing or deriving the exact value of each data samples. Our experiments demonstrate the effectiveness of the proposed boosting algorithm and the high utility of the learned classifiers.
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+Local Differential Privacy, Machine Learning, Boosting  
+\end{IEEEkeywords}}
+
+
+\maketitle
+
+
+\IEEEdisplaynontitleabstractindextext
+
+
+
+
+\IEEEpeerreviewmaketitle
+
+
+
+\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
+
+
+
+
+
+\IEEEPARstart{I}{n}
+machine learning, ensemble learning\cite{hansen1990neural} refers to the strategy of combining multiple hypotheses to form a better one. The superior performance over a single base learning algorithm often leads to a better prediction. Many works have been conducted under the area and there are three conventional methods, the bagging\cite{breiman1996bagging}, boosting\cite{schapire1990strength,freund1997decision} and stacking\cite{wolpert1992stacked}. Among all three, the boosting method focuses on training a set of base learners sequentially and assigning each base learner a weight, then the final decision is made by a weighted majority voting over all base learners. As an example, the Boosted Decision Tree (BDT) is of great popular and widely adopted in many different applications, like text mining\cite{apte1998text}, geographical classification\cite{pal2003assessment} and finance\cite{xia2017boosted}. Like other machine learning algorithm, the boosting algorithm is developed under the assumption of a centralized fashion, where all data has been collected together. However, in the big data era, the data is generated and stored more sparsely than before, which brings new challenges and difficulties for such algorithm, for instance, privacy protection is one of the most emerging demands in current society.
+
+Data explosion results in tons of data are generated and held by the individual and entities, such as the personal image, financial records and census data. The privacy concern raises when the data leaves the hands of data owners and participates in some computations. The AOL search engine log\cite{shen2007privacy} and Netflix prize contest\cite{narayanan2008robust} attacks prove such threat and show the needs that machine learning algorithms should be privacy aware. As a promising solution, Differential Privacy \cite{Dwork2006DP} gives a definition of the privacy and how it can be protected. A mechanism is said to be differentially private if the computation result of the data is robust to any change of any individual sample. And several differentially private machine learning algorithms\cite{ji2014differential} has been developed since then. A trusted third party is originally introduced to gather data from individual owners and is responsible to process the data privately. Recently, Local Differential Privacy (LDP)\cite{duchi2013local,wang2017locally} takes the concept into a local setting and a mechanism is defined to be local differentially private if the processing makes any two samples indistinguishable. An advantage with LDP is that it allows the data owners to perturb the input by themselves and the true values never leave the hands of the data owner. Thus unlike DP, there is no need of trusted third party anymore.
+
+The indistinguishability of any two data samples brings a strong privacy guarantee for the data owners, and relieve the fear of information leakage. Thus developing the machine learning algorithm over such ``private'' data samples is of great value and importance. To the best of our knowledge, there is little work about developing the boosting algorithm with the protection of LDP. In this paper, we are eager to fill such gap by developing a privacy-preserving boosting algorithm that satisfies LDP. More specifically, we consider such a problem: there are two types of parties, multiple data owners and a data user. Each data owner holds a set of training samples; the data user intends to fit a boosted classifier (e.g., BDT) with the samples from data owners. During the computation, the data owner perturbs their data using the mechanism that satisfies LDP and only pass such perturbed data to the data user. In the end, the data user should only learn the classifier without knowing or deriving the value of any individual sample from the classifier, thus the privacy of the data samples are protected.
+
+In the meanwhile, the randomized perturbation mechanism brings noise into the training samples and the mechanism is said to satisfy $\epsilon$-LDP ($\epsilon >$ 0), where the smaller $\epsilon$ is, the more privacy preserved and the more noise injected. To maintain the utility of the learned classifier, we rely on the statistical information of the perturbed samples (e.g., mean estimation), in which the adopted randomized mechanism provides an asymptotically optimal error bound. To demonstrate, we compare the utility of the learned classifier in terms of prediction capacity given different existing  randomized mechanisms and show that the model learned by our algorithm effectively maintain a high utility.
+
+Furthermore, beyond the widely adopted BDT classifier, the proposed boosting algorithm is capable to support other types of classifiers, as the original design of the boosting procedure. Thus we study other types of classifiers and analyze the strategies to support such classifiers in our boosting algorithm. In the experiment, three types of boosted classifiers are implemented and the performance of the classifiers are evaluated. 
+  
+Overall, the contributions of our work are three folds:
+
+\begin{itemize}
+\item We propose a privacy-preserving boosting algorithm, and implement the widely adopted Boosted Decision Tree classifier. To the best of our knowledge, there are few works investigating the privacy-preserving boosting mechanism with LDP protection and we provide a comprehensive study in this paper.
+\item To maintain the utility, the learned classifier is built over the statistical information of the perturbed training samples, which results in an asymptotically optimal error bound. To demonstrate that, we compare multiple existing perturbation methods that satisfy $\epsilon-$LDP and show the superior performance of our method with both real and synthetic datasets.
+\item Beyond the BDT, we also analyze how to support other classifiers with our boosting algorithm and summarize the type of data for corresponding classifiers, for instance, the Logistic Regression and Nearest Centroid Classifier. In the experiment, both boosted classifiers are also implemented and the utility of them are evaluated comprehensively.
+\end{itemize}
+
+The rest of the paper is organized as follow. The preliminary is in Section II. The problem definition and proposed solution are introduced in Section III. The experimental evaluation is given in Section IV. The related work is presented in Section V. Section VI provides the conclusion.
+
+\begin{table}[h]
+\small
+\centering
+\caption{Notations and Symbols}
+\resizebox{\columnwidth}{!}{\begin{tabular}{c|l}
+\hline
+$(X^l, Y^l)$ & the dataset held by data owner $l$ \\ 
+$(\boldsymbol{x_i}^l, y_i^l)$ & the $i$th sample and label held by data owner $l$ \\ 
+$x_{i,j}$ & the value of the $i$th sample of the $j$th feature \\ 
+$x_i'$ & the perturbed output of $x_i$ \\
+$N^l$ & number of sample held by data owner $l$ \\
+$L$ & the number of data owners \\
+$K$ & number of classes in the dataset \\
+$d$ & dimensionality of the dataset \\ 
+
+$Pr[\cdot]$ & probability of an event \\
+$\mathcal{L}()$ & loss function \\
+
+$M$ & number of base classifiers in the boosting algorithm \\
+$T_m^l$ & the $m$th base classifier fitted by data owner $l$ \\
+$w_i$ & weights of the $i$th samples \\
+$S^j$ & the cross table of the $j$th feature  \\ \hline
+$\epsilon$-DP & $\epsilon$-differential privacy \\
+$\epsilon$-LDP & $\epsilon$-local differential privacy \\
+LR & logistic regression \\
+DT & decision tree \\ 
+BDT & boosted decision tree \\ 
+NCC & nearest centroid classifier\\
+MSE & mean squared error \\
+\hline
+\end{tabular}
+}
+\label{tab:notation}
+\end{table}
+
+\input{./manuscript/sections/preliminary.tex}
+\input{./manuscript/sections/problemDefinition.tex}
+\input{./manuscript/sections/experiment2.tex}
+\input{./manuscript/sections/relatedWork.tex}
+\input{./manuscript/sections/conclusion.tex}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\iffalse
+\section{Conclusion}
+The conclusion goes here.
+\fi
+
+
+
+
+
+
+
+\iffalse
+
+\appendices
+\section{Proof of the First Zonklar Equation}
+Appendix one text goes here.
+
+\section{}
+Appendix two text goes here.
+
+\ifCLASSOPTIONcompsoc
+\section*{Acknowledgments}
+\else
+\section*{Acknowledgment}
+\fi
+
+The authors would like to thank...
+\fi
+
+\iffalse
+
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+\fi
+
+
+
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,./manuscript/citation}
+\iffalse
+\begin{thebibliography}{1}
+
+\bibitem{IEEEhowto:kopka}
+H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
+  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+
+\end{thebibliography}
+\fi
+
+
+
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{sen}}]{Sen Wang}
+received the B.S. degree in software engineering from Xiamen University, China, in 2010, and the M.S. degree in computer science from Iowa State University, in 2013. He is currently pursuing the Ph.D. degree in the Department of Electrical Engineering, University of South Florida, Tampa, Florida. His research interests include the database, security, privacy-preserving data mining and machine learning.
+\end{IEEEbiography}
+\iffalse
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Bio1-Emre}}]{Emre Yilmaz} received the BS degree in computer science and engineering from Sabanci University, Istanbul, Turkey, in 2008 and the MS degree in computer science from ETH Zurich, Switzerland, in 2010. He received the PhD degree in computer engineering at Bilkent University, Ankara, Turkey, in 2017. He is currently a research associate with Case Western Reserve University. Before that, he was a postdoctoral researcher with University of South Florida. His research interests include data privacy, cryptography, and big data analytics.
+\end{IEEEbiography}
+\fi
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Chang}}]{J.Morris Chang} received his BSEE degree from Tatung Institute of Technology, Taiwan and his MS and PhD in Computer Engineering is from North Carolina State University. He is currently a Professor at the Department of Electrical Engineering at University of South Florida. Dr.Changs industrial experience includes positions at Texas Instruments, Taiwan, Microelectronics Center of North Carolina, and AT\&T Bell Laboratories, Pennsylvania. He was on the faculty of the Department of Electrical Engineering at Rochester Institute of Technology, Rochester, the Department of Computer Science at Illinois Institute of Technology, Chicago and the Department of Electrical and Computer Engineering at Iowa State University, IA. His research interests include cyber security, wireless networks, energy-aware computing and object-oriented systems. Currently, Dr. Chang is a handling editor of Journal of Microprocessors and Microsystems and the Associate Editor-in-Chief of IEEE IT Professional. He is a senior member of IEEE.
+\end{IEEEbiography}
+\iffalse
+\begin{IEEEbiographynophoto}{John Doe}
+Biography text here.
+\end{IEEEbiographynophoto}
+
+
+
+\begin{IEEEbiographynophoto}{Jane Doe}
+Biography text here.
+\end{IEEEbiographynophoto}
+
+\fi
+
+
+
+
+
+
+
+
+
+\end{document}
