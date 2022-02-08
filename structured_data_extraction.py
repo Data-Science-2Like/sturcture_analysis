@@ -5,6 +5,10 @@ import datetime
 import re
 import csv
 import json
+import nltk
+from nltk.stem import WordNetLemmatizer
+
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, filename="Logs/data_extraction_output.log")
@@ -15,7 +19,7 @@ logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
-csv_filename = "CSV/sections_headings.csv"
+csv_filename = "CSV/sections_headings_improved.csv"
 texfiles = []
 
 
@@ -37,6 +41,8 @@ D = []
 R = []
 # Create List for Nonesense sections
 nonsense_list = []
+# Create Lemmatizer Object
+wordnet_lemmatizer = WordNetLemmatizer()
 
 def load_items_into_soup():
     for i,item in enumerate(texfiles):
@@ -132,15 +138,25 @@ def support_method(rule):
                 continue
             if len(items) == 0:
                 continue
-            sections.append(items)
+            # String completly lowercase
+            item = items.lower()  
+
+            words = nltk.word_tokenize(item)
+            stem_sentence = []
+            for x in words:
+                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                stem_sentence.append(" ")
+            item = "".join(stem_sentence).rstrip()
+
+            sections.append(item)
         if rule == sections:
-            logger.debug("Rule found: ")
-            logger.debug(sections)
             percentage += 1
         sections = []
     percentage = percentage / len(D)
-    #return round(percentage, 2)
-    return percentage
+    return round(percentage, 4)
+    # str_per = '%.8f' % percentage
+    # logger.debug(f"Percentage Rule {str_per} : {rule}")
+    #return percentage
 
 def iter_through_doc_set():
     # loop until D is empty
@@ -152,12 +168,27 @@ def iter_through_doc_set():
                 continue
             if len(items) == 0:
                 continue
-            r.append(items)
             
+            # String completly lowercase
+            item = items.lower()    
+
+            # Stemming the Sections to reduce redudancy
+            words = nltk.word_tokenize(item)
+            stem_sentence = []
+            for x in words:
+                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                stem_sentence.append(" ")
+            item = "".join(stem_sentence).rstrip()
+            
+            r.append(item)
+
+        r.append(support_method(r))
+        #print(support_method(r))
         if r in R:
             r = []
             continue
-        #print("Supp Med: " ,support_method(r))
+        # TODO UserInput when to add rule
+        # TODO When to add rule >> support % ??
         R.append(r)
         r = []
 
@@ -165,7 +196,6 @@ def iter_through_doc_set():
         # for item in D:
         #     clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
         #     clean_string = clean_string.lower()   
-        #     # TODO tokenize, lemmatize strings
         #     sections.append(clean_string)
         # logger.debug("New Sections: {}".format(sections))
         # append = False
