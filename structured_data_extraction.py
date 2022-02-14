@@ -128,6 +128,18 @@ def find_nonsense_paper():
 # Alles nach Appendix wegwerfen
 # Support Methode > auf wie viele Paper matched es
 # Abweichung bei Regeln zulassen (1 Sektion)
+# TODO Manueller UserInput: Liste mit Sektionen anzeigen 
+# TODO Synonymliste
+# ersten 100 dokumente anschauen
+# mehrere Mögichkeiten:
+#   - Wörterbuch >
+#   - neue Regel hinzufügen
+#   - Regel matched 
+# Läuft dann auto über die restlichen Dokumente 
+# Test über die restlichen Dokumente
+# Matching mit Regex über String (* Wildcard)
+# DSR
+# Wörterbuch und Regel in Dateien speichern
 
 def support_method(rule):
     percentage = 0
