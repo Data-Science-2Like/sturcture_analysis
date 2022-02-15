@@ -1,0 +1,191 @@
+[
+    [
+        "introduction and motivation",
+        "related work",
+        "deepmac framework",
+        "deepmac evaluation",
+        "discussion and conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "background",
+        "linear memory network",
+        "training the memorization component",
+        "experiment",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "background",
+        "methodology",
+        "experiment",
+        "conclusion and future work",
+        0.0004
+    ],
+    [
+        "introduction",
+        "material and method",
+        "result",
+        "conclusion",
+        0.0009
+    ],
+    [
+        "introduction",
+        "background",
+        "definition",
+        "ontology for scenario",
+        "example pedestrian crossing",
+        "conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "related work",
+        "problem setup",
+        "algorithmic approach",
+        "theoretical analysis",
+        "experiment",
+        "discussion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "preliminary",
+        "dynamic programming on tree decomposition",
+        "dynamic programming on tree decomposition expressed in relational algebra",
+        "systemprotectdpdb dynamic programming with database sql",
+        "experiment",
+        "final discussion conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "concept and problem definition",
+        "proposed method",
+        "experiment",
+        "related work",
+        "discussion on linear threshold",
+        "conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "review on newton flow and information metric",
+        "information newton flow",
+        "newton langevin dynamic",
+        "particle implementation of wasserstein newton method",
+        "convergence analysis of information newton method",
+        "numerical experiment",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "main idea and technique",
+        "algorithm and hardness result",
+        "experimental result",
+        "conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "related work",
+        "proposed model",
+        "experiment",
+        "conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "epistemic and aleatoric uncertainty",
+        "random forest",
+        "experiment",
+        "conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "procedure",
+        "result",
+        "discussion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "pulsesatellite functionality",
+        "pulsesatellite machine learning framework",
+        "impact and discussion",
+        "acknowledgment",
+        0.0004
+    ],
+    [
+        "introduction",
+        "preliminary",
+        "the cgc and mier algorithm",
+        "application gridded climate dataset",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "related work",
+        "overfitting to minor class an empirical study",
+        "classdependent temperature cdt",
+        "experiment",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "related work",
+        "information compensation in gans",
+        "evaluation",
+        "inspecting the feature internally encoded",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "method",
+        "result",
+        "discussion",
+        "acknowledgement",
+        0.0018
+    ],
+    [
+        "introduction",
+        "problem statement",
+        "overview of result",
+        "fairlet decomposition",
+        "experiment",
+        "conclusion",
+        0.0
+    ],
+    [
+        "background",
+        "freehand sketch datasets",
+        "task and methodology taxonomy",
+        "torchsketch the first library for freehand sketch",
+        "discussion",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "problem setting",
+        "contrastive explanation",
+        "identifying explanation through samplebased trial",
+        "quantifying explanatory confidence",
+        "evaluation",
+        "related work",
+        "conclusion",
+        0.0
+    ]
+]

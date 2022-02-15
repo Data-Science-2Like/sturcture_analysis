@@ -1,0 +1,120 @@
+{
+    "1": [
+        "introduction and motivation",
+        "introduction",
+        "8pt",
+        "labelsecdeeplearningdeep learning",
+        "background"
+    ],
+    "2": [
+        "related work",
+        "background",
+        "material and method",
+        "preliminary",
+        "conclusion",
+        "concept and problem definition",
+        "review on newton flow and information metric",
+        "main idea and technique",
+        "epistemic and aleatoric uncertainty",
+        "introduction",
+        "procedure",
+        "pulsesatellite functionality",
+        "labelsecprogramsynthesisprogram synthesis",
+        "method",
+        "problem statement",
+        "freehand sketch datasets",
+        "problem setting"
+    ],
+    "3": [
+        "deepmac framework",
+        "automatic 3d threat image projection",
+        "linear memory network",
+        "methodology",
+        "result",
+        "definition",
+        "problem setup",
+        "dynamic programming on tree decomposition",
+        "proposed method",
+        "information newton flow",
+        "algorithm and hardness result",
+        "proposed model",
+        "random forest",
+        "related work",
+        "pulsesatellite machine learning framework",
+        "the cgc and mier algorithm",
+        "overfitting to minor class an empirical study",
+        "labelsecsimilarworksimilar work",
+        "information compensation in gans",
+        "overview of result",
+        "task and methodology taxonomy",
+        "contrastive explanation"
+    ],
+    "4": [
+        "deepmac evaluation",
+        "experiment and result",
+        "training the memorization component",
+        "experiment",
+        "conclusion",
+        "ontology for scenario",
+        "algorithmic approach",
+        "dynamic programming on tree decomposition expressed in relational algebra",
+        "newton langevin dynamic",
+        "experimental result",
+        "visual conceptmetaconcept learning",
+        "discussion",
+        "impact and discussion",
+        "application gridded climate dataset",
+        "classdependent temperature cdt",
+        "goal",
+        "proposed method",
+        "evaluation",
+        "fairlet decomposition",
+        "torchsketch the first library for freehand sketch",
+        "identifying explanation through samplebased trial"
+    ],
+    "5": [
+        "discussion and conclusion",
+        "discussion",
+        "experiment",
+        "conclusion and future work",
+        "example pedestrian crossing",
+        "theoretical analysis",
+        "systemprotectdpdb dynamic programming with database sql",
+        "related work",
+        "particle implementation of wasserstein newton method",
+        "conclusion",
+        "acknowledgment",
+        "design",
+        "experimental result",
+        "inspecting the feature internally encoded",
+        "acknowledgement",
+        "quantifying explanatory confidence"
+    ],
+    "6": [
+        "conclusion",
+        "experiment",
+        "discussion on linear threshold",
+        "convergence analysis of information newton method",
+        "labelsecimplementationimplementation",
+        "discussion future work",
+        "evaluation"
+    ],
+    "7": [
+        "discussion",
+        "final discussion conclusion",
+        "conclusion",
+        "numerical experiment",
+        "tproduct and tsvd",
+        "related work"
+    ],
+    "8": [
+        "conclusion",
+        "proof of crefthmtsvdbtdequivalency"
+    ],
+    "9": [
+        "deriving the objective function"
+    ],
+    "10": [
+        "tsvd interpretation of toucan"
+    ]
+}

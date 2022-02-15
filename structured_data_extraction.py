@@ -1,3 +1,4 @@
+import random
 from TexSoup import TexSoup
 import logging
 import os
@@ -19,7 +20,7 @@ logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
-csv_filename = "CSV/sections_headings_improved.csv"
+csv_filename = "CSV/sections_headings.csv"
 texfiles = []
 
 
@@ -39,6 +40,19 @@ logger.info("Load LaTex File into Soup")
 D = []
 # Create Rule Set
 R = []
+# Create Synonym Dict
+synonyms = {
+    1 : [],
+    2 : [],
+    3 : [],
+    4 : [],
+    5 : [],
+    6 : [],
+    7 : [],
+    8 : [],
+    9 : [],
+    10 : []
+}
 # Create List for Nonesense sections
 nonsense_list = []
 # Create Lemmatizer Object
@@ -124,22 +138,6 @@ def find_nonsense_paper():
         #     logger.debug(f"Doc #{i}: {item} could not be loaded: {e}.")
         logger.debug("==================================================================")
 
-
-# Alles nach Appendix wegwerfen
-# Support Methode > auf wie viele Paper matched es
-# Abweichung bei Regeln zulassen (1 Sektion)
-# TODO Manueller UserInput: Liste mit Sektionen anzeigen 
-# TODO Synonymliste
-# ersten 100 dokumente anschauen
-# mehrere Mögichkeiten:
-#   - Wörterbuch >
-#   - neue Regel hinzufügen
-#   - Regel matched 
-# Läuft dann auto über die restlichen Dokumente 
-# Test über die restlichen Dokumente
-# Matching mit Regex über String (* Wildcard)
-# DSR
-# Wörterbuch und Regel in Dateien speichern
 
 def support_method(rule):
     percentage = 0
@@ -241,6 +239,88 @@ def iter_through_doc_set():
     logger.debug("Complete Rule Set: {}".format(R))
 
 
+# Alles nach Appendix wegwerfen                         X
+# Support Methode > auf wie viele Paper matched es      X
+# Abweichung bei Regeln zulassen (1 Sektion)
+# TODO Synonymliste                                     X
+# ersten 100 dokumente anschauen                        X
+# mehrere Mögichkeiten:
+#   - Wörterbuch >
+#   - neue Regel hinzufügen
+#   - Regel matched 
+# Läuft dann auto über die restlichen Dokumente 
+# Test über die restlichen Dokumente
+# Matching mit Regex über String (* Wildcard)
+# DSR
+# Wörterbuch und Regel in Dateien speichern             X
+
+
+def loop():
+    print("================================================================")
+    print("================== Structured Data Extraction ==================")
+    print("================================================================")
+    train = []
+    running = True
+
+    for i in range(30):
+        train.append(random.choice(D))
+
+    while(running):
+        # Load the Corpus
+        print(f"Size of Corpus: {len(D)}")
+        print(f"Size of Training Set: {len(train)}")
+        
+        r = []
+        for docs in train:
+            for i,items in enumerate(docs):
+                if "Latex" in items:
+                    continue
+                if len(items) == 0:
+                    continue
+                
+                
+                # String completly lowercase
+                item = items.lower()    
+
+                # Stemming the Sections to reduce redudancy
+                words = nltk.word_tokenize(item)
+                stem_sentence = []
+                for x in words:
+                    stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                    stem_sentence.append(" ")
+                item = "".join(stem_sentence).rstrip()
+                try:
+                    # Add to Rule and Synonyms
+                    if not item in synonyms[i]:
+                        synonyms[i].append(item)
+                except Exception as e:
+                    print("Index out of range: ",e)
+                    break
+                r.append(item)
+                # If section is "conclusion" cut everything after it
+                if "conclusion" in item:
+                    break                
+
+            r.append(support_method(r))
+            #print(support_method(r))
+            if r in R:
+                r = []
+                continue
+            print(f"New Rule: {r}")
+            user_input = input("Do you want to accept new rule?\n")
+            if user_input == "y":
+                # TODO When to add rule >> support % ??
+                R.append(r)
+                r = []
+            else:
+                r = []
+
+
+        if input("Quit the script?\n") == "y" or input("Quit the script?\n") == "yes":
+            running = False
+            
+
+
         
 
 
@@ -248,11 +328,15 @@ def iter_through_doc_set():
 #load_items_into_soup()
 #load_into_csv_file()
 load_items_from_csv()
-iter_through_doc_set()
+#iter_through_doc_set()
+loop()
 #find_nonsense_paper()
 
 
 # Write Sections to JSON File
-# json_data = json.dumps(nonsense_list, indent = 4)
-# with open("JSON/nonesense_headings.json", "w") as outfile:
-#    outfile.write(json_data)
+json_data = json.dumps(R, indent = 4)
+synonym_data = json.dumps(synonyms, indent = 4)
+with open("JSON/rules.json", "w") as outfile:
+   outfile.write(json_data)
+with open("JSON/synonyms.json", "w") as outfile:
+    outfile.write(synonym_data)
