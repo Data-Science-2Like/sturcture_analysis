@@ -245,14 +245,17 @@ def iter_through_doc_set():
 # TODO Synonymliste                                     X
 # ersten 100 dokumente anschauen                        X
 # mehrere Mögichkeiten:
-#   - Wörterbuch >
-#   - neue Regel hinzufügen
-#   - Regel matched 
+#   - Wörterbuch hinzufügen
+#   - Regel hinzufügen
 # Läuft dann auto über die restlichen Dokumente 
 # Test über die restlichen Dokumente
-# Matching mit Regex über String (* Wildcard)
 # DSR
 # Wörterbuch und Regel in Dateien speichern             X
+# Wörterbuch während der Laufzeit definieren 
+# >> alles Begriffe die das gleiche Bedeuten 
+# Sections mit "and" verbunden als neue Regel 
+# Matching mit Regex über String (* Wildcard)
+# Wildcard >> Literatur suchen 
 
 
 def loop():
@@ -262,7 +265,7 @@ def loop():
     train = []
     running = True
 
-    for i in range(30):
+    for i in range(10):
         train.append(random.choice(D))
 
     while(running):
