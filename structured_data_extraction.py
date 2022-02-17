@@ -42,16 +42,14 @@ D = []
 R = []
 # Create Synonym Dict
 synonyms = {
-    1 : [],
-    2 : [],
-    3 : [],
-    4 : [],
-    5 : [],
-    6 : [],
-    7 : [],
-    8 : [],
-    9 : [],
-    10 : []
+    "Introduction" : [],
+    "Related Work" : [],
+    "Methods" : [],
+    "Experiments" : [],
+    "Result" : [],
+    "Discussion" : [],
+    "Conclusion" : [],
+    "Future Work" : []
 }
 # Create List for Nonesense sections
 nonsense_list = []
@@ -200,40 +198,7 @@ def iter_through_doc_set():
         # TODO UserInput when to add rule
         # TODO When to add rule >> support % ??
         R.append(r)
-        r = []
-
-        # sections = []
-        # for item in D:
-        #     clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
-        #     clean_string = clean_string.lower()   
-        #     sections.append(clean_string)
-        # logger.debug("New Sections: {}".format(sections))
-        # append = False
-
-        # if not R:
-        #     R.append(sections)
-        #     logger.debug("(1st) New Rule added: {}".format(sections))
-        # else:
-        #     # R = [[r1],[r2], ...]
-        #     for lists in R:
-        #         # r1 = [I, R, M, E]
-        #         for items in lists:
-        #             # l1 = [I, D, M, E]
-        #             for items2 in sections:
-        #                 if items == items2:
-        #                     print("Same : ", items)
-        #                     logger.debug("Same section heading: "+ items)
-        #                     break
-        #                 else:
-        #                     logger.debug("Append = True")
-        #                     append = True                  
-        #     if append == True:
-        #         R.append(sections)
-        #         logger.debug("New Rule added: {}".format(sections))
-        #         append = False
-        #     else:
-        #         logger.debug("No New Rule added.")
-        
+        r = []        
 
     logger.debug("Size of Rule Set : {}".format(len(R)))
     logger.debug("Complete Rule Set: {}".format(R))
@@ -292,13 +257,17 @@ def loop():
                     stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
                     stem_sentence.append(" ")
                 item = "".join(stem_sentence).rstrip()
-                try:
-                    # Add to Rule and Synonyms
-                    if not item in synonyms[i]:
-                        synonyms[i].append(item)
-                except Exception as e:
-                    print("Index out of range: ",e)
-                    break
+ 
+ 
+                # try:
+                #     # Add to Rule and Synonyms
+                #     if not item in synonyms[i]:
+                #         synonyms[i].append(item)
+                # except Exception as e:
+                #     print("Index out of range: ",e)
+                #     break
+ 
+ 
                 r.append(item)
                 # If section is "conclusion" cut everything after it
                 if "conclusion" in item:
@@ -307,14 +276,18 @@ def loop():
             r.append(support_method(r))
             #print(support_method(r))
             if r in R:
+                print(f"Rule {r} already in Ruleset.")
                 r = []
                 continue
             print(f"New Rule: {r}")
-            user_input = input("Do you want to accept new rule?\n")
-            if user_input == "y":
-                # TODO When to add rule >> support % ??
+            print(f"No matching Rule found.")
+            user_input = input("Do you want to accept new rule? (Press [r])\n Do you want to add a synonym? (Press [s]\n")
+            if user_input == "r":
                 R.append(r)
                 r = []
+            elif user_input == "s":
+                user_input = input("Please enter the index:\n")
+                synonyms[user_input]
             else:
                 r = []
 
