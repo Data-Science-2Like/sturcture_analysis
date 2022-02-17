@@ -1,8 +1,8 @@
 import csv
 import logging
 
-in_filename = "CSV/sections_headings.csv"
-out_filename = "CSV/sections_headings_test.csv"
+in_filename = "CSV/sections_headings_v2.csv"
+out_filename = "CSV/sections_headings_v2_test.csv"
 new_list = []
 
 # Set up logging

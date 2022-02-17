@@ -20,7 +20,7 @@ logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
-csv_filename = "CSV/sections_headings.csv"
+csv_filename = "CSV/sections_headings_v2.csv"
 texfiles = []
 
 
@@ -42,14 +42,14 @@ D = []
 R = []
 # Create Synonym Dict
 synonyms = {
-    "Introduction" : [],
-    "Related Work" : [],
-    "Methods" : [],
-    "Experiments" : [],
-    "Result" : [],
-    "Discussion" : [],
-    "Conclusion" : [],
-    "Future Work" : []
+    "introduction" : "introduction",
+    "related work" : "related Work",
+    "methods" : "methods",
+    "experiments" : "experiments",
+    "result" : "result",
+    "discussion" : "discussion",
+    "conclusion" : "conclusion",
+    "future work" : "future work"
 }
 # Create List for Nonesense sections
 nonsense_list = []
@@ -216,7 +216,7 @@ def iter_through_doc_set():
 # Test über die restlichen Dokumente
 # DSR
 # Wörterbuch und Regel in Dateien speichern             X
-# Wörterbuch während der Laufzeit definieren 
+# Wörterbuch während der Laufzeit definieren            X
 # >> alles Begriffe die das gleiche Bedeuten 
 # Sections mit "and" verbunden als neue Regel 
 # Matching mit Regex über String (* Wildcard)
@@ -230,7 +230,7 @@ def loop():
     train = []
     running = True
 
-    for i in range(10):
+    for i in range(4):
         train.append(random.choice(D))
 
     while(running):
@@ -281,13 +281,24 @@ def loop():
                 continue
             print(f"New Rule: {r}")
             print(f"No matching Rule found.")
-            user_input = input("Do you want to accept new rule? (Press [r])\n Do you want to add a synonym? (Press [s]\n")
+            user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s]\n")
             if user_input == "r":
+                print("Rule added.")
+                print("_______________________________________________________________________________")
                 R.append(r)
                 r = []
+            # TODO wenn synonym eingefügt > Regel nochmal überprüfen??
+            # TODO Syns beim training auch schon abfragen?
+            # TODO 
             elif user_input == "s":
-                user_input = input("Please enter the index:\n")
-                synonyms[user_input]
+                print("_______________________________________________________________________________")
+                print("introduction | related work | methods | experiments | results | discussion | conclusion | future work\n")
+                print("_______________________________________________________________________________")
+                sec_input = input("Please enter the section you want to add an synonym to:\n")
+                syn_input = input("Please enter the synonym:\n")
+                synonyms[syn_input] = sec_input 
+                r = []
+                print("_______________________________________________________________________________")
             else:
                 r = []
 
