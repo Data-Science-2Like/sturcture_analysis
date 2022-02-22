@@ -1,11 +1,13 @@
 {
-    "Introduction": "Introduction",
-    "Related Work": "Related Work",
-    "Methods": "Methods",
-    "Experiments": "Experiments",
-    "Result": "Result",
-    "Discussion": "Discussion",
-    "Conclusion": "Conclusion",
-    "Future Work": "Future Work",
-    "methodology": "methods"
+    "introduction": "introduction",
+    "related work": "related Work",
+    "methods": "methods",
+    "experiments": "experiments",
+    "result": "result",
+    "discussion": "discussion",
+    "conclusion": "conclusion",
+    "future work": "future work",
+    "conclusion and future work": "conclusion",
+    "methodology": "methods",
+    "method": "methods"
 }

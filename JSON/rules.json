@@ -1,27 +1,36 @@
 [
     [
         "introduction",
-        "cluster analysis and knowledge transfer",
-        "numerical experiment",
-        "concluding remark",
+        "motivation",
+        "proposed model",
+        "comparing textbfabcd and textlfr",
+        "experimental result",
+        "conclusion and future work",
         0.0004
     ],
     [
         "introduction",
-        "related work",
-        "hashtag annotated dataset",
-        "lstm and variant",
-        "experimental setup and result",
+        "method",
+        "numerical study",
+        "result",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "ml for healthcare application",
+        "secure private and robust ml for healthcare challenge",
+        "secure private and robust ml for healthcare solution",
+        "open research issue",
         "conclusion",
         0.0004
     ],
     [
         "introduction",
-        "neural network selforganization",
-        "human action recognition",
-        "body motion assessment",
-        "continual learning of human action",
-        "conclusion and open challenge",
+        "importance sampling risk minimization with biased data",
+        "weighted empirical risk minimization generalization guarantee",
+        "numerical experiment",
+        "conclusion",
         0.0004
     ]
 ]

@@ -1,3 +1,4 @@
+from cProfile import run
 import random
 from TexSoup import TexSoup
 import logging
@@ -21,6 +22,7 @@ logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
 csv_filename = "CSV/sections_headings_v2.csv"
+json_filename = "JSON/synonyms.json"
 texfiles = []
 
 
@@ -41,16 +43,17 @@ D = []
 # Create Rule Set
 R = []
 # Create Synonym Dict
-synonyms = {
-    "introduction" : "introduction",
-    "related work" : "related Work",
-    "methods" : "methods",
-    "experiments" : "experiments",
-    "result" : "result",
-    "discussion" : "discussion",
-    "conclusion" : "conclusion",
-    "future work" : "future work"
-}
+synonyms = {}
+# synonyms = {
+#     "introduction" : "introduction",
+#     "related work" : "related Work",
+#     "methods" : "methods",
+#     "experiments" : "experiments",
+#     "result" : "result",
+#     "discussion" : "discussion",
+#     "conclusion" : "conclusion",
+#     "future work" : "future work"
+# }
 # Create List for Nonesense sections
 nonsense_list = []
 # Create Lemmatizer Object
@@ -222,41 +225,42 @@ def iter_through_doc_set():
 # Matching mit Regex über String (* Wildcard)
 # Wildcard >> Literatur suchen 
 
+def load_from_json_file():
+    data = json.load(open(json_filename, 'r'))
+    return data
+
 
 def loop():
     print("================================================================")
     print("================== Structured Data Extraction ==================")
     print("================================================================")
     train = []
-    running = True
-
+    
     for i in range(4):
         train.append(random.choice(D))
 
-    while(running):
-        # Load the Corpus
-        print(f"Size of Corpus: {len(D)}")
-        print(f"Size of Training Set: {len(train)}")
+    print(f"Size of Corpus: {len(D)}")
+    print(f"Size of Training Set: {len(train)}")
         
-        r = []
-        for docs in train:
-            for i,items in enumerate(docs):
-                if "Latex" in items:
-                    continue
-                if len(items) == 0:
-                    continue
+    r = []
+    for docs in train:
+        for i,items in enumerate(docs):
+            if "Latex" in items:
+                continue
+            if len(items) == 0:
+                continue
                 
                 
-                # String completly lowercase
-                item = items.lower()    
+            # String completly lowercase
+            item = items.lower()    
 
-                # Stemming the Sections to reduce redudancy
-                words = nltk.word_tokenize(item)
-                stem_sentence = []
-                for x in words:
-                    stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
-                    stem_sentence.append(" ")
-                item = "".join(stem_sentence).rstrip()
+            # Stemming the Sections to reduce redudancy
+            words = nltk.word_tokenize(item)
+            stem_sentence = []
+            for x in words:
+                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                stem_sentence.append(" ")
+            item = "".join(stem_sentence).rstrip()
  
  
                 # try:
@@ -268,27 +272,38 @@ def loop():
                 #     break
  
  
-                r.append(item)
-                # If section is "conclusion" cut everything after it
-                if "conclusion" in item:
-                    break                
+            r.append(item)
+            # If section is "conclusion" cut everything after it
+            if "conclusion" in item:
+                break                
 
-            r.append(support_method(r))
-            #print(support_method(r))
-            if r in R:
-                print(f"Rule {r} already in Ruleset.")
-                r = []
-                continue
-            print(f"New Rule: {r}")
+        r.append(support_method(r))
+        #print(support_method(r))
+        if r in R:
+            print(f"Rule {r} already in Ruleset.")
+            r = []
+            continue
+        
+        for item in r:
+            if item in synonyms:
+                print(f"Found {item} in Synonym dictionary.")
+
+
+        # Loop
+        running = True
+        while(running): 
             print(f"No matching Rule found.")
-            user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s]\n")
+            print(f"New Rule: {r}")
+            
+            user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
             if user_input == "r":
                 print("Rule added.")
                 print("_______________________________________________________________________________")
                 R.append(r)
                 r = []
-            # TODO wenn synonym eingefügt > Regel nochmal überprüfen??
-            # TODO Syns beim training auch schon abfragen?
+                running = False
+            # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
+            # TODO Syns beim training auch schon abfragen?                      
             # TODO 
             elif user_input == "s":
                 print("_______________________________________________________________________________")
@@ -297,14 +312,11 @@ def loop():
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
                 synonyms[syn_input] = sec_input 
-                r = []
                 print("_______________________________________________________________________________")
             else:
                 r = []
+                running = False
 
-
-        if input("Quit the script?\n") == "y" or input("Quit the script?\n") == "yes":
-            running = False
             
 
 
@@ -315,6 +327,7 @@ def loop():
 #load_items_into_soup()
 #load_into_csv_file()
 load_items_from_csv()
+synonyms = load_from_json_file()
 #iter_through_doc_set()
 loop()
 #find_nonsense_paper()
