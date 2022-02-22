@@ -236,15 +236,15 @@ def loop():
     print("================================================================")
     train = []
     
-    for i in range(4):
+    for i in range(3):
         train.append(random.choice(D))
 
     print(f"Size of Corpus: {len(D)}")
     print(f"Size of Training Set: {len(train)}")
         
     r = []
-    for docs in train:
-        for i,items in enumerate(docs):
+    for i, docs in enumerate(train):
+        for items in docs:
             if "Latex" in items:
                 continue
             if len(items) == 0:
@@ -284,16 +284,21 @@ def loop():
             r = []
             continue
         
-        for item in r:
-            if item in synonyms:
-                print(f"Found {item} in Synonym dictionary.")
+        # for item in r:
+        #     if item in synonyms:
+        #         print(f"Found {item} in Synonym dictionary.")
 
 
         # Loop
         running = True
         while(running): 
-            print(f"No matching Rule found.")
+            print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
             print(f"New Rule: {r}")
+            print(f"[{i+1}]: No matching Rule found.")
+            for item in r:
+                if item in synonyms:
+                    print(f"Found:  {item}")
+            
             
             user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
             if user_input == "r":
@@ -303,11 +308,11 @@ def loop():
                 r = []
                 running = False
             # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
-            # TODO Syns beim training auch schon abfragen?                      
+            # TODO Syns beim training auch schon abfragen?                      w
             # TODO 
             elif user_input == "s":
                 print("_______________________________________________________________________________")
-                print("introduction | related work | methods | experiments | results | discussion | conclusion | future work\n")
+                print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
                 print("_______________________________________________________________________________")
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
@@ -316,6 +321,7 @@ def loop():
             else:
                 r = []
                 running = False
+                print("_______________________________________________________________________________")
 
             
 

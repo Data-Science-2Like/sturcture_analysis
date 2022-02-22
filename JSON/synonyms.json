@@ -9,5 +9,10 @@
     "future work": "future work",
     "conclusion and future work": "conclusion",
     "methodology": "methods",
-    "method": "methods"
+    "method": "methods",
+    "proposed method": "methods",
+    "experimental setup": "experiments",
+    "conclusion and outlook": "conclusion",
+    "previous work": "related work",
+    "experimental result": "experiments"
 }
