@@ -244,8 +244,10 @@ def loop():
         
     r = []
     for docs in train:
+        lat_name = ""
         for i,items in enumerate(docs):
             if "Latex" in items:
+                lat_name = items
                 continue
             if len(items) == 0:
                 continue
