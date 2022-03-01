@@ -1,36 +1,91 @@
 [
     [
         "introduction",
-        "motivation",
-        "proposed model",
-        "comparing textbfabcd and textlfr",
-        "experimental result",
-        "conclusion and future work",
-        0.0004
-    ],
-    [
-        "introduction",
+        "related work",
         "method",
-        "numerical study",
-        "result",
+        "result on largescale image retrieval",
+        "ablation study",
+        "implementation detail",
         "conclusion",
         0.0
     ],
     [
         "introduction",
-        "ml for healthcare application",
-        "secure private and robust ml for healthcare challenge",
-        "secure private and robust ml for healthcare solution",
-        "open research issue",
+        "problem definition",
+        "proposed method",
+        "performance evaluation",
+        "conclusion",
+        0.0
+    ],
+    [
+        "introduction",
+        "related work",
+        "methodology",
+        "experiment",
+        "conclusion",
+        0.0053
+    ],
+    [
+        "introduction",
+        "method",
+        "result",
+        "conclusion and future work",
+        0.0
+    ],
+    [
+        "introduction",
+        "main result",
+        "simulation",
+        "proof",
+        0.0004
+    ],
+    [
+        "introduction",
+        "preliminary",
+        "experimental setup",
+        "experimental result",
         "conclusion",
         0.0004
     ],
     [
         "introduction",
-        "importance sampling risk minimization with biased data",
-        "weighted empirical risk minimization generalization guarantee",
-        "numerical experiment",
+        "preliminary",
+        "proposed approach",
+        "experiment",
+        "discussion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "gilbert simondons philosophical concept used in computer model",
+        "allagmatic metamodel formulation",
+        "allagmatic metamodel implementation",
+        "simple experiment",
+        "conclusion and outlook",
+        0.0004
+    ],
+    [
+        "introduction",
+        "method",
+        "example usage",
+        "discussion",
         "conclusion",
         0.0004
+    ],
+    [
+        "introduction",
+        "previous work",
+        "methodology",
+        "result and discussion",
+        "conclusion",
+        0.0004
+    ],
+    [
+        "introduction",
+        "study area and data acquisition",
+        "method",
+        "result and discussion",
+        "conclusion",
+        0.0
     ]
 ]

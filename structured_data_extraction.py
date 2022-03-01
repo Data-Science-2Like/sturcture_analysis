@@ -2,7 +2,6 @@ from cProfile import run
 import random
 from TexSoup import TexSoup
 import logging
-import os
 import datetime
 import re
 import csv
@@ -44,16 +43,13 @@ D = []
 R = []
 # Create Synonym Dict
 synonyms = {}
-# synonyms = {
-#     "introduction" : "introduction",
-#     "related work" : "related Work",
-#     "methods" : "methods",
-#     "experiments" : "experiments",
-#     "result" : "result",
-#     "discussion" : "discussion",
-#     "conclusion" : "conclusion",
-#     "future work" : "future work"
-# }
+# Template List for Wildcard
+# TODO man könnte hoch zählen > nur 1 "_" verwenden und bei soundsovielen Treffern aufhören
+# TODO item == "_" > True ?? macht das SINN? wenn nein, wie dann lösen? 
+wildcard_list = [
+    "^introduction.*conclusion$",
+    "^introduction.+related work.+rconclusion$",
+]
 # Create List for Nonesense sections
 nonsense_list = []
 # Create Lemmatizer Object
@@ -236,16 +232,16 @@ def loop():
     print("================================================================")
     train = []
     
-    for i in range(4):
+    for i in range(3):
         train.append(random.choice(D))
 
     print(f"Size of Corpus: {len(D)}")
     print(f"Size of Training Set: {len(train)}")
         
     r = []
-    for docs in train:
+    for i, docs in enumerate(train):
         lat_name = ""
-        for i,items in enumerate(docs):
+        for items in docs:
             if "Latex" in items:
                 lat_name = items
                 continue
@@ -279,23 +275,45 @@ def loop():
             if "conclusion" in item:
                 break                
 
-        r.append(support_method(r))
-        #print(support_method(r))
-        if r in R:
-            print(f"Rule {r} already in Ruleset.")
-            r = []
-            continue
         
-        for item in r:
-            if item in synonyms:
-                print(f"Found {item} in Synonym dictionary.")
+        #print(support_method(r))
+        # if r in R:
+            # print(f"Rule {r} already in Ruleset.")
+            #         r = []
+            #         continue
+        
 
+        r_string = ' '.join([str(elem) for elem in r])
+        print("r_string", r_string)
+        x = re.search("^introduction.*conclusion$", r_string)
+        print("x", x)
 
+        # for w_list in wildcard_list:
+        #     for w_item in w_list:        
+        #         for r_item in r:
+        #             if r_item == w_item:
+        #                 print(r_item)
+        #             if r_item == "_":
+        #                 print("_" ,r_item , "_")
+                    
+        
+        # for item in r:
+        #     if item in synonyms:
+        #         print(f"Found {item} in Synonym dictionary.")
+
+        r.append(support_method(r))
         # Loop
         running = True
         while(running): 
-            print(f"No matching Rule found.")
+            print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
+            print(lat_name)
             print(f"New Rule: {r}")
+            print(f"[{i+1}]: No matching Rule found.")
+
+            for item in r:
+                if item in synonyms:
+                    print(f"Found:  {item}")
+            
             
             user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
             if user_input == "r":
@@ -305,11 +323,11 @@ def loop():
                 r = []
                 running = False
             # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
-            # TODO Syns beim training auch schon abfragen?                      
+            # TODO Syns beim training auch schon abfragen?                      w
             # TODO 
             elif user_input == "s":
                 print("_______________________________________________________________________________")
-                print("introduction | related work | methods | experiments | results | discussion | conclusion | future work\n")
+                print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
                 print("_______________________________________________________________________________")
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
@@ -318,6 +336,7 @@ def loop():
             else:
                 r = []
                 running = False
+                print("_______________________________________________________________________________")
 
             
 
@@ -342,3 +361,69 @@ with open("JSON/rules.json", "w") as outfile:
    outfile.write(json_data)
 with open("JSON/synonyms.json", "w") as outfile:
     outfile.write(synonym_data)
+
+
+
+
+
+
+
+# High-level Structure
+# Introduction, <Body>, Conclusions
+# 
+# Example:
+
+# Introduction
+# Related Work
+# <Body> unspecified, said to be "the structure of the body varies a lot depending on content"
+# Performance Experiments
+# Conclusions 
+
+# Introduction
+# Method (experiment, theory, design, model)
+# Results and Discussion
+# Conclusions
+
+# Introduction
+# Methods
+# Results and Discussion
+# Conclusion
+
+# theoretical paper
+# 1 Introduction
+# 2 Theory basics
+# • Current State of Research
+# 4 Investigation and analysis
+# 5 Summary, perspective, concluding remarks
+
+# empirical paper
+# 1 Introduction
+# 2 Current State of Research
+# 3 Materials and methods
+# 4 Results
+# 5 Discussion
+# 6 Conclusion
+
+# Introduction
+# Materials and Methods
+# Results
+# Discussion
+# Limitations
+
+# Introduction
+# Method (experiment, theory, design, model)
+# Results and Discussion
+# Conclusions
+
+# Introduction 
+# Methods 
+# Results 
+# Discussion 
+
+# Introduction
+# State of the art
+# Problem motivation
+# Solution
+# Proof / Evaluation / Discussion
+# Related work
+# Future work
