@@ -20,8 +20,9 @@ logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
+template_filename = "JSON/templates.json"
 csv_filename = "CSV/sections_headings_v2.csv"
-json_filename = "JSON/synonyms.json"
+syn_filename = "JSON/synonyms.json"
 texfiles = []
 
 
@@ -36,7 +37,9 @@ texfiles = []
 
 # Load File into Soup
 logger.info("Load LaTex File into Soup")
-
+# ############################################################
+#   Variables
+# ############################################################
 # Create List with Training Documents
 D = []
 # Create Rule Set
@@ -55,6 +58,11 @@ nonsense_list = []
 # Create Lemmatizer Object
 wordnet_lemmatizer = WordNetLemmatizer()
 
+# ############################################################
+#   Methods
+# ############################################################
+#   Get Data from Documents
+# ############################################################
 def load_items_into_soup():
     for i,item in enumerate(texfiles):
         try:
@@ -66,6 +74,73 @@ def load_items_into_soup():
             logger.debug(f"Doc #{i}: {item} could not be loaded.")
             logger.debug("Error occured: "+ str(e))
 
+# ############################################################
+#   Iterate through all Documents
+# ############################################################
+def iter_through_doc_set():
+    # loop until D is empty
+    logger.debug("Size of Corpus : {}".format(len(D)))
+    r = []
+    for docs in D:
+        for items in docs:
+            if "Latex" in items:
+                continue
+            if len(items) == 0:
+                continue
+            
+            # String completly lowercase
+            item = items.lower()    
+
+            # Stemming the Sections to reduce redudancy
+            words = nltk.word_tokenize(item)
+            stem_sentence = []
+            for x in words:
+                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                stem_sentence.append(" ")
+            item = "".join(stem_sentence).rstrip()
+            
+            r.append(item)
+
+        r.append(support_method(r))
+        #print(support_method(r))
+        if r in R:
+            r = []
+            continue
+        # TODO UserInput when to add rule
+        # TODO When to add rule >> support % ??
+        R.append(r)
+        r = []        
+
+    logger.debug("Size of Rule Set : {}".format(len(R)))
+    logger.debug("Complete Rule Set: {}".format(R))
+
+# ############################################################
+#   Search for papers with nonsense headings
+# ############################################################
+def find_nonsense_paper():
+    for i, item in enumerate(D):
+        section_list = list(item.find_all('section'))
+        logger.debug(str(i))
+        new_section_list = []
+        for item in section_list:
+            clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
+            new_section_list.append(clean_string)
+        if new_section_list:
+            if not new_section_list[0] == "Introduction":
+                nonsense_list.append(new_section_list)
+
+        logger.debug(new_section_list)
+        # try:
+        #     if new_section_list[1] == "Introduction":
+        #             logger.debug(new_section_list[1])
+        # except Exception as e:
+        #     logger.debug(f"Doc #{i}: {item} could not be loaded: {e}.")
+        logger.debug("==================================================================")
+
+
+# ############################################################
+#   Write into CSV file
+# ############################################################
 def load_into_csv_file():
     filename = "CSV/sections_headings_16k.csv"
 
@@ -105,6 +180,10 @@ def load_into_csv_file():
                 logger.debug(f"Doc #{i}: {item} could not be loaded.")
                 logger.debug("Error occured: "+ str(e))
 
+
+# ############################################################
+#   Read from CSV file
+# ############################################################
 def load_items_from_csv():
     # Read out csv file
     with open(csv_filename, 'r') as csvfile:
@@ -113,29 +192,18 @@ def load_items_from_csv():
 
             for item in csvreader:
                 D.append(item)
-            
 
-def find_nonsense_paper():
-    for i, item in enumerate(D):
-        section_list = list(item.find_all('section'))
-        logger.debug(str(i))
-        new_section_list = []
-        for item in section_list:
-            clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
-            new_section_list.append(clean_string)
-        if new_section_list:
-            if not new_section_list[0] == "Introduction":
-                nonsense_list.append(new_section_list)
-
-        logger.debug(new_section_list)
-        # try:
-        #     if new_section_list[1] == "Introduction":
-        #             logger.debug(new_section_list[1])
-        # except Exception as e:
-        #     logger.debug(f"Doc #{i}: {item} could not be loaded: {e}.")
-        logger.debug("==================================================================")
+# ############################################################
+#   Load data from JSON file
+# ############################################################
+def load_from_json_file(filename):
+    data = json.load(open(filename, 'r'))
+    return data
 
 
+# ############################################################
+#   Calculate Support
+# ############################################################
 def support_method(rule):
     percentage = 0
     sections = []
@@ -165,42 +233,7 @@ def support_method(rule):
     # logger.debug(f"Percentage Rule {str_per} : {rule}")
     #return percentage
 
-def iter_through_doc_set():
-    # loop until D is empty
-    logger.debug("Size of Corpus : {}".format(len(D)))
-    r = []
-    for docs in D:
-        for items in docs:
-            if "Latex" in items:
-                continue
-            if len(items) == 0:
-                continue
-            
-            # String completly lowercase
-            item = items.lower()    
 
-            # Stemming the Sections to reduce redudancy
-            words = nltk.word_tokenize(item)
-            stem_sentence = []
-            for x in words:
-                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
-                stem_sentence.append(" ")
-            item = "".join(stem_sentence).rstrip()
-            
-            r.append(item)
-
-        r.append(support_method(r))
-        #print(support_method(r))
-        if r in R:
-            r = []
-            continue
-        # TODO UserInput when to add rule
-        # TODO When to add rule >> support % ??
-        R.append(r)
-        r = []        
-
-    logger.debug("Size of Rule Set : {}".format(len(R)))
-    logger.debug("Complete Rule Set: {}".format(R))
 
 
 # Alles nach Appendix wegwerfen                         X
@@ -221,11 +254,9 @@ def iter_through_doc_set():
 # Matching mit Regex über String (* Wildcard)
 # Wildcard >> Literatur suchen 
 
-def load_from_json_file():
-    data = json.load(open(json_filename, 'r'))
-    return data
-
-
+# ############################################################
+#   Main Loop
+# ############################################################
 def loop():
     print("================================================================")
     print("================== Structured Data Extraction ==================")
@@ -338,23 +369,27 @@ def loop():
                 running = False
                 print("_______________________________________________________________________________")
 
-            
-
 
         
 
 
-# Main function calls ===================================================
+# ############################################################
+#   Main Function Calls
+# ############################################################
 #load_items_into_soup()
 #load_into_csv_file()
-load_items_from_csv()
-synonyms = load_from_json_file()
 #iter_through_doc_set()
-loop()
 #find_nonsense_paper()
+load_items_from_csv()
+synonyms = load_from_json_file(syn_filename)
+templates = load_from_json_file(template_filename)
+loop()
 
 
-# Write Sections to JSON File
+
+# ############################################################
+#   Write data to output files
+# ############################################################
 json_data = json.dumps(R, indent = 4)
 synonym_data = json.dumps(synonyms, indent = 4)
 with open("JSON/rules.json", "w") as outfile:
