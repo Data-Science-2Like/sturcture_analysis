@@ -51,7 +51,7 @@ synonyms = {}
 # TODO item == "_" > True ?? macht das SINN? wenn nein, wie dann lösen? 
 wildcard_list = [
     "^introduction.*conclusion$",
-    "^introduction.+related work.+rconclusion$",
+    "^introduction.+related work.+conclusion$",
 ]
 # Create List for Nonesense sections
 nonsense_list = []
@@ -263,26 +263,33 @@ def loop():
     print("================================================================")
     train = []
     
+    # Choose size of training set
     for i in range(3):
         train.append(random.choice(D))
 
     print(f"Size of Corpus: {len(D)}")
     print(f"Size of Training Set: {len(train)}")
-        
+
+
     r = []
+    # Iterate through alle docs
     for i, docs in enumerate(train):
+        
         lat_name = ""
         for items in docs:
+            #####################
+            # If Latex in name or empty => skip 
             if "Latex" in items:
                 lat_name = items
                 continue
             if len(items) == 0:
                 continue
-                
+            #####################
                 
             # String completly lowercase
             item = items.lower()    
 
+            #####################
             # Stemming the Sections to reduce redudancy
             words = nltk.word_tokenize(item)
             stem_sentence = []
@@ -290,7 +297,7 @@ def loop():
                 stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
                 stem_sentence.append(" ")
             item = "".join(stem_sentence).rstrip()
- 
+            #####################
  
                 # try:
                 #     # Add to Rule and Synonyms
@@ -300,7 +307,7 @@ def loop():
                 #     print("Index out of range: ",e)
                 #     break
  
- 
+            # Add section heading to list
             r.append(item)
             # If section is "conclusion" cut everything after it
             if "conclusion" in item:
