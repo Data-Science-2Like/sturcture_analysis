@@ -13,5 +13,7 @@
     "experimental setup": "experiment",
     "conclusion and outlook": "conclusion",
     "previous work": "related work",
-    "experimental result": "experiment"
+    "experimental result": "experiment",
+    "summary": "conclusion",
+    "concluding remark": "conclusion"
 }
