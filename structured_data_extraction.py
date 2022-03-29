@@ -48,7 +48,7 @@ synonyms = {}
 # TODO item == "_" > True ?? macht das SINN? wenn nein, wie dann lösen? 
 wildcard_list = [
     "^introduction.*conclusion$",
-    "^introduction.+related work.+rconclusion$",
+    "^introduction.+related work.+method.+experiment.+result.+discussion.+conclusion$",
 ]
 # Create List for Nonesense sections
 nonsense_list = []
@@ -218,7 +218,7 @@ def iter_through_doc_set():
 # Wörterbuch während der Laufzeit definieren            X
 # >> alles Begriffe die das gleiche Bedeuten 
 # Sections mit "and" verbunden als neue Regel 
-# Matching mit Regex über String (* Wildcard)
+# Matching mit Regex über String (* Wildcard)           X
 # Wildcard >> Literatur suchen 
 
 def load_from_json_file():
@@ -282,24 +282,16 @@ def loop():
             #         r = []
             #         continue
         
-
+        # TODO read in rules from JSON file
         r_string = ' '.join([str(elem) for elem in r])
         print("r_string", r_string)
-        x = re.search("^introduction.*conclusion$", r_string)
-        print("x", x)
-
-        # for w_list in wildcard_list:
-        #     for w_item in w_list:        
-        #         for r_item in r:
-        #             if r_item == w_item:
-        #                 print(r_item)
-        #             if r_item == "_":
-        #                 print("_" ,r_item , "_")
-                    
-        
-        # for item in r:
-        #     if item in synonyms:
-        #         print(f"Found {item} in Synonym dictionary.")
+        for item in wildcard_list:
+            x = re.search(item, r_string)
+            if x:
+                print("x", x.string)
+                print("Rule found in Ruleset.")
+                r = []
+                
 
         r.append(support_method(r))
         # Loop
