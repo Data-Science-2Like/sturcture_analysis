@@ -3,8 +3,7 @@
     "intro": "introduction",
     "overview": "introduction",
     "motivation": "introduction",
-    "problem motivation" : "introduction",
-
+    "problem motivation": "introduction",
     "related work": "related work",
     "previous work": "related work",
     "literature": "related work",
@@ -13,11 +12,8 @@
     "state of the art": "related work",
     "current state of research": "related work",
     "requirement": "related work",
-
     "theory basics": "theory basics",
-
     "techniques": "techniques",
-
     "experiment": "experiment",
     "experimental result": "experiment",
     "experimental setup": "experiment",
@@ -26,7 +22,6 @@
     "performance evaluation": "experiment",
     "experiment and result": "experiment",
     "analysis": "experiment",
-
     "methodology": "method",
     "method": "method",
     "material and method": "method",
@@ -37,18 +32,12 @@
     "experimental design": "method",
     "implementation detail": "method",
     "system model": "method",
-
     "definition": "definition",
-
     "data set": "data set",
-
     "solution": "solution",
-
     "discussion": "discussion",
     "limitation": "discussion",
-
     "result and discussion": "result and discussion",
-
     "future work": "conclusion",
     "conclusion": "conclusion",
     "summary": "conclusion",

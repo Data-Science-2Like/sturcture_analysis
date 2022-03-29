@@ -21,8 +21,9 @@ logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
 template_filename = "JSON/templates.json"
-csv_filename_16k = "CSV/sections_headings_16k.csv"
-csv_filename_2k = "CSV/sections_headings_v2.csv"
+csv_filename_16k = "CSV/lemmatizer/sections_16k_lemma.csv"
+csv_filename_2k = "CSV/lemmatizer/sections_2k_lemma.csv"
+csv_filename_improved = "CSV/lemmatizer/sections_improved_lemma.csv"
 syn_filename = "JSON/synonyms.json"
 texfiles = []
 
@@ -203,6 +204,36 @@ def load_from_json_file(filename):
     data = json.load(open(filename, 'r'))
     return data
 
+# ############################################################
+#   Lemmatize CSV file
+# ############################################################
+def lemmatizer(csv_file):
+    filename = "CSV/lemmatizer/sections_16k_lemma.csv"
+
+    new_row = []
+    with open(filename, 'w') as csvfile:
+        # Creating csv writer object
+        csvwriter = csv.writer(csvfile)
+
+        for item in csv_file:
+            #print(item)
+
+            for string in item:
+                #print(string)
+                if "appendix" in string:
+                    break
+                if "Latex" not in string:
+                    string = string.lower()
+
+                    words = nltk.word_tokenize(string)
+                    stem_sentence = []
+                    for x in words:
+                        stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                        stem_sentence.append(" ")
+                    string = "".join(stem_sentence).rstrip()
+                new_row.append(string)
+            csvwriter.writerow(new_row)
+            new_row = []
 
 # ############################################################
 #   Calculate Support
@@ -241,37 +272,69 @@ def support_method(rule):
 #   Test how many Paper match the templates
 # ############################################################
 def test_templates(templates, csv_list):
-    print(csv_list)
-    print(templates)
-
+    counter = 0
+    wildcard_strings = []
+    start = "^"
+    end = "$"
+    #for item in templates:
+        # TODO how to join the string if '*' is there??
+        # temp_string = '.'.join(item)
+        # temp_string = start + temp_string + end
+        # print(temp_string)
+        # wildcard_strings.append(temp_string)
+    wildcard_strings = [
+        #"^introduction.*conclusion$",
+        "^introduction method result and discussion conclusion$",
+        "^introduction method result discussion conclusion$",
+        "^introduction theory basics state of the art investigation and analysis conclusion$",
+        "^introduction techniques method result conclusion$",
+        "^introduction related work.* result conclusion$",
+        "^introduction background.* related work future work conclusion$",
+        "^introduction related work method experiment interpretation conclusion$",
+        "^introduction state of the art method result dicussion conclusion$",
+        "^introduction related work.* result dicussion conclusion$",
+        "^introduction state of the art motivation solution dicussion related work conclusion$",
+        "^introduction related work method experiment result dicussion conclusion$"
+    ]
+    
+    for item in csv_list:
+        csv_string = " ".join(item[1:])
+        #print(csv_string)
+        for strings in wildcard_strings:
+            result = re.search(strings, csv_string)
+            if result is not None:
+                print("_____________________________")
+                print("Match")
+                print(csv_string)
+                print(strings)
+                counter += 1
+                break
+                print("_____________________________")
+            #else:
+            #    print("_____________________________")
+            #    print("No match:")
+            #    print(csv_string)
+            #    print(strings)
+            #    print("_____________________________")
+    print("_________________________")
+    print("Number of Papers matched: ", counter)
 
 
 # Alles nach Appendix wegwerfen                         X
 # Support Methode > auf wie viele Paper matched es      X
-# Abweichung bei Regeln zulassen (1 Sektion)
 # TODO Synonymliste                                     X
 # ersten 100 dokumente anschauen                        X
-# mehrere Mögichkeiten:
-#   - Wörterbuch hinzufügen
-#   - Regel hinzufügen
-# Läuft dann auto über die restlichen Dokumente 
-# Test über die restlichen Dokumente
-# DSR
+
 # Wörterbuch und Regel in Dateien speichern             X
 # Wörterbuch während der Laufzeit definieren            X
-# >> alles Begriffe die das gleiche Bedeuten 
-# Sections mit "and" verbunden als neue Regel 
-# Matching mit Regex über String (* Wildcard)
-# Wildcard >> Literatur suchen 
+
 
 # Experimente:
-# Wie viele Paper matchen?
+# Wie viele Paper matchen?                              => 5541 (break), 5876 (all), 352 (without easy) 
 # Paper einsortieren und Tiefe erfassen
 # Failure von Hand anschauen > warum nicht funktioniert?
 # Evaluierung: 100 Stück = Implementierung validieren 
 # Support pro Regel: Datengrundlage validieren
-# 
-
 
 # ############################################################
 #   Main Loop
@@ -381,7 +444,6 @@ def loop(csv_2k):
                 running = False
             # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
             # TODO Syns beim training auch schon abfragen?                      w
-            # TODO 
             elif user_input == "s":
                 print("_______________________________________________________________________________")
                 print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
@@ -409,12 +471,14 @@ def loop(csv_2k):
 
 
 csv_16k = load_items_from_csv(csv_filename_16k)
+csv_improved = load_items_from_csv(csv_filename_improved)
 csv_2k = load_items_from_csv(csv_filename_2k)
-#synonyms = load_from_json_file(syn_filename)
+synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
 test_templates(templates, csv_16k)    # Wie viele Paper matchen?
 #loop(csv_2k)
 
+#lemmatizer(csv_16k)
 
 
 # ############################################################
@@ -428,4 +492,10 @@ with open("JSON/synonyms.json", "w") as outfile:
     outfile.write(synonym_data)
 
 
-
+# Experiment:
+# 2k:
+#   - all:      1171
+#   - break:    923 
+# 16k:
+#   - all:      5876
+#   - break:    5541
