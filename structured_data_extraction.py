@@ -20,8 +20,11 @@ logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
-csv_filename = "CSV/sections_headings_v2.csv"
-json_filename = "JSON/synonyms.json"
+template_filename = "JSON/templates.json"
+csv_filename_16k = "CSV/lemmatizer/sections_16k_lemma.csv"
+csv_filename_2k = "CSV/lemmatizer/sections_2k_lemma.csv"
+csv_filename_improved = "CSV/lemmatizer/sections_improved_lemma.csv"
+syn_filename = "JSON/synonyms.json"
 texfiles = []
 
 
@@ -36,7 +39,9 @@ texfiles = []
 
 # Load File into Soup
 logger.info("Load LaTex File into Soup")
-
+# ############################################################
+#   Variables
+# ############################################################
 # Create List with Training Documents
 D = []
 # Create Rule Set
@@ -48,13 +53,18 @@ synonyms = {}
 # TODO item == "_" > True ?? macht das SINN? wenn nein, wie dann lösen? 
 wildcard_list = [
     "^introduction.*conclusion$",
-    "^introduction.+related work.+method.+experiment.+result.+discussion.+conclusion$",
+    "^introduction.+related work.+conclusion$",
 ]
 # Create List for Nonesense sections
 nonsense_list = []
 # Create Lemmatizer Object
 wordnet_lemmatizer = WordNetLemmatizer()
 
+# ############################################################
+#   Methods
+# ############################################################
+#   Get Data from Documents
+# ############################################################
 def load_items_into_soup():
     for i,item in enumerate(texfiles):
         try:
@@ -66,6 +76,73 @@ def load_items_into_soup():
             logger.debug(f"Doc #{i}: {item} could not be loaded.")
             logger.debug("Error occured: "+ str(e))
 
+# ############################################################
+#   Iterate through all Documents
+# ############################################################
+def iter_through_doc_set():
+    # loop until D is empty
+    logger.debug("Size of Corpus : {}".format(len(D)))
+    r = []
+    for docs in D:
+        for items in docs:
+            if "Latex" in items:
+                continue
+            if len(items) == 0:
+                continue
+            
+            # String completly lowercase
+            item = items.lower()    
+
+            # Stemming the Sections to reduce redudancy
+            words = nltk.word_tokenize(item)
+            stem_sentence = []
+            for x in words:
+                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                stem_sentence.append(" ")
+            item = "".join(stem_sentence).rstrip()
+            
+            r.append(item)
+
+        r.append(support_method(r))
+        #print(support_method(r))
+        if r in R:
+            r = []
+            continue
+        # TODO UserInput when to add rule
+        # TODO When to add rule >> support % ??
+        R.append(r)
+        r = []        
+
+    logger.debug("Size of Rule Set : {}".format(len(R)))
+    logger.debug("Complete Rule Set: {}".format(R))
+
+# ############################################################
+#   Search for papers with nonsense headings
+# ############################################################
+def find_nonsense_paper():
+    for i, item in enumerate(D):
+        section_list = list(item.find_all('section'))
+        logger.debug(str(i))
+        new_section_list = []
+        for item in section_list:
+            clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
+            new_section_list.append(clean_string)
+        if new_section_list:
+            if not new_section_list[0] == "Introduction":
+                nonsense_list.append(new_section_list)
+
+        logger.debug(new_section_list)
+        # try:
+        #     if new_section_list[1] == "Introduction":
+        #             logger.debug(new_section_list[1])
+        # except Exception as e:
+        #     logger.debug(f"Doc #{i}: {item} could not be loaded: {e}.")
+        logger.debug("==================================================================")
+
+
+# ############################################################
+#   Write into CSV file
+# ############################################################
 def load_into_csv_file():
     filename = "CSV/sections_headings_16k.csv"
 
@@ -105,37 +182,62 @@ def load_into_csv_file():
                 logger.debug(f"Doc #{i}: {item} could not be loaded.")
                 logger.debug("Error occured: "+ str(e))
 
-def load_items_from_csv():
+
+# ############################################################
+#   Read from CSV file
+# ############################################################
+def load_items_from_csv(csv_filename):
+    csv_list = []
     # Read out csv file
     with open(csv_filename, 'r') as csvfile:
             # Creating csv writer object
             csvreader = csv.reader(csvfile)
 
             for item in csvreader:
-                D.append(item)
-            
+                csv_list.append(item)
+    return csv_list
 
-def find_nonsense_paper():
-    for i, item in enumerate(D):
-        section_list = list(item.find_all('section'))
-        logger.debug(str(i))
-        new_section_list = []
-        for item in section_list:
-            clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
-            new_section_list.append(clean_string)
-        if new_section_list:
-            if not new_section_list[0] == "Introduction":
-                nonsense_list.append(new_section_list)
+# ############################################################
+#   Load data from JSON file
+# ############################################################
+def load_from_json_file(filename):
+    data = json.load(open(filename, 'r'))
+    return data
 
-        logger.debug(new_section_list)
-        # try:
-        #     if new_section_list[1] == "Introduction":
-        #             logger.debug(new_section_list[1])
-        # except Exception as e:
-        #     logger.debug(f"Doc #{i}: {item} could not be loaded: {e}.")
-        logger.debug("==================================================================")
+# ############################################################
+#   Lemmatize CSV file
+# ############################################################
+def lemmatizer(csv_file):
+    filename = "CSV/lemmatizer/sections_16k_lemma.csv"
 
+    new_row = []
+    with open(filename, 'w') as csvfile:
+        # Creating csv writer object
+        csvwriter = csv.writer(csvfile)
 
+        for item in csv_file:
+            #print(item)
+
+            for string in item:
+                #print(string)
+                if "appendix" in string:
+                    break
+                if "Latex" not in string:
+                    string = string.lower()
+
+                    words = nltk.word_tokenize(string)
+                    stem_sentence = []
+                    for x in words:
+                        stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                        stem_sentence.append(" ")
+                    string = "".join(stem_sentence).rstrip()
+                new_row.append(string)
+            csvwriter.writerow(new_row)
+            new_row = []
+
+# ############################################################
+#   Calculate Support
+# ############################################################
 def support_method(rule):
     percentage = 0
     sections = []
@@ -165,93 +267,111 @@ def support_method(rule):
     # logger.debug(f"Percentage Rule {str_per} : {rule}")
     #return percentage
 
-def iter_through_doc_set():
-    # loop until D is empty
-    logger.debug("Size of Corpus : {}".format(len(D)))
-    r = []
-    for docs in D:
-        for items in docs:
-            if "Latex" in items:
-                continue
-            if len(items) == 0:
-                continue
-            
-            # String completly lowercase
-            item = items.lower()    
 
-            # Stemming the Sections to reduce redudancy
-            words = nltk.word_tokenize(item)
-            stem_sentence = []
-            for x in words:
-                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
-                stem_sentence.append(" ")
-            item = "".join(stem_sentence).rstrip()
-            
-            r.append(item)
-
-        r.append(support_method(r))
-        #print(support_method(r))
-        if r in R:
-            r = []
-            continue
-        # TODO UserInput when to add rule
-        # TODO When to add rule >> support % ??
-        R.append(r)
-        r = []        
-
-    logger.debug("Size of Rule Set : {}".format(len(R)))
-    logger.debug("Complete Rule Set: {}".format(R))
+# ############################################################
+#   Test how many Paper match the templates
+# ############################################################
+def test_templates(templates, csv_list):
+    counter = 0
+    wildcard_strings = []
+    start = "^"
+    end = "$"
+    #for item in templates:
+        # TODO how to join the string if '*' is there??
+        # temp_string = '.'.join(item)
+        # temp_string = start + temp_string + end
+        # print(temp_string)
+        # wildcard_strings.append(temp_string)
+    wildcard_strings = [
+        #"^introduction.*conclusion$",
+        "^introduction method result and discussion conclusion$",
+        "^introduction method result discussion conclusion$",
+        "^introduction theory basics state of the art investigation and analysis conclusion$",
+        "^introduction techniques method result conclusion$",
+        "^introduction related work.* result conclusion$",
+        "^introduction background.* related work future work conclusion$",
+        "^introduction related work method experiment interpretation conclusion$",
+        "^introduction state of the art method result dicussion conclusion$",
+        "^introduction related work.* result dicussion conclusion$",
+        "^introduction state of the art motivation solution dicussion related work conclusion$",
+        "^introduction related work method experiment result dicussion conclusion$"
+    ]
+    
+    for item in csv_list:
+        csv_string = " ".join(item[1:])
+        #print(csv_string)
+        for strings in wildcard_strings:
+            result = re.search(strings, csv_string)
+            if result is not None:
+                print("_____________________________")
+                print("Match")
+                print(csv_string)
+                print(strings)
+                counter += 1
+                break
+                print("_____________________________")
+            #else:
+            #    print("_____________________________")
+            #    print("No match:")
+            #    print(csv_string)
+            #    print(strings)
+            #    print("_____________________________")
+    print("_________________________")
+    print("Number of Papers matched: ", counter)
 
 
 # Alles nach Appendix wegwerfen                         X
 # Support Methode > auf wie viele Paper matched es      X
-# Abweichung bei Regeln zulassen (1 Sektion)
 # TODO Synonymliste                                     X
 # ersten 100 dokumente anschauen                        X
-# mehrere Mögichkeiten:
-#   - Wörterbuch hinzufügen
-#   - Regel hinzufügen
-# Läuft dann auto über die restlichen Dokumente 
-# Test über die restlichen Dokumente
-# DSR
+
 # Wörterbuch und Regel in Dateien speichern             X
 # Wörterbuch während der Laufzeit definieren            X
-# >> alles Begriffe die das gleiche Bedeuten 
-# Sections mit "and" verbunden als neue Regel 
-# Matching mit Regex über String (* Wildcard)           X
-# Wildcard >> Literatur suchen 
-
-def load_from_json_file():
-    data = json.load(open(json_filename, 'r'))
-    return data
 
 
-def loop():
+# Experimente:
+# Wie viele Paper matchen?                              => 5541 (break), 5876 (all), 352 (without easy) 
+# Paper einsortieren und Tiefe erfassen
+# Failure von Hand anschauen > warum nicht funktioniert?
+# Evaluierung: 100 Stück = Implementierung validieren 
+# Support pro Regel: Datengrundlage validieren
+
+# ############################################################
+#   Main Loop
+# ############################################################
+def loop(csv_2k):
     print("================================================================")
     print("================== Structured Data Extraction ==================")
     print("================================================================")
     train = []
     
+    # Choose size of training set
     for i in range(3):
-        train.append(random.choice(D))
+        train.append(random.choice(csv_2k))
 
-    print(f"Size of Corpus: {len(D)}")
+    print(f"Size of Corpus: {len(csv_2k)}")
     print(f"Size of Training Set: {len(train)}")
-        
+
+
     r = []
+    # Iterate through alle docs
     for i, docs in enumerate(train):
+        
         lat_name = ""
         for items in docs:
+            #####################
+            # If Latex in name or empty => skip 
             if "Latex" in items:
                 lat_name = items
                 continue
             if len(items) == 0:
                 continue
-                
+            #####################
                 
             # String completly lowercase
             item = items.lower()    
 
+            #####################
             # Stemming the Sections to reduce redudancy
             words = nltk.word_tokenize(item)
             stem_sentence = []
@@ -259,7 +379,7 @@ def loop():
                 stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
                 stem_sentence.append(" ")
             item = "".join(stem_sentence).rstrip()
- 
+            #####################
  
                 # try:
                 #     # Add to Rule and Synonyms
@@ -269,7 +389,7 @@ def loop():
                 #     print("Index out of range: ",e)
                 #     break
  
- 
+            # Add section heading to list
             r.append(item)
             # If section is "conclusion" cut everything after it
             if "conclusion" in item:
@@ -316,7 +436,6 @@ def loop():
                 running = False
             # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
             # TODO Syns beim training auch schon abfragen?                      w
-            # TODO 
             elif user_input == "s":
                 print("_______________________________________________________________________________")
                 print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
@@ -330,23 +449,33 @@ def loop():
                 running = False
                 print("_______________________________________________________________________________")
 
-            
-
 
         
 
 
-# Main function calls ===================================================
+# ############################################################
+#   Main Function Calls
+# ############################################################
 #load_items_into_soup()
 #load_into_csv_file()
-load_items_from_csv()
-synonyms = load_from_json_file()
 #iter_through_doc_set()
-loop()
 #find_nonsense_paper()
 
 
-# Write Sections to JSON File
+csv_16k = load_items_from_csv(csv_filename_16k)
+csv_improved = load_items_from_csv(csv_filename_improved)
+csv_2k = load_items_from_csv(csv_filename_2k)
+synonyms = load_from_json_file(syn_filename)
+templates = load_from_json_file(template_filename)
+test_templates(templates, csv_16k)    # Wie viele Paper matchen?
+#loop(csv_2k)
+
+#lemmatizer(csv_16k)
+
+
+# ############################################################
+#   Write data to output files
+# ############################################################
 json_data = json.dumps(R, indent = 4)
 synonym_data = json.dumps(synonyms, indent = 4)
 with open("JSON/rules.json", "w") as outfile:
@@ -355,67 +484,10 @@ with open("JSON/synonyms.json", "w") as outfile:
     outfile.write(synonym_data)
 
 
-
-
-
-
-
-# High-level Structure
-# Introduction, <Body>, Conclusions
-# 
-# Example:
-
-# Introduction
-# Related Work
-# <Body> unspecified, said to be "the structure of the body varies a lot depending on content"
-# Performance Experiments
-# Conclusions 
-
-# Introduction
-# Method (experiment, theory, design, model)
-# Results and Discussion
-# Conclusions
-
-# Introduction
-# Methods
-# Results and Discussion
-# Conclusion
-
-# theoretical paper
-# 1 Introduction
-# 2 Theory basics
-# • Current State of Research
-# 4 Investigation and analysis
-# 5 Summary, perspective, concluding remarks
-
-# empirical paper
-# 1 Introduction
-# 2 Current State of Research
-# 3 Materials and methods
-# 4 Results
-# 5 Discussion
-# 6 Conclusion
-
-# Introduction
-# Materials and Methods
-# Results
-# Discussion
-# Limitations
-
-# Introduction
-# Method (experiment, theory, design, model)
-# Results and Discussion
-# Conclusions
-
-# Introduction 
-# Methods 
-# Results 
-# Discussion 
-
-# Introduction
-# State of the art
-# Problem motivation
-# Solution
-# Proof / Evaluation / Discussion
-# Related work
-# Future work
+# Experiment:
+# 2k:
+#   - all:      1171
+#   - break:    923 
+# 16k:
+#   - all:      5876
+#   - break:    5541
