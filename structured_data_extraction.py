@@ -21,7 +21,8 @@ logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
 template_filename = "JSON/templates.json"
-csv_filename = "CSV/sections_headings_v2.csv"
+csv_filename_16k = "CSV/sections_headings_16k.csv"
+csv_filename_2k = "CSV/sections_headings_v2.csv"
 syn_filename = "JSON/synonyms.json"
 texfiles = []
 
@@ -184,14 +185,16 @@ def load_into_csv_file():
 # ############################################################
 #   Read from CSV file
 # ############################################################
-def load_items_from_csv():
+def load_items_from_csv(csv_filename):
+    csv_list = []
     # Read out csv file
     with open(csv_filename, 'r') as csvfile:
             # Creating csv writer object
             csvreader = csv.reader(csvfile)
 
             for item in csvreader:
-                D.append(item)
+                csv_list.append(item)
+    return csv_list
 
 # ############################################################
 #   Load data from JSON file
@@ -234,6 +237,13 @@ def support_method(rule):
     #return percentage
 
 
+# ############################################################
+#   Test how many Paper match the templates
+# ############################################################
+def test_templates(templates, csv_list):
+    print(csv_list)
+    print(templates)
+
 
 
 # Alles nach Appendix wegwerfen                         X
@@ -254,10 +264,19 @@ def support_method(rule):
 # Matching mit Regex über String (* Wildcard)
 # Wildcard >> Literatur suchen 
 
+# Experimente:
+# Wie viele Paper matchen?
+# Paper einsortieren und Tiefe erfassen
+# Failure von Hand anschauen > warum nicht funktioniert?
+# Evaluierung: 100 Stück = Implementierung validieren 
+# Support pro Regel: Datengrundlage validieren
+# 
+
+
 # ############################################################
 #   Main Loop
 # ############################################################
-def loop():
+def loop(csv_2k):
     print("================================================================")
     print("================== Structured Data Extraction ==================")
     print("================================================================")
@@ -265,9 +284,9 @@ def loop():
     
     # Choose size of training set
     for i in range(3):
-        train.append(random.choice(D))
+        train.append(random.choice(csv_2k))
 
-    print(f"Size of Corpus: {len(D)}")
+    print(f"Size of Corpus: {len(csv_2k)}")
     print(f"Size of Training Set: {len(train)}")
 
 
@@ -387,10 +406,14 @@ def loop():
 #load_into_csv_file()
 #iter_through_doc_set()
 #find_nonsense_paper()
-load_items_from_csv()
-synonyms = load_from_json_file(syn_filename)
+
+
+csv_16k = load_items_from_csv(csv_filename_16k)
+csv_2k = load_items_from_csv(csv_filename_2k)
+#synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
-loop()
+test_templates(templates, csv_16k)    # Wie viele Paper matchen?
+#loop(csv_2k)
 
 
 
