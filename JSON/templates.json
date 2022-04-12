@@ -1,7 +1,7 @@
 [
     [
         "introduction",
-        ".*",
+        "*",
         "conclusion"
     ],
     [
@@ -34,14 +34,14 @@
     [
         "introduction",
         "related work",
-        ".*",
+        "*",
         "result",
         "conclusion" 
     ],
     [
         "introduction",
         "background",
-        ".*",
+        "*",
         "related work",
         "future work",
         "conclusion" 
@@ -65,7 +65,7 @@
     [
         "introduction",
         "related work",
-        ".*",
+        "*",
         "result",
         "dicussion",
         "conclusion" 

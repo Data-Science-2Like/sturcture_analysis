@@ -8,6 +8,7 @@ import csv
 import json
 import nltk
 from nltk.stem import WordNetLemmatizer
+from Tree import *
 
 
 
@@ -281,45 +282,31 @@ def support_method(rule):
 # ############################################################
 def test_templates(templates, csv_list, synonyms):
     counter = 0
-    wildcard_strings = []
-    start = "^"
-    end = "$"
+    tree = Tree(["*"], None)
+    temp_set = set()
+    csv_set = set()
+
     for item in templates:
-        temp_string = " ".join(item)
-        temp_string = start + temp_string + end
-        #print(temp_string)
-        wildcard_strings.append(temp_string)
-
-
+        temp_set.add(tuple(item))
+    
     for item in csv_list:
-        csv_string = " ".join(item[1:])
+        csv_set.add(tuple(item[1:]))
 
-        print("1: ", csv_string)
-        for item in synonyms:
-            #print(item, "| ", synonyms[item])
-            if item in csv_string:
-                print(item)
-                csv_string.replace(item, "2")
-        print("2: ", csv_string)
+    print(csv_set)
 
-        #print(csv_string)
-        for strings in wildcard_strings:
-            result = re.search(strings, csv_string)
-            if result is not None:
-                #print("_____________________________")
-                #print("Match")
-                #print(csv_string)
-                #print(strings)
-                counter += 1
-                break
-                print("_____________________________")
-            #else:
-            #    print("_____________________________")
-            #    print("No match:")
-            #    print(csv_string)
-            #    print(strings)
-            #    print("_____________________________")
+    for templ in temp_set:
+        update_tree(tree, templ)
+    
+    for templ in csv_set:
+        update_tree(tree, templ)
+
+
+    atree = t2anytree(tree)
+    # graphviz needs to be installed for the next line!, #N: via apt, not pip
+    DotExporter(atree).to_picture("pictures/test_tree.png")
+
     print("_________________________")
+    print("Number of Papers: ", len(csv_list))
     print("Number of Papers matched: ", counter)
 
 
@@ -329,6 +316,10 @@ def test_templates(templates, csv_list, synonyms):
 # ersten 100 dokumente anschauen                        X
 
 # Wörterbuch und Regel in Dateien speichern             X
+# Wörterbuch während der Laufzeit definieren            X
+
+
+# Experimente:
 # Wörterbuch während der Laufzeit definieren            X
 
 
@@ -479,7 +470,7 @@ synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
 
 
-test_templates(templates, csv_16k, synonyms)    # Wie viele Paper matchen?
+test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
 #loop(csv_2k)
 
 #lemmatizer(csv_16k)
@@ -503,3 +494,47 @@ with open("JSON/synonyms.json", "w") as outfile:
 # 16k:
 #   - all:      5876
 #   - break:    5541
+
+
+
+    # wildcard_strings = []
+    # start = "^"
+    # end = "$"
+
+
+    # # Create Template Strings
+    # for item in templates:
+    #     temp_string = " ".join(item)
+    #     temp_string = start + temp_string + end
+    #     #print(temp_string)
+    #     wildcard_strings.append(temp_string)
+
+    # # Iterate CSV List
+    # for item in csv_list:
+    #     csv_string = " ".join(item[1:])
+
+    #     #print("1: ", csv_string)
+    #     for item in synonyms:
+    #         #print(item, "| ", synonyms[item])
+    #         if item in csv_string:
+    #             #print(item)
+    #             csv_string.replace(item, "2")
+    #     #print("2: ", csv_string)
+
+    #     #print(csv_string)
+    #     for strings in wildcard_strings:
+    #         result = re.search(strings, csv_string)
+    #         if result is not None:
+    #             #print("_____________________________")
+    #             #print("Match")
+    #             #print(csv_string)
+    #             #print(strings)
+    #             counter += 1
+    #             break
+    #             print("_____________________________")
+    #         #else:
+    #         #    print("_____________________________")
+    #         #    print("No match:")
+    #         #    print(csv_string)
+    #         #    print(strings)
+    #         #    print("_____________________________")
