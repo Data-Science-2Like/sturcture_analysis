@@ -294,10 +294,12 @@ def test_templates(templates, csv_list, synonyms):
         csv_set.add(tuple(item[1:]))
 
     for templ in temp_set:
-        update_tree(tree, templ)
+        if templ:
+            update_tree(tree, templ)
     
     for templ in csv_set:
-        update_tree(tree, templ)
+        if templ:
+            update_tree(tree, templ)
 
 
     # Export as anytree
@@ -316,7 +318,8 @@ def test_templates(templates, csv_list, synonyms):
     print("_________________________")
     print("Number of Papers: ", len(csv_list))
     print("Size of Template Batch: ", len(templates))
-    print("Number of Papers matched: ", counter)
+    print("Size of Tree: ", counter)
+    print("Number of Papers that matched Template: ", (len(csv_list) - fail_counter + 1))
     print("Number of Papers not matched: ", fail_counter-1)
 
 
@@ -480,7 +483,7 @@ synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
 
 
-test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
+test_templates(templates, csv_16k, synonyms)    # Wie viele Paper matchen?
 #loop(csv_2k)
 
 #lemmatizer(csv_16k)
@@ -504,3 +507,18 @@ with open("JSON/synonyms.json", "w") as outfile:
 # 16k:
 #   - all:      5876
 #   - break:    5541
+
+# Tree Experiment:
+# 2k:
+# Number of Papers:  2264
+# Size of Template Batch:  12
+# Size of Tree:  826
+# Number of Papers that matched Template:  945
+# Number of Papers not matched:  1319
+
+# 16k:
+# Number of Papers:  15911
+# Size of Template Batch:  12
+# Size of Tree:  5138
+# Number of Papers that matched Template:  6560
+# Number of Papers not matched:  9351
