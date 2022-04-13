@@ -282,6 +282,7 @@ def support_method(rule):
 # ############################################################
 def test_templates(templates, csv_list, synonyms):
     counter = 0
+    fail_counter = 0
     tree = Tree(["*"], None)
     temp_set = set()
     csv_set = set()
@@ -292,8 +293,6 @@ def test_templates(templates, csv_list, synonyms):
     for item in csv_list:
         csv_set.add(tuple(item[1:]))
 
-    print(csv_set)
-
     for templ in temp_set:
         update_tree(tree, templ)
     
@@ -301,13 +300,24 @@ def test_templates(templates, csv_list, synonyms):
         update_tree(tree, templ)
 
 
+    # Export as anytree
     atree = t2anytree(tree)
+
+    # Prune tree 
+    root = atree.children[0]
+    root.parent = None
+    # Count Nodes
+    counter = sum([1 for node in PreOrderIter(root)])
+    fail_counter = sum([1 for node in PreOrderIter(atree)])
+
     # graphviz needs to be installed for the next line!, #N: via apt, not pip
-    DotExporter(atree).to_picture("pictures/test_tree.png")
+    DotExporter(root).to_picture("pictures/test_tree.png")
 
     print("_________________________")
     print("Number of Papers: ", len(csv_list))
+    print("Size of Template Batch: ", len(templates))
     print("Number of Papers matched: ", counter)
+    print("Number of Papers not matched: ", fail_counter-1)
 
 
 # Alles nach Appendix wegwerfen                         X
@@ -494,47 +504,3 @@ with open("JSON/synonyms.json", "w") as outfile:
 # 16k:
 #   - all:      5876
 #   - break:    5541
-
-
-
-    # wildcard_strings = []
-    # start = "^"
-    # end = "$"
-
-
-    # # Create Template Strings
-    # for item in templates:
-    #     temp_string = " ".join(item)
-    #     temp_string = start + temp_string + end
-    #     #print(temp_string)
-    #     wildcard_strings.append(temp_string)
-
-    # # Iterate CSV List
-    # for item in csv_list:
-    #     csv_string = " ".join(item[1:])
-
-    #     #print("1: ", csv_string)
-    #     for item in synonyms:
-    #         #print(item, "| ", synonyms[item])
-    #         if item in csv_string:
-    #             #print(item)
-    #             csv_string.replace(item, "2")
-    #     #print("2: ", csv_string)
-
-    #     #print(csv_string)
-    #     for strings in wildcard_strings:
-    #         result = re.search(strings, csv_string)
-    #         if result is not None:
-    #             #print("_____________________________")
-    #             #print("Match")
-    #             #print(csv_string)
-    #             #print(strings)
-    #             counter += 1
-    #             break
-    #             print("_____________________________")
-    #         #else:
-    #         #    print("_____________________________")
-    #         #    print("No match:")
-    #         #    print(csv_string)
-    #         #    print(strings)
-    #         #    print("_____________________________")

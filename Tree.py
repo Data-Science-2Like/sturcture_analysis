@@ -1,4 +1,4 @@
-from anytree import Node, RenderTree
+from anytree import Node, RenderTree, PreOrderIter
 from anytree.exporter import DotExporter
 #use anytree instead, it has nice prints / plots
 #https://pypi.org/project/anytree/
