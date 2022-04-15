@@ -8,6 +8,7 @@ import csv
 import json
 import nltk
 from nltk.stem import WordNetLemmatizer
+from Tree import *
 
 
 
@@ -48,12 +49,20 @@ D = []
 R = []
 # Create Synonym Dict
 synonyms = {}
-# Template List for Wildcard
-# TODO man könnte hoch zählen > nur 1 "_" verwenden und bei soundsovielen Treffern aufhören
-# TODO item == "_" > True ?? macht das SINN? wenn nein, wie dann lösen? 
-wildcard_list = [
-    "^introduction.*conclusion$",
-    "^introduction.+related work.+conclusion$",
+# Template List
+wildcard_strings = [
+        "^introduction.*conclusion$",
+        "^introduction method result and discussion conclusion$",
+        "^introduction method result discussion conclusion$",
+        "^introduction theory basics state of the art investigation and analysis conclusion$",
+        "^introduction techniques method result conclusion$",
+        "^introduction related work.* result conclusion$",
+        "^introduction background.* related work future work conclusion$",
+        "^introduction related work method experiment interpretation conclusion$",
+        "^introduction state of the art method result dicussion conclusion$",
+        "^introduction related work.* result dicussion conclusion$",
+        "^introduction state of the art motivation solution dicussion related work conclusion$",
+        "^introduction related work method experiment result dicussion conclusion$"
 ]
 # Create List for Nonesense sections
 nonsense_list = []
@@ -271,53 +280,47 @@ def support_method(rule):
 # ############################################################
 #   Test how many Paper match the templates
 # ############################################################
-def test_templates(templates, csv_list):
+def test_templates(templates, csv_list, synonyms):
     counter = 0
-    wildcard_strings = []
-    start = "^"
-    end = "$"
-    #for item in templates:
-        # TODO how to join the string if '*' is there??
-        # temp_string = '.'.join(item)
-        # temp_string = start + temp_string + end
-        # print(temp_string)
-        # wildcard_strings.append(temp_string)
-    wildcard_strings = [
-        "^introduction.*conclusion$",
-#        "^introduction method result and discussion conclusion$",
-#        "^introduction method result discussion conclusion$",
-#        "^introduction theory basics state of the art investigation and analysis conclusion$",
-#        "^introduction techniques method result conclusion$",
-#        "^introduction related work.* result conclusion$",
-#        "^introduction background.* related work future work conclusion$",
-#        "^introduction related work method experiment interpretation conclusion$",
-#        "^introduction state of the art method result dicussion conclusion$",
-#        "^introduction related work.* result dicussion conclusion$",
-#        "^introduction state of the art motivation solution dicussion related work conclusion$",
-#        "^introduction related work method experiment result dicussion conclusion$"
-    ]
+    fail_counter = 0
+    tree = Tree(["*"], None)
+    temp_set = set()
+    csv_set = set()
+
+    for item in templates:
+        temp_set.add(tuple(item))
     
     for item in csv_list:
-        csv_string = " ".join(item[1:])
-        #print(csv_string)
-        for strings in wildcard_strings:
-            result = re.search(strings, csv_string)
-            if result is not None:
-                print("_____________________________")
-                print("Match")
-                print(csv_string)
-                print(strings)
-                counter += 1
-                break
-                print("_____________________________")
-            #else:
-            #    print("_____________________________")
-            #    print("No match:")
-            #    print(csv_string)
-            #    print(strings)
-            #    print("_____________________________")
+        csv_set.add(tuple(item[1:]))
+
+    for templ in temp_set:
+        if templ:
+            update_tree(tree, templ)
+    
+    for templ in csv_set:
+        if templ:
+            update_tree(tree, templ)
+
+
+    # Export as anytree
+    atree = t2anytree(tree)
+
+    # Prune tree 
+    root = atree.children[0]
+    root.parent = None
+    # Count Nodes
+    counter = sum([1 for node in PreOrderIter(root)])
+    fail_counter = sum([1 for node in PreOrderIter(atree)])
+
+    # graphviz needs to be installed for the next line!, #N: via apt, not pip
+    DotExporter(root).to_picture("pictures/test_tree.png")
+
     print("_________________________")
-    print("Number of Papers matched: ", counter)
+    print("Number of Papers: ", len(csv_list))
+    print("Size of Template Batch: ", len(templates))
+    print("Size of Tree: ", counter)
+    print("Number of Papers that matched Template: ", (len(csv_list) - fail_counter + 1))
+    print("Number of Papers not matched: ", fail_counter-1)
 
 
 # Alles nach Appendix wegwerfen                         X
@@ -326,6 +329,10 @@ def test_templates(templates, csv_list):
 # ersten 100 dokumente anschauen                        X
 
 # Wörterbuch und Regel in Dateien speichern             X
+# Wörterbuch während der Laufzeit definieren            X
+
+
+# Experimente:
 # Wörterbuch während der Laufzeit definieren            X
 
 
@@ -354,7 +361,6 @@ def loop(csv_2k):
 
     print(f"Size of Corpus: {len(csv_2k)}")
     print(f"Size of Training Set: {len(train)}")
-
 
     r = []
     # Iterate through alle docs
@@ -408,12 +414,12 @@ def loop(csv_2k):
         # TODO read in rules from JSON file
         r_string = ' '.join([str(elem) for elem in r])
         print("r_string", r_string)
-        for item in wildcard_list:
-            x = re.search(item, r_string)
-            if x:
-                print("x", x.string)
-                print("Rule found in Ruleset.")
-                r = []
+        # for item in wildcard_list:
+        #     x = re.search(item, r_string)
+        #     if x:
+        #         print("x", x.string)
+        #         print("Rule found in Ruleset.")
+        #         r = []
                 
 
         r.append(support_method(r))
@@ -464,13 +470,15 @@ def loop(csv_2k):
 #iter_through_doc_set()
 #find_nonsense_paper()
 
-
+# Loading Lists from external Documents
 csv_16k = load_items_from_csv(csv_filename_16k)
 csv_improved = load_items_from_csv(csv_filename_improved)
 csv_2k = load_items_from_csv(csv_filename_2k)
 synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
-test_templates(templates, csv_16k)    # Wie viele Paper matchen?
+
+
+test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
 #loop(csv_2k)
 
 #lemmatizer(csv_16k)
@@ -493,4 +501,19 @@ with open("JSON/synonyms.json", "w") as outfile:
 #   - break:    923 
 # 16k:
 #   - all:      5876
-#   - break:    5873
+#   - break:    5541
+
+# Tree Experiment:
+# 2k:
+# Number of Papers:  2264
+# Size of Template Batch:  12
+# Size of Tree:  826
+# Number of Papers that matched Template:  945
+# Number of Papers not matched:  1319
+
+# 16k:
+# Number of Papers:  15911
+# Size of Template Batch:  12
+# Size of Tree:  5138
+# Number of Papers that matched Template:  6560
+# Number of Papers not matched:  9351
