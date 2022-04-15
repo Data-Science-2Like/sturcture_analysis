@@ -283,18 +283,18 @@ def test_templates(templates, csv_list):
         # print(temp_string)
         # wildcard_strings.append(temp_string)
     wildcard_strings = [
-        #"^introduction.*conclusion$",
-        "^introduction method result and discussion conclusion$",
-        "^introduction method result discussion conclusion$",
-        "^introduction theory basics state of the art investigation and analysis conclusion$",
-        "^introduction techniques method result conclusion$",
-        "^introduction related work.* result conclusion$",
-        "^introduction background.* related work future work conclusion$",
-        "^introduction related work method experiment interpretation conclusion$",
-        "^introduction state of the art method result dicussion conclusion$",
-        "^introduction related work.* result dicussion conclusion$",
-        "^introduction state of the art motivation solution dicussion related work conclusion$",
-        "^introduction related work method experiment result dicussion conclusion$"
+        "^introduction.*conclusion$",
+#        "^introduction method result and discussion conclusion$",
+#        "^introduction method result discussion conclusion$",
+#        "^introduction theory basics state of the art investigation and analysis conclusion$",
+#        "^introduction techniques method result conclusion$",
+#        "^introduction related work.* result conclusion$",
+#        "^introduction background.* related work future work conclusion$",
+#        "^introduction related work method experiment interpretation conclusion$",
+#        "^introduction state of the art method result dicussion conclusion$",
+#        "^introduction related work.* result dicussion conclusion$",
+#        "^introduction state of the art motivation solution dicussion related work conclusion$",
+#        "^introduction related work method experiment result dicussion conclusion$"
     ]
     
     for item in csv_list:
@@ -335,6 +335,9 @@ def test_templates(templates, csv_list):
 # Failure von Hand anschauen > warum nicht funktioniert?
 # Evaluierung: 100 Stück = Implementierung validieren 
 # Support pro Regel: Datengrundlage validieren
+
+# Keine neuen Knoten in den Baum einfügen >> nur neue Synonyme lernen
+# Negative Beispiele in externer Datei speicher 
 
 # ############################################################
 #   Main Loop
@@ -490,4 +493,4 @@ with open("JSON/synonyms.json", "w") as outfile:
 #   - break:    923 
 # 16k:
 #   - all:      5876
-#   - break:    5541
+#   - break:    5873
