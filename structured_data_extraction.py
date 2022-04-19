@@ -340,7 +340,7 @@ def test_templates(templates, csv_list, synonyms):
 # ############################################################
 #   Main Loop
 # ############################################################
-def loop(templates, csv_2k):
+def loop(templates, csv_list):
     print("================================================================")
     print("================== Structured Data Extraction ==================")
     print("================================================================")
@@ -350,10 +350,10 @@ def loop(templates, csv_2k):
     add_set = set()
     
     # Choose size of training set
-    for i in range(1):
-        train.append(random.choice(csv_2k))
+    for i in range(2):
+        train.append(random.choice(csv_list))
 
-    print(f"Size of Corpus: {len(csv_2k)}")
+    print(f"Size of Corpus: {len(csv_list)}")
     print(f"Size of Training Set: {len(train)}")
 
     ## Create Tree with Templates
@@ -406,26 +406,50 @@ def loop(templates, csv_2k):
         # 
         running = True
         while(running):
+            # Clear screen and print Tree
             clear()
             for pre, _, node in RenderTree(atree):
                 print("%s%s" % (pre, node.name))
             print("_______________________________________________________________________________")
             print(f"New Rule: {r}")
 
+            # Get User Input
             user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
             if user_input == "r":
                 print("Rule added.")
+                # Convert Rule to Tuple > insert into Tree
                 add_set.add(tuple(r))
                 for item in add_set:
                     update_tree(tree, item)
                 # Export as anytree
                 atree = t2anytree(tree)
-            else:
                 r = []
                 running = False
+            elif user_input == "s":
+                print("introduction | related work | experiment | method | data set | result | discussion | conclusion | \n")
+                sec_input = input("Please enter the section you want to add an synonym to:\n")
+                syn_input = input("Please enter the synonym:\n")
+                synonyms[syn_input] = sec_input
+            elif user_input == "no":
+                r = []
+                running = False
+        ##
 
-
-
+    clear()
+    for pre, _, node in RenderTree(atree):
+        print("%s%s" % (pre, node.name))
+        
+    # Prune tree 
+    root = atree.children[0]
+    root.parent = None
+    # Count Nodes
+    counter = sum([1 for node in PreOrderIter(root)])
+        
+    # Statistics     
+    print("Number of Papers: ", len(csv_list))
+    print("Size of Training Batch: ", len(train))
+    print("Size of Template Batch: ", len(templates))
+    print("Size of Tree: ", counter)
 
 
         #print(support_method(r))
@@ -539,3 +563,7 @@ with open("JSON/synonyms.json", "w") as outfile:
 # Size of Tree:  5138
 # Number of Papers that matched Template:  6560
 # Number of Papers not matched:  9351
+
+
+# Fragen:
+#   - Template: "result and discussion" ??
