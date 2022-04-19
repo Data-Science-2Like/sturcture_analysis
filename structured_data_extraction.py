@@ -323,19 +323,6 @@ def test_templates(templates, csv_list, synonyms):
     print("Number of Papers not matched: ", fail_counter-1)
 
 
-# Alles nach Appendix wegwerfen                         X
-# Support Methode > auf wie viele Paper matched es      X
-# TODO Synonymliste                                     X
-# ersten 100 dokumente anschauen                        X
-
-# Wörterbuch und Regel in Dateien speichern             X
-# Wörterbuch während der Laufzeit definieren            X
-
-
-# Experimente:
-# Wörterbuch während der Laufzeit definieren            X
-
-
 # Experimente:
 # Wie viele Paper matchen?                              => 5541 (break), 5876 (all), 352 (without easy) 
 # Paper einsortieren und Tiefe erfassen
@@ -356,7 +343,7 @@ def loop(csv_2k):
     train = []
     
     # Choose size of training set
-    for i in range(3):
+    for i in range(1):
         train.append(random.choice(csv_2k))
 
     print(f"Size of Corpus: {len(csv_2k)}")
@@ -366,97 +353,84 @@ def loop(csv_2k):
     # Iterate through alle docs
     for i, docs in enumerate(train):
         
-        lat_name = ""
         for items in docs:
             #####################
             # If Latex in name or empty => skip 
             if "Latex" in items:
-                lat_name = items
                 continue
             if len(items) == 0:
                 continue
+            if "appendix" in items:
+                break
             #####################
-                
-            # String completly lowercase
-            item = items.lower()    
+            #print(items)
+            # Check if Section Heading already in Synonyms
+            for i, syn in enumerate(synonyms):
+                # If SH is  in Synonyms => replace with synonym
+                if items == syn:
+                    #print(i, ":" ,items)
+                    items = synonyms[syn]
+                    #print(i, ":" ,items)
 
-            #####################
-            # Stemming the Sections to reduce redudancy
-            words = nltk.word_tokenize(item)
-            stem_sentence = []
-            for x in words:
-                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
-                stem_sentence.append(" ")
-            item = "".join(stem_sentence).rstrip()
-            #####################
- 
-                # try:
-                #     # Add to Rule and Synonyms
-                #     if not item in synonyms[i]:
-                #         synonyms[i].append(item)
-                # except Exception as e:
-                #     print("Index out of range: ",e)
-                #     break
- 
             # Add section heading to list
-            r.append(item)
+            r.append(items)
             # If section is "conclusion" cut everything after it
-            if "conclusion" in item:
+            if "conclusion" in items:
                 break                
 
         
-        #print(support_method(r))
-        # if r in R:
-            # print(f"Rule {r} already in Ruleset.")
-            #         r = []
-            #         continue
+    #     #print(support_method(r))
+    #     # if r in R:
+    #         # print(f"Rule {r} already in Ruleset.")
+    #         #         r = []
+    #         #         continue
         
-        # TODO read in rules from JSON file
-        r_string = ' '.join([str(elem) for elem in r])
-        print("r_string", r_string)
-        # for item in wildcard_list:
-        #     x = re.search(item, r_string)
-        #     if x:
-        #         print("x", x.string)
-        #         print("Rule found in Ruleset.")
-        #         r = []
+    #     # TODO read in rules from JSON file
+    #     r_string = ' '.join([str(elem) for elem in r])
+    #     print("r_string", r_string)
+    #     # for item in wildcard_list:
+    #     #     x = re.search(item, r_string)
+    #     #     if x:
+    #     #         print("x", x.string)
+    #     #         print("Rule found in Ruleset.")
+    #     #         r = []
                 
 
-        r.append(support_method(r))
-        # Loop
-        running = True
-        while(running): 
-            print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
-            print(lat_name)
-            print(f"New Rule: {r}")
-            print(f"[{i+1}]: No matching Rule found.")
+        # #r.append(support_method(r))
+        # # Loop
+        # running = True
+        # while(running): 
+        #     print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
+        #     print(lat_name)
+        #     print(f"New Rule: {r}")
+        #     print(f"[{i+1}]: No matching Rule found.")
 
-            for item in r:
-                if item in synonyms:
-                    print(f"Found:  {item}")
+        #     for item in r:
+        #         if item in synonyms:
+        #             print(f"Found:  {item}")
             
             
-            user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
-            if user_input == "r":
-                print("Rule added.")
-                print("_______________________________________________________________________________")
-                R.append(r)
-                r = []
-                running = False
-            # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
-            # TODO Syns beim training auch schon abfragen?                      w
-            elif user_input == "s":
-                print("_______________________________________________________________________________")
-                print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
-                print("_______________________________________________________________________________")
-                sec_input = input("Please enter the section you want to add an synonym to:\n")
-                syn_input = input("Please enter the synonym:\n")
-                synonyms[syn_input] = sec_input 
-                print("_______________________________________________________________________________")
-            else:
-                r = []
-                running = False
-                print("_______________________________________________________________________________")
+        #     user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
+        #     if user_input == "r":
+        #         print("Rule added.")
+        #         print("_______________________________________________________________________________")
+        #         R.append(r)
+        #         r = []
+        #         running = False
+        #     # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
+        #     # TODO Syns beim training auch schon abfragen?                      w
+        #     elif user_input == "s":
+        #         print("_______________________________________________________________________________")
+        #         print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
+        #         print("_______________________________________________________________________________")
+        #         sec_input = input("Please enter the section you want to add an synonym to:\n")
+        #         syn_input = input("Please enter the synonym:\n")
+        #         synonyms[syn_input] = sec_input 
+        #         print("_______________________________________________________________________________")
+        #     else:
+        #         r = []
+        #         running = False
+        #         print("_______________________________________________________________________________")
 
 
         
@@ -478,8 +452,8 @@ synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
 
 
-test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-#loop(csv_2k)
+#test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
+loop(csv_2k)
 
 #lemmatizer(csv_16k)
 
