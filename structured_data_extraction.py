@@ -9,7 +9,7 @@ import json
 import nltk
 from nltk.stem import WordNetLemmatizer
 from Tree import *
-
+from os import system, name
 
 
 # Set up logging
@@ -84,6 +84,17 @@ def load_items_into_soup():
         except Exception as e:
             logger.debug(f"Doc #{i}: {item} could not be loaded.")
             logger.debug("Error occured: "+ str(e))
+
+# ############################################################
+#   define our clear function
+# ############################################################
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
 
 # ############################################################
 #   Iterate through all Documents
@@ -244,6 +255,7 @@ def lemmatizer(csv_file):
             csvwriter.writerow(new_row)
             new_row = []
 
+
 # ############################################################
 #   Calculate Support
 # ############################################################
@@ -252,21 +264,8 @@ def support_method(rule):
     sections = []
     for docs in D:
         for items in docs:
-            if "Latex" in items:
-                continue
-            if len(items) == 0:
-                continue
-            # String completly lowercase
-            item = items.lower()  
-
-            words = nltk.word_tokenize(item)
-            stem_sentence = []
-            for x in words:
-                stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
-                stem_sentence.append(" ")
-            item = "".join(stem_sentence).rstrip()
-
-            sections.append(item)
+            
+            sections.append(items)
         if rule == sections:
             percentage += 1
         sections = []
@@ -287,20 +286,23 @@ def test_templates(templates, csv_list, synonyms):
     temp_set = set()
     csv_set = set()
 
+    # Convert template list to Set
     for item in templates:
         temp_set.add(tuple(item))
     
+    # Convert HS list to Set
     for item in csv_list:
         csv_set.add(tuple(item[1:]))
 
+    # Create Template Tree
     for templ in temp_set:
         if templ:
             update_tree(tree, templ)
     
+    # Update Template Tree with new headings
     for templ in csv_set:
         if templ:
             update_tree(tree, templ)
-
 
     # Export as anytree
     atree = t2anytree(tree)
@@ -322,6 +324,8 @@ def test_templates(templates, csv_list, synonyms):
     print("Number of Papers that matched Template: ", (len(csv_list) - fail_counter + 1))
     print("Number of Papers not matched: ", fail_counter-1)
 
+    return root
+
 
 # Experimente:
 # Wie viele Paper matchen?                              => 5541 (break), 5876 (all), 352 (without easy) 
@@ -336,11 +340,14 @@ def test_templates(templates, csv_list, synonyms):
 # ############################################################
 #   Main Loop
 # ############################################################
-def loop(csv_2k):
+def loop(templates, csv_2k):
     print("================================================================")
     print("================== Structured Data Extraction ==================")
     print("================================================================")
     train = []
+    tree = Tree(["*"], None)
+    temp_set = set()
+    add_set = set()
     
     # Choose size of training set
     for i in range(1):
@@ -348,6 +355,22 @@ def loop(csv_2k):
 
     print(f"Size of Corpus: {len(csv_2k)}")
     print(f"Size of Training Set: {len(train)}")
+
+    ## Create Tree with Templates
+    # Convert template list to Set
+    for item in templates:
+        temp_set.add(tuple(item))
+
+    # Create Template Tree
+    for templ in temp_set:
+        if templ:
+            update_tree(tree, templ)
+        
+    
+    # Export as anytree
+    atree = t2anytree(tree)
+    #print(RenderTree(atree))
+    ##
 
     r = []
     # Iterate through alle docs
@@ -376,14 +399,41 @@ def loop(csv_2k):
             r.append(items)
             # If section is "conclusion" cut everything after it
             if "conclusion" in items:
-                break                
+                break 
 
-        
-    #     #print(support_method(r))
-    #     # if r in R:
-    #         # print(f"Rule {r} already in Ruleset.")
-    #         #         r = []
-    #         #         continue
+
+        ## Loop
+        # 
+        running = True
+        while(running):
+            clear()
+            for pre, _, node in RenderTree(atree):
+                print("%s%s" % (pre, node.name))
+            print("_______________________________________________________________________________")
+            print(f"New Rule: {r}")
+
+            user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
+            if user_input == "r":
+                print("Rule added.")
+                add_set.add(tuple(r))
+                for item in add_set:
+                    update_tree(tree, item)
+                # Export as anytree
+                atree = t2anytree(tree)
+            else:
+                r = []
+                running = False
+
+
+
+
+
+        #print(support_method(r))
+
+        # if r in R:
+        #     print(f"Rule {r} already in Ruleset.")
+        #     r = []
+        #     continue
         
     #     # TODO read in rules from JSON file
     #     r_string = ' '.join([str(elem) for elem in r])
@@ -394,14 +444,14 @@ def loop(csv_2k):
     #     #         print("x", x.string)
     #     #         print("Rule found in Ruleset.")
     #     #         r = []
-                
+    
 
-        # #r.append(support_method(r))
+
+        # # #r.append(support_method(r))
         # # Loop
         # running = True
         # while(running): 
         #     print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
-        #     print(lat_name)
         #     print(f"New Rule: {r}")
         #     print(f"[{i+1}]: No matching Rule found.")
 
@@ -417,8 +467,6 @@ def loop(csv_2k):
         #         R.append(r)
         #         r = []
         #         running = False
-        #     # TODO wenn synonym eingefügt > Regel nochmal überprüfen??          X
-        #     # TODO Syns beim training auch schon abfragen?                      w
         #     elif user_input == "s":
         #         print("_______________________________________________________________________________")
         #         print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
@@ -453,7 +501,7 @@ templates = load_from_json_file(template_filename)
 
 
 #test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-loop(csv_2k)
+loop(templates, csv_2k)
 
 #lemmatizer(csv_16k)
 
