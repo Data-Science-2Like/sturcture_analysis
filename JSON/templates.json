@@ -7,85 +7,45 @@
     [
         "introduction",
         "method",
-        "result and discussion",
-        "conclusion"
+        "experiment",
+        "conclusion" 
     ],
     [
         "introduction",
         "method",
-        "result",
+        "discussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "related work",
+        "method",
+        "experiment",
+        "discussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "related work",
+        "*",
+        "experiment",
+        "dicussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "related work",
+        "method",
+        "*",
         "discussion",
         "conclusion"
     ],
-    [
-        "introduction",
-        "theory basics",
-        "state of the art",
-        "investigation and analysis",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "techniques",
-        "method",
-        "result",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "related work",
-        "*",
-        "result",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "background",
-        "*",
-        "related work",
-        "future work",
-        "conclusion" 
-    ],
+
     [
         "introduction",
         "related work",
         "method",
         "experiment",
-        "interpretation",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "state of the art",
-        "method",
-        "result",
-        "dicussion",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "related work",
-        "*",
-        "result",
-        "dicussion",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "state of the art",
-        "motivation",
-        "solution",
-        "dicussion",
-        "related work",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "related work",
-        "method",
-        "experiment",
-        "result",
-        "dicussion",
         "conclusion" 
     ]
 ]
