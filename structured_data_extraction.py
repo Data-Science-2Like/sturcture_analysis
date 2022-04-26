@@ -391,24 +391,32 @@ def loop(templates, csv_list):
             for pre, _, node in RenderTree(atree):
                 print("%s%s" % (pre, node.name))
             print("_______________________________________________________________________________")
+            
+            # Declare root of tree
             root = atree.children[0]
             new_rule =  ' '.join(r)
-            #[node.name for node in PreOrderIter(root) if node.name == r]
-            #[print((node.name)) for node in PreOrderIter(root)]
+            ##
+            # iterate through tree 
             for item in PreOrderIter(root):
-                temp = re.sub(r"[^a-zA-Z0-9 ]", "", item.name)
+                # format the strings and list to the same format
+                temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
+                print(temp)
                 if temp == new_rule:
                     print("Rule already in template.")
                     if temp in support_dict:
                         support_dict[temp] += 1
                     else:
                         support_dict[temp] = 1
-                
-            print(support_dict)
-            print(f"Rule: {r} | Support: {support_method(support_dict, ' '.join(r), len(train))}")
-            #print(f"Rule: {r}")
+                    
+            # If rule in templates > print support
+            if new_rule in support_dict:
+                print(f"Rule: {r} | Support: {support_method(support_dict, ' '.join(r), len(train))}")
+            else: 
+                print(f"Rule: {r}")
+            ##
+
             # Get User Input
-            user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
+            user_input = input("Do you want to add a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\nFor the next rule: (Press [n])\n")
             if user_input == "r":
                 print("Rule added.")
                 # Convert Rule to Tuple > insert into Tree
@@ -424,7 +432,7 @@ def loop(templates, csv_list):
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
                 synonyms[syn_input] = sec_input
-            elif user_input == "no":
+            elif user_input == "n":
                 r = []
                 running = False
         ##
@@ -522,7 +530,7 @@ templates = load_from_json_file(template_filename)
 
 
 #test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-loop(templates, csv_improved)
+loop(templates, csv_2k)
 
 #lemmatizer(csv_16k)
 
