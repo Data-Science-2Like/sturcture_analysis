@@ -1,5 +1,5 @@
-from cProfile import run
 import random
+from os import system, name
 from TexSoup import TexSoup
 import logging
 import datetime
@@ -9,7 +9,8 @@ import json
 import nltk
 from nltk.stem import WordNetLemmatizer
 from Tree import *
-from os import system, name
+from anytree import Node, RenderTree, AsciiStyle, PostOrderIter
+
 
 
 # Set up logging
@@ -49,21 +50,6 @@ D = []
 R = []
 # Create Synonym Dict
 synonyms = {}
-# Template List
-wildcard_strings = [
-        "^introduction.*conclusion$",
-        "^introduction method result and discussion conclusion$",
-        "^introduction method result discussion conclusion$",
-        "^introduction theory basics state of the art investigation and analysis conclusion$",
-        "^introduction techniques method result conclusion$",
-        "^introduction related work.* result conclusion$",
-        "^introduction background.* related work future work conclusion$",
-        "^introduction related work method experiment interpretation conclusion$",
-        "^introduction state of the art method result dicussion conclusion$",
-        "^introduction related work.* result dicussion conclusion$",
-        "^introduction state of the art motivation solution dicussion related work conclusion$",
-        "^introduction related work method experiment result dicussion conclusion$"
-]
 # Create List for Nonesense sections
 nonsense_list = []
 # Create Lemmatizer Object
@@ -259,17 +245,9 @@ def lemmatizer(csv_file):
 # ############################################################
 #   Calculate Support
 # ############################################################
-def support_method(rule):
+def support_method(anzahl_dict, anzahl_regel, anzahl_gesamt):
     percentage = 0
-    sections = []
-    for docs in D:
-        for items in docs:
-            
-            sections.append(items)
-        if rule == sections:
-            percentage += 1
-        sections = []
-    percentage = percentage / len(D)
+    percentage = anzahl_dict[anzahl_regel] / anzahl_gesamt
     return round(percentage, 4)
     # str_per = '%.8f' % percentage
     # logger.debug(f"Percentage Rule {str_per} : {rule}")
@@ -348,9 +326,10 @@ def loop(templates, csv_list):
     tree = Tree(["*"], None)
     temp_set = set()
     add_set = set()
+    support_dict = {}
     
     # Choose size of training set
-    for i in range(2):
+    for i in range(20):
         train.append(random.choice(csv_list))
 
     print(f"Size of Corpus: {len(csv_list)}")
@@ -377,7 +356,7 @@ def loop(templates, csv_list):
     for i, docs in enumerate(train):
         
         for items in docs:
-            #####################
+            ###
             # If Latex in name or empty => skip 
             if "Latex" in items:
                 continue
@@ -385,8 +364,9 @@ def loop(templates, csv_list):
                 continue
             if "appendix" in items:
                 break
-            #####################
-            #print(items)
+            ##
+
+            ##
             # Check if Section Heading already in Synonyms
             for i, syn in enumerate(synonyms):
                 # If SH is  in Synonyms => replace with synonym
@@ -400,7 +380,7 @@ def loop(templates, csv_list):
             # If section is "conclusion" cut everything after it
             if "conclusion" in items:
                 break 
-
+            ##
 
         ## Loop
         # 
@@ -411,10 +391,32 @@ def loop(templates, csv_list):
             for pre, _, node in RenderTree(atree):
                 print("%s%s" % (pre, node.name))
             print("_______________________________________________________________________________")
-            print(f"New Rule: {r}")
+            
+            # Declare root of tree
+            root = atree.children[0]
+            new_rule =  ' '.join(r)
+            ##
+            # iterate through tree 
+            for item in PreOrderIter(root):
+                # format the strings and list to the same format
+                temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
+                print(temp)
+                if temp == new_rule:
+                    print("Rule already in template.")
+                    if temp in support_dict:
+                        support_dict[temp] += 1
+                    else:
+                        support_dict[temp] = 1
+                    
+            # If rule in templates > print support
+            if new_rule in support_dict:
+                print(f"Rule: {r} | Support: {support_method(support_dict, ' '.join(r), len(train))}")
+            else: 
+                print(f"Rule: {r}")
+            ##
 
             # Get User Input
-            user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
+            user_input = input("Do you want to add a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\nFor the next rule: (Press [n])\n")
             if user_input == "r":
                 print("Rule added.")
                 # Convert Rule to Tuple > insert into Tree
@@ -430,7 +432,7 @@ def loop(templates, csv_list):
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
                 synonyms[syn_input] = sec_input
-            elif user_input == "no":
+            elif user_input == "n":
                 r = []
                 running = False
         ##
@@ -450,6 +452,9 @@ def loop(templates, csv_list):
     print("Size of Training Batch: ", len(train))
     print("Size of Template Batch: ", len(templates))
     print("Size of Tree: ", counter)
+    for item in support_dict:
+        print(f"Rule: {item} | Support: {support_dict[item]/len(train)}")
+        
 
 
         #print(support_method(r))
