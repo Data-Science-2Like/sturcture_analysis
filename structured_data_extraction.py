@@ -1,3 +1,4 @@
+from ntpath import join
 import random
 from os import system, name
 from TexSoup import TexSoup
@@ -342,6 +343,8 @@ def loop(templates, csv_list):
 
     # Create Template Tree
     for templ in temp_set:
+        #print(type(templ))
+        #print(templ)
         if templ:
             update_tree(tree, templ)
         
@@ -394,23 +397,24 @@ def loop(templates, csv_list):
             
             # Declare root of tree
             root = atree.children[0]
-            new_rule =  ' '.join(r)
+            new_rule_tup = tuple(r)
+            new_rule_string = ' '.join(r)
             ##
             # iterate through tree 
             for item in PreOrderIter(root):
                 # format the strings and list to the same format
-                temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
-                print(temp)
-                if temp == new_rule:
+                #temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
+                res = eval(item.name)
+                if sub(new_rule_tup, res):
                     print("Rule already in template.")
-                    if temp in support_dict:
-                        support_dict[temp] += 1
+                    if new_rule_string in support_dict:
+                        support_dict[new_rule_string] += 1
                     else:
-                        support_dict[temp] = 1
+                        support_dict[new_rule_string] = 1
                     
             # If rule in templates > print support
-            if new_rule in support_dict:
-                print(f"Rule: {r} | Support: {support_method(support_dict, ' '.join(r), len(train))}")
+            if new_rule_string in support_dict:
+                print(f"Rule: {r} | Support: {support_method(support_dict, new_rule_string, len(train))}")
             else: 
                 print(f"Rule: {r}")
             ##
@@ -453,7 +457,7 @@ def loop(templates, csv_list):
     print("Size of Template Batch: ", len(templates))
     print("Size of Tree: ", counter)
     for item in support_dict:
-        print(f"Rule: {item} | Support: {support_dict[item]/len(train)}")
+        print(f"{item} | Support: {support_dict[item]/len(train)}")
         
 
 
