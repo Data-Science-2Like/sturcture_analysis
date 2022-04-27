@@ -576,3 +576,7 @@ with open("JSON/synonyms.json", "w") as outfile:
 
 # Fragen:
 #   - Template: "result and discussion" ??
+
+# TODO Training: Synonymwörterbuch erweiter
+# TODO Support für Templates ausspucken
+# TODO Syn: experiment*
