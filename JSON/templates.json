@@ -6,21 +6,13 @@
     ],
     [
         "introduction",
-        "method",
-        "experiment",
-        "conclusion" 
-    ],
-    [
-        "introduction",
-        "method",
+        "_",
         "discussion",
         "conclusion" 
     ],
     [
         "introduction",
-        "related work",
         "method",
-        "experiment",
         "discussion",
         "conclusion" 
     ],
@@ -28,24 +20,156 @@
         "introduction",
         "related work",
         "*",
+        "discussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "related work",
+        "_",
         "experiment",
-        "dicussion",
+        "discussion",
         "conclusion" 
     ],
     [
         "introduction",
         "related work",
         "method",
-        "*",
+        "experiment",
         "discussion",
-        "conclusion"
+        "conclusion" 
     ],
-
+    [
+        "introduction",
+        "*",
+        "experiment",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "_",
+        "experiment",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "method",
+        "experiment",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "related work",
+        "experiment",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "related work",
+        "_",
+        "experiment",
+        "conclusion" 
+    ],
     [
         "introduction",
         "related work",
         "method",
         "experiment",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "*",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "_",
+        "experiment",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "method",
+        "experiment",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "*",
+        "discussion",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "_",
+        "experiment",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "method",
+        "experiment",
+        "discussion",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "*",
+        "related work",
+        "discussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "_",
+        "experiment",
+        "discussion",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "_",
+        "experiment",
+        "related work",
+        "discussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "method",
+        "experiment",
+        "discussion",
+        "related work",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "_",
+        "experiment",
+        "discussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "method",
+        "experiment",
+        "discussion",
+        "conclusion" 
+    ],
+    [
+        "introduction",
+        "method",
+        "experiment",
+        "related work",
+        "discussion",
         "conclusion" 
     ]
 ]

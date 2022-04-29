@@ -1,3 +1,4 @@
+from ntpath import join
 import random
 from os import system, name
 from TexSoup import TexSoup
@@ -342,6 +343,8 @@ def loop(templates, csv_list):
 
     # Create Template Tree
     for templ in temp_set:
+        #print(type(templ))
+        #print(templ)
         if templ:
             update_tree(tree, templ)
         
@@ -394,23 +397,24 @@ def loop(templates, csv_list):
             
             # Declare root of tree
             root = atree.children[0]
-            new_rule =  ' '.join(r)
+            new_rule_tup = tuple(r)
+            new_rule_string = ' '.join(r)
             ##
             # iterate through tree 
             for item in PreOrderIter(root):
                 # format the strings and list to the same format
-                temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
-                #print(temp)
-                if temp == new_rule:
+                #temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
+                res = eval(item.name)
+                if sub(new_rule_tup, res):
                     print("Rule already in template.")
-                    if temp in support_dict:
-                        support_dict[temp] += 1
+                    if new_rule_string in support_dict:
+                        support_dict[new_rule_string] += 1
                     else:
-                        support_dict[temp] = 1
+                        support_dict[new_rule_string] = 1
                     
             # If rule in templates > print support
-            if new_rule in support_dict:
-                print(f"Rule: {r} | Support: {support_method(support_dict, ' '.join(r), len(train))}")
+            if new_rule_string in support_dict:
+                print(f"Rule: {r} | Support: {support_method(support_dict, new_rule_string, len(train))}")
             else: 
                 print(f"Rule: {r}")
             ##
@@ -452,8 +456,10 @@ def loop(templates, csv_list):
     print("Size of Training Batch: ", len(train))
     print("Size of Template Batch: ", len(templates))
     print("Size of Tree: ", counter)
+    # TODO Support für Templates berechnen > nicht für Regeln
+    # TODO Aufeinanderfolgende Sektionen zusammenfassen
     for item in support_dict:
-        print(f"Rule: {item} | Support: {support_dict[item]/len(train)}")
+        print(f"{item} | Support: {support_dict[item]/len(train)}")
         
 
 
@@ -530,7 +536,7 @@ templates = load_from_json_file(template_filename)
 
 
 #test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-loop(templates, csv_improved)
+loop(templates, csv_2k)
 
 #lemmatizer(csv_16k)
 
@@ -573,6 +579,16 @@ with open("JSON/synonyms.json", "w") as outfile:
 # Fragen:
 #   - Template: "result and discussion" ??
 
-# TODO Training: Synonymwörterbuch erweiter
-# TODO Support für Templates ausspucken
-# TODO Syn: experiment*
+# TODO Duplikate entfernen zwischen syn und temp match
+# TODO Experiment:  - Support für alle Regelen
+# TODO              - Differenz zwischen Parents und Children > Missing Rule? 
+# TODO              - Top-Down Iter >> 2 Counter (# matches, # multimatches)
+# TODO              - Mehrfachmatch jedesmal Parent mithochzählen (#match + #multimatch)
+# TODO              - 
+# TODO Pipeline:
+# TODO  1) NLP Preprocessing || Lemma
+# TODO  2) Wörterbuch
+# TODO  3) Duplikate entfernen
+# TODO  4) Template Match
+# TODO  ^----- Active Wrapper ---------^
+# TODO  5) eval Support
