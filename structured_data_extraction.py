@@ -400,7 +400,7 @@ def loop(templates, csv_list):
             for item in PreOrderIter(root):
                 # format the strings and list to the same format
                 temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
-                print(temp)
+                #print(temp)
                 if temp == new_rule:
                     print("Rule already in template.")
                     if temp in support_dict:
@@ -530,7 +530,7 @@ templates = load_from_json_file(template_filename)
 
 
 #test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-loop(templates, csv_2k)
+loop(templates, csv_improved)
 
 #lemmatizer(csv_16k)
 
