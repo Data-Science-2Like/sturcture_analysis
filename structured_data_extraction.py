@@ -328,6 +328,7 @@ def loop(templates, csv_list):
     temp_set = set()
     add_set = set()
     support_dict = {}
+    hit_counter = 0
     
     # Choose size of training set
     for i in range(20):
@@ -338,8 +339,12 @@ def loop(templates, csv_list):
 
     ## Create Tree with Templates
     # Convert template list to Set
+    # Create dict to hold support values
     for item in templates:
         temp_set.add(tuple(item))
+        new_template_tup = tuple(item)
+        # 2 Counter (# matches, # multimatches)
+        support_dict[str(new_template_tup)] = [0, 0]
 
     # Create Template Tree
     for templ in temp_set:
@@ -384,6 +389,11 @@ def loop(templates, csv_list):
             if "conclusion" in items:
                 break 
             ##
+        ## 
+        # Remove Duplicates
+        #print(f"r: {r}")
+        r = list(dict.fromkeys(r))
+        ##
 
         ## Loop
         # 
@@ -398,25 +408,31 @@ def loop(templates, csv_list):
             # Declare root of tree
             root = atree.children[0]
             new_rule_tup = tuple(r)
-            new_rule_string = ' '.join(r)
             ##
             # iterate through tree 
             for item in PreOrderIter(root):
                 # format the strings and list to the same format
                 #temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
                 res = eval(item.name)
+                # print(f"res: {res}")
+                #print(f"rule_tuple: {new_rule_tup}")
+                # print(f"rule_string: {new_rule_string}")
                 if sub(new_rule_tup, res):
-                    print("Rule already in template.")
-                    if new_rule_string in support_dict:
-                        support_dict[new_rule_string] += 1
-                    else:
-                        support_dict[new_rule_string] = 1
-                    
-            # If rule in templates > print support
-            if new_rule_string in support_dict:
-                print(f"Rule: {r} | Support: {support_method(support_dict, new_rule_string, len(train))}")
-            else: 
-                print(f"Rule: {r}")
+                    print("Rule found in templates.")
+                    print(f"Template: {res}")
+                    support_dict[str(res)][0] += 1 
+                    hit_counter += 1
+
+                    while (item.parent is not None):
+                        try:
+                            support_dict[item.parent.name][1] += 1
+                            hit_counter += 1
+                        except:
+                            pass
+                        item = item.parent
+
+            print("_______________________________________________________________________________")
+            print(f"Rule: {r}")
             ##
 
             # Get User Input
@@ -452,69 +468,16 @@ def loop(templates, csv_list):
     counter = sum([1 for node in PreOrderIter(root)])
         
     # Statistics     
+    print("_______________________________________________________________________________")
     print("Number of Papers: ", len(csv_list))
     print("Size of Training Batch: ", len(train))
     print("Size of Template Batch: ", len(templates))
-    print("Size of Tree: ", counter)
-    # TODO Support für Templates berechnen > nicht für Regeln
-    # TODO Aufeinanderfolgende Sektionen zusammenfassen
     for item in support_dict:
-        print(f"{item} | Support: {support_dict[item]/len(train)}")
-        
-
-
-        #print(support_method(r))
-
-        # if r in R:
-        #     print(f"Rule {r} already in Ruleset.")
-        #     r = []
-        #     continue
-        
-    #     # TODO read in rules from JSON file
-    #     r_string = ' '.join([str(elem) for elem in r])
-    #     print("r_string", r_string)
-    #     # for item in wildcard_list:
-    #     #     x = re.search(item, r_string)
-    #     #     if x:
-    #     #         print("x", x.string)
-    #     #         print("Rule found in Ruleset.")
-    #     #         r = []
-    
-
-
-        # # #r.append(support_method(r))
-        # # Loop
-        # running = True
-        # while(running): 
-        #     print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
-        #     print(f"New Rule: {r}")
-        #     print(f"[{i+1}]: No matching Rule found.")
-
-        #     for item in r:
-        #         if item in synonyms:
-        #             print(f"Found:  {item}")
-            
-            
-        #     user_input = input("Do you want to accept a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\n")
-        #     if user_input == "r":
-        #         print("Rule added.")
-        #         print("_______________________________________________________________________________")
-        #         R.append(r)
-        #         r = []
-        #         running = False
-        #     elif user_input == "s":
-        #         print("_______________________________________________________________________________")
-        #         print("introduction | related work | methods | experiments | result | discussion | conclusion | future work\n")
-        #         print("_______________________________________________________________________________")
-        #         sec_input = input("Please enter the section you want to add an synonym to:\n")
-        #         syn_input = input("Please enter the synonym:\n")
-        #         synonyms[syn_input] = sec_input 
-        #         print("_______________________________________________________________________________")
-        #     else:
-        #         r = []
-        #         running = False
-        #         print("_______________________________________________________________________________")
-
+        support = round( (support_dict[item][0] + support_dict[item][1] )/ hit_counter,2)
+        if support > 0:
+            print(f"{item}: {support}")
+        #print(f"{item}: {(support_dict[item][0] + support_dict[item][1] )/ len(train)}")
+        #print(f"{item}: {support_dict[item]}")
 
         
 
@@ -579,7 +542,7 @@ with open("JSON/synonyms.json", "w") as outfile:
 # Fragen:
 #   - Template: "result and discussion" ??
 
-# TODO Duplikate entfernen zwischen syn und temp match
+# TODO Duplikate entfernen zwischen syn und temp match                                          Y
 # TODO Experiment:  - Support für alle Regelen
 # TODO              - Differenz zwischen Parents und Children > Missing Rule? 
 # TODO              - Top-Down Iter >> 2 Counter (# matches, # multimatches)
