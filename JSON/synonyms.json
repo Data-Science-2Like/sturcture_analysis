@@ -49,5 +49,8 @@
     "conclusion and future work": "conclusion",
     "concluding remark": "conclusion",
     "conclusion and discussion": "conclusion",
-    "conclusion and future direction": "conclusion"
+    "conclusion and future direction": "conclusion",
+    "introduction and framework": "introduction",
+    "our approach": "method",
+    "benchmark and experiment": "experiment"
 }
