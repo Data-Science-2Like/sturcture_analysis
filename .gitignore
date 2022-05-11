@@ -134,6 +134,7 @@ dmypy.json
 /Temp
 /Latex
 /Latex_big
+/Latex_files
 #/Latex_small
 #/JSON
 
@@ -141,3 +142,4 @@ dmypy.json
 # sturcture_json.py
 TemplateTree.ipynb
 test_Tree.py
+
