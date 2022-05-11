@@ -50,9 +50,7 @@
     "concluding remark": "conclusion",
     "conclusion and discussion": "conclusion",
     "conclusion and future direction": "conclusion",
-    "our method": "method",
-    "evaluation result": "result",
-    "experimental methodology": "method",
-    "model": "method",
-    "experiment and evaluation": "experiment"
+    "introduction and framework": "introduction",
+    "our approach": "method",
+    "benchmark and experiment": "experiment"
 }

@@ -24,7 +24,7 @@ logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 # Set up directory for LaTex Input
 directory = "Latex"
 template_filename = "JSON/templates.json"
-csv_filename_16k = "CSV/lemmatizer/sections_16k_lemma.csv"
+csv_filename_16k = "CSV/lemmatizer/sections_16k_lemma_v2.csv"
 csv_filename_2k = "CSV/lemmatizer/sections_2k_lemma.csv"
 csv_filename_improved = "CSV/lemmatizer/sections_improved_lemma.csv"
 syn_filename = "JSON/synonyms.json"
@@ -331,7 +331,7 @@ def loop(templates, csv_list):
     hit_counter = 0
     
     # Choose size of training set
-    for i in range(100):
+    for i in range(500):
         train.append(random.choice(csv_list))
 
     print(f"Size of Corpus: {len(csv_list)}")
@@ -358,7 +358,7 @@ def loop(templates, csv_list):
     atree = t2anytree(tree)
     #print(RenderTree(atree))
     ##
-
+    counter = 0
     r = []
     # Iterate through alle docs
     for i, docs in enumerate(train):
@@ -397,9 +397,11 @@ def loop(templates, csv_list):
 
         ## Loop
         # 
+        counter += 1
         running = True
         while(running):
             # Clear screen and print Tree
+            
             clear()
             for pre, _, node in RenderTree(atree):
                 print("%s%s" % (pre, node.name))
@@ -433,6 +435,7 @@ def loop(templates, csv_list):
 
             print("_______________________________________________________________________________")
             print(f"Rule: {r}")
+            print(f"Counter: {counter}")
             ##
 
             # Get User Input
@@ -448,7 +451,7 @@ def loop(templates, csv_list):
                 r = []
                 running = False
             elif user_input == "s":
-                print("introduction | related work | experiment | method | result | discussion | conclusion | \n")
+                print("introduction | related work | method | experiment | result | discussion | conclusion | \n")
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
                 synonyms[syn_input] = sec_input
@@ -556,6 +559,47 @@ with open("JSON/synonyms.json", "w") as outfile:
 # TODO  ^----- Active Wrapper ---------^
 # TODO  5) eval Support
 
-# TODO Großen Datensatz vorbereiten
-# TODO Trennen Test und Trainingsdatensatz
-# TODO Experiment 500
+
+##############################
+# First Run [500]
+##############################
+# Number of Papers:  15065
+# Size of Training Batch:  500
+# Size of Template Batch:  25
+# ('introduction', '*', 'conclusion'): 0.61
+# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
+# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+# ('introduction', '*', 'experiment', 'conclusion'): 0.22
+# ('introduction', '_', 'experiment', 'conclusion'): 0.03
+# ('introduction', 'related work', 'experiment', 'conclusion'): 0.01
+# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.04
+# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
+# ('introduction', '*', 'related work', 'conclusion'): 0.03
+##############################
+# Second Run [500]
+##############################
+# Number of Papers:  15065
+# Size of Training Batch:  500
+# Size of Template Batch:  25
+# ('introduction', '*', 'conclusion'): 0.62
+# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
+# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+# ('introduction', '*', 'experiment', 'conclusion'): 0.23
+# ('introduction', '_', 'experiment', 'conclusion'): 0.02
+# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.05
+# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
+# ('introduction', '*', 'related work', 'conclusion'): 0.03
+##############################
+# Third Run [500]
+##############################
+# Number of Papers:  15065
+# Size of Training Batch:  500
+# Size of Template Batch:  25
+# ('introduction', '*', 'conclusion'): 0.62
+# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
+# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+# ('introduction', '*', 'experiment', 'conclusion'): 0.22
+# ('introduction', '_', 'experiment', 'conclusion'): 0.03
+# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.04
+# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
+# ('introduction', '*', 'related work', 'conclusion'): 0.03
