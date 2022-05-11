@@ -559,6 +559,12 @@ with open("JSON/synonyms.json", "w") as outfile:
 # TODO  ^----- Active Wrapper ---------^
 # TODO  5) eval Support
 
+# TODO Wie viele Paper gab es vor und nach dem Filtern
+# TODO [I * D]
+# TODO Auf wie vielen Papern Syns gelernt
+# TODO Parserfehler: nicht mit aufnehmen
+# TODO Fehlerhafte Beispiele notieren
+# TODO Datensatz ohne 2019,2020
 
 ##############################
 # First Run [500]
