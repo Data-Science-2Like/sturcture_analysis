@@ -25,7 +25,7 @@
     "experiment and result": "experiment",
     "analysis": "experiment",
     "methodology": "method",
-    "method": "method",
+    "method": "proposed approach",
     "techniques": "method",
     "material and method": "method",
     "proposed method": "method",
@@ -49,5 +49,10 @@
     "conclusion and future work": "conclusion",
     "concluding remark": "conclusion",
     "conclusion and discussion": "conclusion",
-    "conclusion and future direction": "conclusion"
+    "conclusion and future direction": "conclusion",
+    "our method": "method",
+    "evaluation result": "result",
+    "experimental methodology": "method",
+    "model": "method",
+    "experiment and evaluation": "experiment"
 }

@@ -331,7 +331,7 @@ def loop(templates, csv_list):
     hit_counter = 0
     
     # Choose size of training set
-    for i in range(20):
+    for i in range(100):
         train.append(random.choice(csv_list))
 
     print(f"Size of Corpus: {len(csv_list)}")
@@ -448,7 +448,7 @@ def loop(templates, csv_list):
                 r = []
                 running = False
             elif user_input == "s":
-                print("introduction | related work | experiment | method | data set | result | discussion | conclusion | \n")
+                print("introduction | related work | experiment | method | result | discussion | conclusion | \n")
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
                 synonyms[syn_input] = sec_input
@@ -499,7 +499,7 @@ templates = load_from_json_file(template_filename)
 
 
 #test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-loop(templates, csv_2k)
+loop(templates, csv_16k)
 
 #lemmatizer(csv_16k)
 
@@ -555,3 +555,7 @@ with open("JSON/synonyms.json", "w") as outfile:
 # TODO  4) Template Match
 # TODO  ^----- Active Wrapper ---------^
 # TODO  5) eval Support
+
+# TODO Großen Datensatz vorbereiten
+# TODO Trennen Test und Trainingsdatensatz
+# TODO Experiment 500
