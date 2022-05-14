@@ -16,7 +16,7 @@ logger.info("===================================================================
 logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 
-directory = "Latex_files/latex_30k"
+directory = "Latex_files/full/expanded"
 texfiles = []
 # Create List with Training Documents
 D = []
@@ -52,7 +52,7 @@ def load_items_into_soup():
 #   Write into CSV file
 # ############################################################
 def load_into_csv_file():
-    filename = "CSV/Remote/sections_headings_10.csv"
+    filename = "CSV/Remote/sections_headings_remote.csv"
 
     with open(filename, 'w') as csvfile:
         # Creating csv writer object
@@ -78,8 +78,6 @@ def load_into_csv_file():
                     # In case of "uppercaseIntroduction"
                     if "uppercase" in clean_string:
                         clean_string = clean_string.split("uppercase")[1]
-                    if "bf" in clean_string:
-                        clean_string = clean_string.split("bf")[1]
                     # Go through token_list, bc parser falsely sets them as sections    
                     if [ele for ele in token_list if(ele in clean_string)]:
                         continue
@@ -97,7 +95,4 @@ def load_into_csv_file():
 
 # Function Calls
 load_items_into_soup()
-# iter_through_doc_set()
 load_into_csv_file()
-
-print()
