@@ -15,10 +15,9 @@ logger.info("===================================================================
 logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 
-directory = "Latex_files/full/expanded"
+directory = "Latex_files/latex_30k"
 texfiles = []
-# Create List with Training Documents
-D = []
+
 # Create Rule Set
 R = []
 
@@ -30,22 +29,11 @@ for filename in os.listdir(directory):
         texfiles.append(f)
 
 # Cut down to 5
-texfiles = texfiles[:20]
+#texfiles = texfiles[:10]
 
 # Load File into Soup
 logger.info("Load LaTex File into Soup")
 
-# ############################################################
-def load_items_into_soup():
-    for i,item in enumerate(texfiles):
-        try:
-            logger.debug(f"Load {i}: {item} into soup.")
-            soup = TexSoup(open(item), tolerance=1)
-            D.append(soup)
-
-        except Exception as e:
-            logger.debug(f"Doc #{i}: {item} could not be loaded.")
-            logger.debug("Error occured: "+ str(e))
 
 # ############################################################
 #   Write into CSV file
@@ -60,19 +48,15 @@ def load_into_csv_file():
 
         for i,item in enumerate(texfiles):
             try:
-                new_section_list = []
-                # Logging if file can't load
                 logger.debug(f"Load {i}: {item} into soup.")
-                # Parsing TeXfile to soup, tolerance=1 for better section detection [errors with math mode]
                 soup = TexSoup(open(item), tolerance=1)
-                # Find all sections and add to list
-                section_list = list(soup.find_all('section'))
+
+                new_section_list = []
                 new_section_list.append(item)
 
-                # Iterate through sections to get rid of errors 
+                section_list = list(soup.find_all('section'))
+                
                 for item in section_list:
-                    item = item.lower()
-
                     clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
                     # In case of "uppercaseIntroduction"
                     if "uppercase" in clean_string:
@@ -82,16 +66,21 @@ def load_into_csv_file():
                         continue
 
                     new_section_list.append(clean_string)
-                
+
+
                 # writing the fields
                 logger.debug(f"Append | {new_section_list}  | to File.")
                 csvwriter.writerow(new_section_list)
 
             except Exception as e:
-                logger.debug(f"Doc #{i}: {item} could not be loaded.")
+                #logger.debug(f"Doc #{i}: {item} could not be loaded.")
                 logger.debug("Error occured: "+ str(e))
 
 
 # Function Calls
-load_items_into_soup()
 load_into_csv_file()
+
+
+logger.info("========================================================================")
+logger.info("End logging")
+logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
