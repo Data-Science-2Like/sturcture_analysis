@@ -2,7 +2,6 @@ from TexSoup import TexSoup
 import os
 import datetime
 import logging
-from nltk.stem import WordNetLemmatizer
 import csv
 import re
 
