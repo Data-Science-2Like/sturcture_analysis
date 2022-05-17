@@ -15,7 +15,7 @@ logger.info("===================================================================
 logger.info("Start logging")
 logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 
-directory = "Latex_files/latex_30k"
+directory = "Latex_files/full/expanded"
 texfiles = []
 
 # Create Rule Set
@@ -29,7 +29,7 @@ for filename in os.listdir(directory):
         texfiles.append(f)
 
 # Cut down to 5
-#texfiles = texfiles[:10]
+#texfiles = texfiles[:20]
 
 # Load File into Soup
 logger.info("Load LaTex File into Soup")
