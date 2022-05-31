@@ -1,6 +1,7 @@
 from ntpath import join
 import random
 from os import system, name
+from xxlimited import new
 from TexSoup import TexSoup
 import logging
 import datetime
@@ -345,6 +346,10 @@ def loop(templates, csv_list):
         new_template_tup = tuple(item)
         # 2 Counter (# matches, # multimatches)
         support_dict[str(new_template_tup)] = [0, 0]
+    
+    support_dict["['*']"] = [0, 0]
+    # for itrm in support_dict:
+    #     print(itrm)
 
     # Create Template Tree
     for templ in temp_set:
@@ -408,7 +413,8 @@ def loop(templates, csv_list):
             print("_______________________________________________________________________________")
             
             # Declare root of tree
-            root = atree.children[0]
+            root = atree.root
+            #root = atree.children[0]
             new_rule_tup = tuple(r)
             ##
             # iterate through tree 
@@ -416,7 +422,9 @@ def loop(templates, csv_list):
                 # format the strings and list to the same format
                 #temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
                 res = eval(item.name)
-                # print(f"res: {res}")
+                if res == ['*']:
+                    res = "1"
+                #print(f"res: {res}")
                 #print(f"rule_tuple: {new_rule_tup}")
                 # print(f"rule_string: {new_rule_string}")
                 if sub(new_rule_tup, res):
@@ -560,7 +568,7 @@ with open("JSON/synonyms.json", "w") as outfile:
 # TODO  5) eval Support
 
 # TODO Wie viele Paper gab es vor und nach dem Filtern
-# TODO [I * D]
+# TODO [I * D]                                                      X
 # TODO Auf wie vielen Papern Syns gelernt
 # TODO Parserfehler: nicht mit aufnehmen
 # TODO Fehlerhafte Beispiele notieren

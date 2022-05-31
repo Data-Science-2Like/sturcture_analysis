@@ -166,6 +166,11 @@
     ],
     [
         "introduction",
+        "*",
+        "discussion"
+    ],
+    [
+        "introduction",
         "method",
         "experiment",
         "related work",
