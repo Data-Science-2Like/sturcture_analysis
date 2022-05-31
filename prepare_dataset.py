@@ -5,7 +5,7 @@ import datetime
 import logging
 import csv
 import re
-
+import time
 
 # ############################################################
 #   Write into CSV file
@@ -17,9 +17,9 @@ def load_into_csv_file(item):
         soup = TexSoup(open(item), tolerance=1)
 
         new_section_list.append(item)
-                
+
         section_list = list(soup.find_all('section'))
-                
+
         for item in section_list:
             clean_string = re.sub('[^A-Za-z0-9 ]+', '', item.string)
             # In case of "uppercaseIntroduction"
@@ -38,6 +38,8 @@ def load_into_csv_file(item):
 
 
 if __name__ == '__main__':
+    start_time = time.time()
+
     # Set up logging
     logging.basicConfig(level=logging.DEBUG, filename="Logs/dataset_output.log")
     logger = logging.getLogger(__name__)
@@ -55,7 +57,7 @@ if __name__ == '__main__':
 
     # Create Rule Set
     R = []
-    pool = mp.Pool(mp.cpu_count())
+    pool = mp.Pool(16)
 
     # Iterate over files in directory
     for filename in os.listdir(directory):
@@ -65,7 +67,9 @@ if __name__ == '__main__':
             texfiles.append(f)
 
     # Cut down to 5
-    texfiles = texfiles[8150:]
+    # 35000:40000
+    # 92000:96000 23
+    texfiles = texfiles[100000:106342]
 
     # Load File into Soup
     logger.info("Load LaTex File into Soup")
@@ -86,7 +90,7 @@ if __name__ == '__main__':
 
     pool.close()
 
-    filename = "CSV/Remote/sections_headings_remote_part_2.csv"
+    filename = "CSV/Remote/sections_headings_remote_part_24.csv"
     with open(filename, 'w') as csvfile:
         # Creating csv writer object
         csvwriter = csv.writer(csvfile)
@@ -95,9 +99,7 @@ if __name__ == '__main__':
             #logger.debug(f"Append {item} to File.")
             csvwriter.writerow(item)
             #csvfile.flush()
-       
-    
+
+    print("Finished")
     logger.info("========================================================================")
     logger.info("End logging")
-    end_time = datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S")
-    logger.info(end_time)
