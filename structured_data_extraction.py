@@ -26,6 +26,8 @@ logger.info(datetime.datetime.now().strftime("%d.%b %Y %H:%M:%S"))
 directory = "Latex"
 template_filename = "JSON/templates.json"
 csv_filename_16k = "CSV/lemmatizer/sections_16k_lemma_v2.csv"
+csv_filename_61k_train = "CSV/sections_headings_61k_train.csv"
+csv_filename_61k_test = "CSV/sections_headings_61k_test.csv"
 csv_filename_2k = "CSV/lemmatizer/sections_2k_lemma.csv"
 csv_filename_improved = "CSV/lemmatizer/sections_improved_lemma.csv"
 syn_filename = "JSON/synonyms.json"
@@ -215,30 +217,40 @@ def load_from_json_file(filename):
 # ############################################################
 #   Lemmatize CSV file
 # ############################################################
-def lemmatizer(csv_file):
-    filename = "CSV/lemmatizer/sections_16k_lemma.csv"
+def lemmatizer(csv_file_in, csv_file_out):
+    
+    csv_list = []
+    # Read out csv file
+    with open(csv_file_in, 'r') as csvfile:
+            # Creating csv writer object
+            csvreader = csv.reader(csvfile)
+
+            for item in csvreader:
+                csv_list.append(item)
 
     new_row = []
-    with open(filename, 'w') as csvfile:
+    with open(csv_file_out, 'w') as csvfile:
         # Creating csv writer object
         csvwriter = csv.writer(csvfile)
 
-        for item in csv_file:
+        for item in csv_list:
             #print(item)
 
             for string in item:
                 #print(string)
-                if "appendix" in string:
-                    break
                 if "Latex" not in string:
                     string = string.lower()
+                if "appendix" in string:
+                    break
+                if "appendices" in string:
+                    break
 
-                    words = nltk.word_tokenize(string)
-                    stem_sentence = []
-                    for x in words:
-                        stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
-                        stem_sentence.append(" ")
-                    string = "".join(stem_sentence).rstrip()
+                words = nltk.word_tokenize(string)
+                stem_sentence = []
+                for x in words:
+                    stem_sentence.append(wordnet_lemmatizer.lemmatize(x))
+                    stem_sentence.append(" ")
+                string = "".join(stem_sentence).rstrip()
                 new_row.append(string)
             csvwriter.writerow(new_row)
             new_row = []
@@ -332,7 +344,7 @@ def loop(templates, csv_list):
     hit_counter = 0
     
     # Choose size of training set
-    for i in range(500):
+    for i in range(10):
         train.append(random.choice(csv_list))
 
     print(f"Size of Corpus: {len(csv_list)}")
@@ -422,8 +434,6 @@ def loop(templates, csv_list):
                 # format the strings and list to the same format
                 #temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
                 res = eval(item.name)
-                if res == ['*']:
-                    res = "1"
                 #print(f"res: {res}")
                 #print(f"rule_tuple: {new_rule_tup}")
                 # print(f"rule_string: {new_rule_string}")
@@ -459,7 +469,7 @@ def loop(templates, csv_list):
                 r = []
                 running = False
             elif user_input == "s":
-                print("introduction | related work | method | experiment | result | discussion | conclusion | \n")
+                print("introduction | related work | method | experiment | discussion | conclusion | \n")
                 sec_input = input("Please enter the section you want to add an synonym to:\n")
                 syn_input = input("Please enter the synonym:\n")
                 synonyms[syn_input] = sec_input
@@ -498,21 +508,24 @@ def loop(templates, csv_list):
 # ############################################################
 #load_items_into_soup()
 #load_into_csv_file()
-#iter_through_doc_set()
+# iter_through_doc_set()
 #find_nonsense_paper()
 
 # Loading Lists from external Documents
+csv_61k_train = load_items_from_csv(csv_filename_61k_train)
+csv_61k_test = load_items_from_csv(csv_filename_61k_test)
 csv_16k = load_items_from_csv(csv_filename_16k)
 csv_improved = load_items_from_csv(csv_filename_improved)
 csv_2k = load_items_from_csv(csv_filename_2k)
 synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
 
-
 #test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-loop(templates, csv_16k)
+loop(templates, csv_61k_test)
 
-#lemmatizer(csv_16k)
+# file_in = "CSV/sections_headings_61k_test.csv"
+# file_out = "CSV/sections_headings_61k_test.csv"
+# lemmatizer(file_in, file_out)
 
 
 # ############################################################
@@ -567,15 +580,15 @@ with open("JSON/synonyms.json", "w") as outfile:
 # TODO  ^----- Active Wrapper ---------^
 # TODO  5) eval Support
 
-# TODO Wie viele Paper gab es vor und nach dem Filtern
-# TODO [I * D]                                                      X
+# TODO Wie viele Paper gab es vor und nach dem Filtern              106k > 61k
+# TODO [I * D]                                                      Y
 # TODO Auf wie vielen Papern Syns gelernt
 # TODO Parserfehler: nicht mit aufnehmen
 # TODO Fehlerhafte Beispiele notieren
 # TODO Datensatz ohne 2019,2020
 
 ##############################
-# First Run [500]
+# First Run [6k]
 ##############################
 # Number of Papers:  15065
 # Size of Training Batch:  500
@@ -590,7 +603,7 @@ with open("JSON/synonyms.json", "w") as outfile:
 # ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
 # ('introduction', '*', 'related work', 'conclusion'): 0.03
 ##############################
-# Second Run [500]
+# Second Run [6k]
 ##############################
 # Number of Papers:  15065
 # Size of Training Batch:  500
@@ -604,7 +617,7 @@ with open("JSON/synonyms.json", "w") as outfile:
 # ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
 # ('introduction', '*', 'related work', 'conclusion'): 0.03
 ##############################
-# Third Run [500]
+# Third Run [6k]
 ##############################
 # Number of Papers:  15065
 # Size of Training Batch:  500
@@ -617,3 +630,35 @@ with open("JSON/synonyms.json", "w") as outfile:
 # ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.04
 # ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
 # ('introduction', '*', 'related work', 'conclusion'): 0.03
+
+##############################
+# Train Run [60k]
+##############################
+# Number of Papers:  52876
+# Size of Training Batch:  500
+# Size of Template Batch:  26
+# ('introduction', '*', 'conclusion'): 0.35
+# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
+# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+# ('introduction', '*', 'experiment', 'conclusion'): 0.14
+# ('introduction', '_', 'experiment', 'conclusion'): 0.02
+# ('introduction', 'method', 'experiment', 'conclusion'): 0.01
+# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.04
+# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
+# ('introduction', '*', 'related work', 'conclusion'): 0.02
+# ('introduction', '*', 'discussion'): 0.01
+##############################
+# Test Run [60k]
+##############################
+# Number of Papers:  5839
+# Size of Training Batch:  500
+# Size of Template Batch:  26
+# ('introduction', '*', 'conclusion'): 0.29
+# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
+# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+# ('introduction', '*', 'experiment', 'conclusion'): 0.11
+# ('introduction', '_', 'experiment', 'conclusion'): 0.01
+# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.03
+# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
+# ('introduction', '*', 'related work', 'conclusion'): 0.01
+# ('introduction', '*', 'discussion'): 0.01

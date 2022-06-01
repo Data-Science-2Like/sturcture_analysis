@@ -1,8 +1,8 @@
 import csv
 import logging
 
-in_filename = "CSV/lemmatizer/sections_16k_lemma.csv"
-out_filename = "CSV/lemmatizer/sections_16k_lemma_v2.csv"
+in_filename = "/home/danial/Documents/GitHub/latex_parser/CSV/Remote/sections_headings_remote_part_final.csv"
+out_filename = "/home/danial/Documents/GitHub/latex_parser/CSV/Cosmetic/sections_headings_61k_cosmetic.csv"
 new_list = []
 
 # Set up logging

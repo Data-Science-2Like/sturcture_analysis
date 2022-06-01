@@ -3,7 +3,7 @@ import json
 import matplotlib.pyplot as plt
 import statistics
 
-filename = "CSV/sections_headings_16k.csv"
+filename = "/home/danial/Documents/GitHub/latex_parser/CSV/sections_headings_61k_final.csv"
 
 # Read out csv file
 with open(filename, 'r') as csvfile:
@@ -79,13 +79,13 @@ section_heading_mean = section_heading_mean / amount_paper
 
 
 
-plt.bar(num_of_headings.keys(), num_of_headings.values(), color='g' )
+plt.bar(num_of_headings.keys(), num_of_headings.values(), color='tab:blue' )
 plt.title("Number of Sections in Scientific Papers")
 plt.xlabel("Number of Sections")
 plt.ylabel("Number of Papers")
-plt.figtext(0.35, 0.95, f"Number of Papers: {amount_paper} |", ha="center", va="center", fontsize=8)
-plt.figtext(0.6, 0.95, f"Section Headings Mean: {round(section_heading_mean, 3)}", ha="center", va="center", fontsize=8)
-plt.savefig('CSV/histogram_count_sections_16k.png')
+# plt.figtext(0.35, 0.95, f"Number of Papers: {amount_paper} |", ha="center", va="center", fontsize=8)
+# plt.figtext(0.6, 0.95, f"Section Headings Mean: {round(section_heading_mean, 3)}", ha="center", va="center", fontsize=8)
+plt.savefig('pictures/histogram_count_sections_61k_final.png')
 plt.show()
 
 
