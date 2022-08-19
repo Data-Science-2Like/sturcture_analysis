@@ -1,6 +1,7 @@
 from ntpath import join
 import random
 from os import system, name
+from typing import Counter
 from xxlimited import new
 from TexSoup import TexSoup
 import logging
@@ -30,7 +31,7 @@ csv_filename_61k_train = "CSV/sections_headings_61k_train.csv"
 csv_filename_61k_test = "CSV/sections_headings_61k_test.csv"
 csv_filename_2k = "CSV/lemmatizer/sections_2k_lemma.csv"
 csv_filename_improved = "CSV/lemmatizer/sections_improved_lemma.csv"
-syn_filename = "JSON/synonyms.json"
+syn_filename = "JSON/synonyms_origin.json"
 texfiles = []
 
 
@@ -319,15 +320,6 @@ def test_templates(templates, csv_list, synonyms):
     return root
 
 
-# Experimente:
-# Wie viele Paper matchen?                              => 5541 (break), 5876 (all), 352 (without easy) 
-# Paper einsortieren und Tiefe erfassen
-# Failure von Hand anschauen > warum nicht funktioniert?
-# Evaluierung: 100 Stück = Implementierung validieren 
-# Support pro Regel: Datengrundlage validieren
-
-# Keine neuen Knoten in den Baum einfügen >> nur neue Synonyme lernen
-# Negative Beispiele in externer Datei speicher 
 
 # ############################################################
 #   Main Loop
@@ -344,8 +336,9 @@ def loop(templates, csv_list):
     hit_counter = 0
     
     # Choose size of training set
-    for i in range(10):
+    for i in range(500):
         train.append(random.choice(csv_list))
+
 
     print(f"Size of Corpus: {len(csv_list)}")
     print(f"Size of Training Set: {len(train)}")
@@ -357,7 +350,7 @@ def loop(templates, csv_list):
         temp_set.add(tuple(item))
         new_template_tup = tuple(item)
         # 2 Counter (# matches, # multimatches)
-        support_dict[str(new_template_tup)] = [0, 0]
+        support_dict[str(new_template_tup)] = [0, 0] 
     
     support_dict["['*']"] = [0, 0]
     # for itrm in support_dict:
@@ -391,7 +384,7 @@ def loop(templates, csv_list):
                 break
             ##
 
-            ##
+            ## Synonym Dict swap 
             # Check if Section Heading already in Synonyms
             for i, syn in enumerate(synonyms):
                 # If SH is  in Synonyms => replace with synonym
@@ -420,62 +413,55 @@ def loop(templates, csv_list):
             # Clear screen and print Tree
             
             clear()
-            for pre, _, node in RenderTree(atree):
-                print("%s%s" % (pre, node.name))
-            print("_______________________________________________________________________________")
-            
+            # for pre, _, node in RenderTree(atree):
+            #     print("%s%s" % (pre, node.name))
+            # print("_______________________________________________________________________________")
+            print(counter)
             # Declare root of tree
             root = atree.root
             #root = atree.children[0]
             new_rule_tup = tuple(r)
+            if len(new_rule_tup) < 1:
+                continue
+
             ##
             # iterate through tree 
             for item in PreOrderIter(root):
-                # format the strings and list to the same format
-                #temp = re.sub(r"[^a-zA-Z0-9* ]", "", item.name)
                 res = eval(item.name)
-                #print(f"res: {res}")
-                #print(f"rule_tuple: {new_rule_tup}")
-                # print(f"rule_string: {new_rule_string}")
+                
                 if sub(new_rule_tup, res):
                     print("Rule found in templates.")
                     print(f"Template: {res}")
-                    support_dict[str(res)][0] += 1 
-                    hit_counter += 1
+                    support_dict[str(res)][0] += 1                                 
 
-                    while (item.parent is not None):
-                        try:
-                            support_dict[item.parent.name][1] += 1
-                            hit_counter += 1
-                        except:
-                            pass
-                        item = item.parent
 
-            print("_______________________________________________________________________________")
-            print(f"Rule: {r}")
-            print(f"Counter: {counter}")
-            ##
+            # print("_______________________________________________________________________________")
+            # print(f"Rule: {r}")
+            # print(f"Counter: {counter}")
+            # ##
 
-            # Get User Input
-            user_input = input("Do you want to add a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\nFor the next rule: (Press [n])\n")
-            if user_input == "r":
-                print("Rule added.")
-                # Convert Rule to Tuple > insert into Tree
-                add_set.add(tuple(r))
-                for item in add_set:
-                    update_tree(tree, item)
-                # Export as anytree
-                atree = t2anytree(tree)
-                r = []
-                running = False
-            elif user_input == "s":
-                print("introduction | related work | method | experiment | discussion | conclusion | \n")
-                sec_input = input("Please enter the section you want to add an synonym to:\n")
-                syn_input = input("Please enter the synonym:\n")
-                synonyms[syn_input] = sec_input
-            elif user_input == "n":
-                r = []
-                running = False
+            # # Get User Input
+            # user_input = input("Do you want to add a new rule? (Press [r])\nDo you want to add a synonym? (Press [s])\nFor the next rule: (Press [n])\n")
+            # if user_input == "r":
+            #     print("Rule added.")
+            #     # Convert Rule to Tuple > insert into Tree
+            #     add_set.add(tuple(r))
+            #     for item in add_set:
+            #         update_tree(tree, item)
+            #     # Export as anytree
+            #     atree = t2anytree(tree)
+            #     r = []
+            #     running = False
+            # elif user_input == "s":
+            #     print("introduction | related work | method | experiment | discussion | conclusion | \n")
+            #     sec_input = input("Please enter the section you want to add an synonym to:\n")
+            #     syn_input = input("Please enter the synonym:\n")
+            #     synonyms[syn_input] = sec_input
+            # elif user_input == "n":
+            #     r = []
+            #     running = False
+            r = []
+            running = False
         ##
 
     clear()
@@ -494,7 +480,11 @@ def loop(templates, csv_list):
     print("Size of Training Batch: ", len(train))
     print("Size of Template Batch: ", len(templates))
     for item in support_dict:
-        support = round( (support_dict[item][0] + support_dict[item][1] )/ hit_counter,2)
+        try:
+
+            support = round( (support_dict[item][0] )/ (len(train)) ,2)
+        except ZeroDivisionError:
+            support = 0
         if support > 0:
             print(f"{item}: {support}")
         #print(f"{item}: {(support_dict[item][0] + support_dict[item][1] )/ len(train)}")
@@ -521,7 +511,7 @@ synonyms = load_from_json_file(syn_filename)
 templates = load_from_json_file(template_filename)
 
 #test_templates(templates, csv_improved, synonyms)    # Wie viele Paper matchen?
-loop(templates, csv_61k_test)
+loop(templates, csv_61k_train)
 
 # file_in = "CSV/sections_headings_61k_test.csv"
 # file_out = "CSV/sections_headings_61k_test.csv"
@@ -537,128 +527,3 @@ with open("JSON/rules.json", "w") as outfile:
    outfile.write(json_data)
 with open("JSON/synonyms.json", "w") as outfile:
     outfile.write(synonym_data)
-
-
-# Experiment:
-# 2k:
-#   - all:      1171
-#   - break:    923 
-# 16k:
-#   - all:      5876
-#   - break:    5541
-
-# Tree Experiment:
-# 2k:
-# Number of Papers:  2264
-# Size of Template Batch:  12
-# Size of Tree:  826
-# Number of Papers that matched Template:  945
-# Number of Papers not matched:  1319
-
-# 16k:
-# Number of Papers:  15911
-# Size of Template Batch:  12
-# Size of Tree:  5138
-# Number of Papers that matched Template:  6560
-# Number of Papers not matched:  9351
-
-
-# Fragen:
-#   - Template: "result and discussion" ??
-
-# TODO Duplikate entfernen zwischen syn und temp match                                          Y
-# TODO Experiment:  - Support für alle Regelen
-# TODO              - Differenz zwischen Parents und Children > Missing Rule? 
-# TODO              - Top-Down Iter >> 2 Counter (# matches, # multimatches)
-# TODO              - Mehrfachmatch jedesmal Parent mithochzählen (#match + #multimatch)
-# TODO              - 
-# TODO Pipeline:
-# TODO  1) NLP Preprocessing || Lemma
-# TODO  2) Wörterbuch
-# TODO  3) Duplikate entfernen
-# TODO  4) Template Match
-# TODO  ^----- Active Wrapper ---------^
-# TODO  5) eval Support
-
-# TODO Wie viele Paper gab es vor und nach dem Filtern              106k > 61k
-# TODO [I * D]                                                      Y
-# TODO Auf wie vielen Papern Syns gelernt
-# TODO Parserfehler: nicht mit aufnehmen
-# TODO Fehlerhafte Beispiele notieren
-# TODO Datensatz ohne 2019,2020
-
-##############################
-# First Run [6k]
-##############################
-# Number of Papers:  15065
-# Size of Training Batch:  500
-# Size of Template Batch:  25
-# ('introduction', '*', 'conclusion'): 0.61
-# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
-# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
-# ('introduction', '*', 'experiment', 'conclusion'): 0.22
-# ('introduction', '_', 'experiment', 'conclusion'): 0.03
-# ('introduction', 'related work', 'experiment', 'conclusion'): 0.01
-# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.04
-# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
-# ('introduction', '*', 'related work', 'conclusion'): 0.03
-##############################
-# Second Run [6k]
-##############################
-# Number of Papers:  15065
-# Size of Training Batch:  500
-# Size of Template Batch:  25
-# ('introduction', '*', 'conclusion'): 0.62
-# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
-# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
-# ('introduction', '*', 'experiment', 'conclusion'): 0.23
-# ('introduction', '_', 'experiment', 'conclusion'): 0.02
-# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.05
-# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
-# ('introduction', '*', 'related work', 'conclusion'): 0.03
-##############################
-# Third Run [6k]
-##############################
-# Number of Papers:  15065
-# Size of Training Batch:  500
-# Size of Template Batch:  25
-# ('introduction', '*', 'conclusion'): 0.62
-# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
-# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
-# ('introduction', '*', 'experiment', 'conclusion'): 0.22
-# ('introduction', '_', 'experiment', 'conclusion'): 0.03
-# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.04
-# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
-# ('introduction', '*', 'related work', 'conclusion'): 0.03
-
-##############################
-# Train Run [60k]
-##############################
-# Number of Papers:  52876
-# Size of Training Batch:  500
-# Size of Template Batch:  26
-# ('introduction', '*', 'conclusion'): 0.35
-# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
-# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
-# ('introduction', '*', 'experiment', 'conclusion'): 0.14
-# ('introduction', '_', 'experiment', 'conclusion'): 0.02
-# ('introduction', 'method', 'experiment', 'conclusion'): 0.01
-# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.04
-# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
-# ('introduction', '*', 'related work', 'conclusion'): 0.02
-# ('introduction', '*', 'discussion'): 0.01
-##############################
-# Test Run [60k]
-##############################
-# Number of Papers:  5839
-# Size of Training Batch:  500
-# Size of Template Batch:  26
-# ('introduction', '*', 'conclusion'): 0.29
-# ('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.02
-# ('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
-# ('introduction', '*', 'experiment', 'conclusion'): 0.11
-# ('introduction', '_', 'experiment', 'conclusion'): 0.01
-# ('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.03
-# ('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.01
-# ('introduction', '*', 'related work', 'conclusion'): 0.01
-# ('introduction', '*', 'discussion'): 0.01

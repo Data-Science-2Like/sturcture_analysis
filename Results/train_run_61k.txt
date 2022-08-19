@@ -1,0 +1,109 @@
+##############################
+# First Run [52k]
+##############################
+Number of Papers:  52709
+Size of Training Batch:  100
+Size of Template Batch:  26
+('introduction', '*', 'conclusion'): 0.75
+('introduction', '_', 'discussion', 'conclusion'): 0.01
+('introduction', 'method', 'discussion', 'conclusion'): 0.01
+('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.01
+('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', 'related work', 'method', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', '*', 'experiment', 'conclusion'): 0.36
+('introduction', '_', 'experiment', 'conclusion'): 0.05
+('introduction', 'method', 'experiment', 'conclusion'): 0.01
+('introduction', 'related work', 'experiment', 'conclusion'): 0.02
+('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.16
+('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.04
+('introduction', '*', 'related work', 'conclusion'): 0.03
+('introduction', '_', 'experiment', 'discussion', 'conclusion'): 0.02
+('introduction', 'method', 'experiment', 'discussion', 'conclusion'): 0.02
+('introduction', '*', 'discussion'): 0.07
+
+##############################
+# Second Run [52k]
+##############################
+Number of Papers:  52709
+Size of Training Batch:  100
+Size of Template Batch:  26
+('introduction', '*', 'conclusion'): 0.71
+('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.06
+('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.02
+('introduction', '*', 'experiment', 'conclusion'): 0.34
+('introduction', '_', 'experiment', 'conclusion'): 0.04
+('introduction', 'method', 'experiment', 'conclusion'): 0.03
+('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.12
+('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.09
+('introduction', '*', 'related work', 'conclusion'): 0.06
+('introduction', '_', 'experiment', 'related work', 'conclusion'): 0.02
+('introduction', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', '*', 'discussion'): 0.05
+
+##############################
+# Third Run [52k]
+##############################
+Number of Papers:  52709
+Size of Training Batch:  100
+Size of Template Batch:  26
+('introduction', '*', 'conclusion'): 0.82
+('introduction', '_', 'discussion', 'conclusion'): 0.01
+('introduction', 'method', 'discussion', 'conclusion'): 0.01
+('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.06
+('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.04
+('introduction', 'related work', 'method', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', '*', 'experiment', 'conclusion'): 0.4
+('introduction', '_', 'experiment', 'conclusion'): 0.04
+('introduction', 'method', 'experiment', 'conclusion'): 0.03
+('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.13
+('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.06
+('introduction', '*', 'related work', 'conclusion'): 0.04
+('introduction', '*', 'discussion', 'related work', 'conclusion'): 0.02
+('introduction', 'method', 'experiment', 'discussion', 'related work', 'conclusion'): 0.01
+('introduction', '_', 'experiment', 'discussion', 'related work', 'conclusion'): 0.01
+('introduction', '_', 'experiment', 'discussion', 'conclusion'): 0.03
+('introduction', 'method', 'experiment', 'discussion', 'conclusion'): 0.02
+('introduction', '*', 'discussion'): 0.06
+
+##############################
+# Fourth Run [52k]
+##############################
+Number of Papers:  52709
+Size of Training Batch:  100
+Size of Template Batch:  26
+('introduction', '*', 'conclusion'): 0.73
+('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.05
+('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.03
+('introduction', 'related work', 'method', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', '*', 'experiment', 'conclusion'): 0.29
+('introduction', '_', 'experiment', 'conclusion'): 0.07
+('introduction', 'method', 'experiment', 'conclusion'): 0.05
+('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.07
+('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.02
+('introduction', '*', 'related work', 'conclusion'): 0.07
+('introduction', '_', 'experiment', 'related work', 'conclusion'): 0.02
+('introduction', '_', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', 'method', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', '*', 'discussion'): 0.04
+
+##############################
+# Fifth Run [52k]
+##############################
+Number of Papers:  52709
+Size of Training Batch:  100
+Size of Template Batch:  26
+('introduction', '*', 'conclusion'): 0.74
+('introduction', '_', 'discussion', 'conclusion'): 0.01
+('introduction', 'method', 'discussion', 'conclusion'): 0.01
+('introduction', 'related work', '*', 'discussion', 'conclusion'): 0.07
+('introduction', 'related work', '_', 'experiment', 'discussion', 'conclusion'): 0.04
+('introduction', 'related work', 'method', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', '*', 'experiment', 'conclusion'): 0.4
+('introduction', '_', 'experiment', 'conclusion'): 0.03
+('introduction', 'related work', 'experiment', 'conclusion'): 0.01
+('introduction', 'related work', '_', 'experiment', 'conclusion'): 0.15
+('introduction', 'related work', 'method', 'experiment', 'conclusion'): 0.05
+('introduction', '*', 'related work', 'conclusion'): 0.06
+('introduction', '_', 'experiment', 'discussion', 'conclusion'): 0.02
+('introduction', 'method', 'experiment', 'discussion', 'conclusion'): 0.01
+('introduction', '*', 'discussion'): 0.03
