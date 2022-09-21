@@ -46,7 +46,7 @@ In the file "Tree.py" we describe the functionality for our template tree.
 We created some statistics while performing our experiments. All code herefor is in "create_statistics.py".
 
 ## Usage
-python3 prepare_dataset.py
+python3 prepare_dataset.py <\ br>
 This file will convert the dataset from tex files to a csv file. 
 The input directory can be specified at line 47.
 The output file can be specified at line 93.
