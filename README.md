@@ -44,3 +44,26 @@ In the file "Tree.py" we describe the functionality for our template tree.
 ## Misc
 
 We created some statistics while performing our experiments. All code herefor is in "create_statistics.py".
+
+## Usage
+python3 prepare_dataset.py
+This file will convert the dataset from tex files to a csv file. 
+The input directory can be specified at line 47.
+The output file can be specified at line 93.
+
+python3 create_statistics.py
+This file was used to create statistics about the dataset.
+In line 6 the input file needs to be specified. 
+It will then automatically create the statistics and save it to the folder "/pictures".
+
+python3 cosmetic_csv.py
+This file needs the input and output file specified in line 4 and 5.
+It will automatically remove empty and too short entries. 
+
+python3 structured_data_extraction.py
+This file needs as input the dataset (line 29-31), the synonym dictionary (line 34) and the templates (line 28).
+The output files can be specified in line 526 and 528.
+This starts the main loop. The tree will be built and the rules gathered from the data set will be iterated. 
+Press "s" to add a synonym to the dictionary.
+Press "n" to advance to the next rule. 
+After all rules were iterated the results will be presented.
